@@ -24,6 +24,6 @@
     "react": "catalog:"
   },
   "dependencies": {
-    "@weave/react": "workspace:*"
+    "@weave/react": "workspace:^"
   }
 }

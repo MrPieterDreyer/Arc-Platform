@@ -24,6 +24,6 @@
     "react": "catalog:"
   },
   "dependencies": {
-    "@arc/core": "workspace:*"
+    "@arc/core": "workspace:^"
   }
 }

@@ -47,7 +47,7 @@ importers:
   Arc/Next:
     dependencies:
       '@arc/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../Core
       next:
         specifier: 'catalog:'
@@ -59,7 +59,7 @@ importers:
   Weave/Next:
     dependencies:
       '@weave/react':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../React
       next:
         specifier: 'catalog:'
