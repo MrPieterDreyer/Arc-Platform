@@ -17,6 +17,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "biome lint ./src",
-    "test": "vitest"
+    "format:check": "biome format ./src",
+    "test": "vitest --run"
   }
 }
