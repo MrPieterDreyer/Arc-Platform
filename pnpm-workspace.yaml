@@ -1,4 +1,13 @@
+# Source: https://pnpm.io/catalogs
 packages:
   - 'Arc/**'
   - 'Weave/**'
   - 'Templates/**'
+
+catalog:
+  react: ^19.2.0
+  react-dom: ^19.2.0
+  next: ^16.2.0
+  typescript: 5.9.3
+  graphql: ^16.14.0
+  zod: ^4.4.3

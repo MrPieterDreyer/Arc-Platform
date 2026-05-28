@@ -20,8 +20,8 @@
     "test": "vitest"
   },
   "peerDependencies": {
-    "next": ">=15.0.0",
-    "react": ">=19.0.0"
+    "next": "catalog:",
+    "react": "catalog:"
   },
   "dependencies": {
     "@weave/react": "workspace:*"

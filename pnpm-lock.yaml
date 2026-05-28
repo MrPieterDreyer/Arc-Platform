@@ -4,6 +4,15 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    next:
+      specifier: ^16.2.0
+      version: 16.2.6
+    react:
+      specifier: ^19.2.0
+      version: 19.2.6
+
 importers:
 
   .:
@@ -41,10 +50,10 @@ importers:
         specifier: workspace:*
         version: link:../Core
       next:
-        specifier: '>=15.0.0'
+        specifier: 'catalog:'
         version: 16.2.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react:
-        specifier: '>=19.0.0'
+        specifier: 'catalog:'
         version: 19.2.6
 
   Weave/Next:
@@ -53,16 +62,16 @@ importers:
         specifier: workspace:*
         version: link:../React
       next:
-        specifier: '>=15.0.0'
+        specifier: 'catalog:'
         version: 16.2.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react:
-        specifier: '>=19.0.0'
+        specifier: 'catalog:'
         version: 19.2.6
 
   Weave/React:
     dependencies:
       react:
-        specifier: '>=19.0.0'
+        specifier: 'catalog:'
         version: 19.2.6
 
 packages:
