@@ -25,7 +25,8 @@
     "verify-dist": "node Scripts/verify-dist.mjs",
     "verify-turbo-cache": "bash Scripts/verify-turbo-cache.sh",
     "verify-changesets-no-major": "node Scripts/verify-changesets-no-major.mjs",
-    "verify-changesets-config": "node Scripts/verify-changesets-config.mjs"
+    "verify-changesets-config": "node Scripts/verify-changesets-config.mjs",
+    "verify-ci-workflow": "node Scripts/verify-ci-workflow.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.16",
