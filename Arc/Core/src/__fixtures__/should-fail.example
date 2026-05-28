@@ -1,0 +1,7 @@
+// File extension is .example so TS / Biome ignore it.
+// Rename to .ts and re-run BOTH gates:
+//   1. pnpm lint  → MUST report noRestrictedImports error
+//   2. bash Scripts/check-no-next-in-core.sh  → MUST exit 1
+// Then rename back to .example.
+import { cookies } from 'next/headers';
+export const x = cookies;
