@@ -9,7 +9,7 @@
 
 ## Phases
 
-- [ ] **Phase 0: Tooling & Foundations** — pnpm/Turbo/Biome/Vitest/tsup/Changesets/CI + 8 locked ADRs
+- [x] **Phase 0: Tooling & Foundations** — pnpm/Turbo/Biome/Vitest/tsup/Changesets/CI + 8 locked ADRs (completed 2026-05-28)
 - [ ] **Phase 1: `@arc/core`** — `WooClient` (Cart-Token + Nonce), Store API + WPGraphQL clients, framework-agnostic React 19 hooks
 - [ ] **Phase 2: `@arc/next`** — App Router loaders, Server Actions, cart-token cookie bridge, `'use cache'` + cacheTag helpers, revalidate webhook
 - [ ] **Phase 3: `@weave/react`** — `WeaveComponentSchema<TProps>` generic, `defineSection`, registry, `<SectionRenderer>`, 15 input types, Zod validation
@@ -129,7 +129,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Tooling & Foundations | 8/9 | In Progress|  |
+| 0. Tooling & Foundations | 9/9 | Complete   | 2026-05-28 |
 | 1. `@arc/core` | 0/0 | Not started | - |
 | 2. `@arc/next` | 0/0 | Not started | - |
 | 3. `@weave/react` | 0/0 | Not started | - |

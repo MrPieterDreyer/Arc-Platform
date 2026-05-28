@@ -16,7 +16,7 @@ Each requirement is testable and maps to a roadmap phase. Categories follow the 
 - [x] **TOOL-03**: Vitest 4 workspace runs all package tests via `pnpm test`
 - [x] **TOOL-04**: tsup 8 builds every package to `dist/` with esm + cjs + `.d.ts` outputs
 - [x] **TOOL-05**: Turborepo 2 orchestrates lint/test/build with proper caching
-- [ ] **TOOL-06**: GitHub Actions CI runs lint + test + build + license-check on every PR
+- [x] **TOOL-06**: GitHub Actions CI runs lint + test + build + license-check on every PR
 - [x] **TOOL-07**: Changesets gate enforces `0.x.y` versioning until publish flag flipped
 - [x] **TOOL-08**: CI grep check fails if `@arc/core` or `@weave/react` imports anything from `next/*`
 - [ ] **TOOL-09**: ADR-0001 through ADR-0008 committed to `Documentation/Architecture/` (versioning, Next 16 + Gutenberg independence, license policy, cache tag taxonomy, page-config JSON shape, cart-token cookie, webhook auth, npm scope)
@@ -189,7 +189,7 @@ Every v1 requirement maps to exactly one phase.
 | TOOL-03 | Phase 0 | Complete |
 | TOOL-04 | Phase 0 | Complete |
 | TOOL-05 | Phase 0 | Complete |
-| TOOL-06 | Phase 0 | Pending |
+| TOOL-06 | Phase 0 | Complete |
 | TOOL-07 | Phase 0 | Complete |
 | TOOL-08 | Phase 0 | Complete |
 | TOOL-09 | Phase 0 | Pending |

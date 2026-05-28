@@ -13,9 +13,9 @@ const ALLOWED = new Set([
   '0BSD',
   'CC0-1.0',
   'Unlicense',
-  'BlueOak-1.0.0',                    // pnpm and a few others use this
-  'Python-2.0',                        // used by `argparse` transitively in some chains
-  'CC-BY-4.0',                         // caniuse-lite (browser compat data — data license, not code license)
+  'BlueOak-1.0.0', // pnpm and a few others use this
+  'Python-2.0', // used by `argparse` transitively in some chains
+  'CC-BY-4.0', // caniuse-lite (browser compat data — data license, not code license)
   'Apache-2.0 AND LGPL-3.0-or-later', // @img/sharp-* platform binaries (LGPL covers bundled libvips native binary, not Arc code)
 ]);
 
@@ -28,11 +28,21 @@ for (const [license, pkgs] of Object.entries(data)) {
   if (ALLOWED.has(license)) continue;
   for (const p of pkgs) {
     // Skip our own workspace packages (they live under the repo root)
-    if (p.paths?.some((path) => path.includes('/Arc/') || path.includes('/Weave/') || path.includes('/Templates/'))) {
+    if (
+      p.paths?.some(
+        (path) =>
+          path.includes('/Arc/') || path.includes('/Weave/') || path.includes('/Templates/'),
+      )
+    ) {
       continue;
     }
     // Also handle Windows path separators
-    if (p.paths?.some((path) => path.includes('\\Arc\\') || path.includes('\\Weave\\') || path.includes('\\Templates\\'))) {
+    if (
+      p.paths?.some(
+        (path) =>
+          path.includes('\\Arc\\') || path.includes('\\Weave\\') || path.includes('\\Templates\\'),
+      )
+    ) {
       continue;
     }
     violations.push({ name: p.name, version: p.version, license });

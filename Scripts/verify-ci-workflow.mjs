@@ -2,7 +2,7 @@
 // TOOL-06 contract: ci.yml and release.yml MUST contain the required jobs and tokens.
 // Source: .planning/phases/00-tooling-foundations/00-RESEARCH.md (Validation Architecture — TOOL-06 row)
 // Source: .planning/phases/00-tooling-foundations/00-VALIDATION.md (Task 0-06-01)
-import { readFileSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const CI_PATH = '.github/workflows/ci.yml';
 const RELEASE_PATH = '.github/workflows/release.yml';

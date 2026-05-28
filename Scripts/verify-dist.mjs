@@ -2,19 +2,13 @@
 // TOOL-04 contract: every package produces dist/index.{mjs,js,d.ts}
 // Source: .planning/phases/00-tooling-foundations/00-RESEARCH.md (Validation Architecture)
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 
-const PACKAGES = [
-  'Arc/Core',
-  'Arc/Next',
-  'Weave/React',
-  'Weave/Next',
-];
+const PACKAGES = ['Arc/Core', 'Arc/Next', 'Weave/React', 'Weave/Next'];
 
 const REQUIRED_FILES = ['dist/index.mjs', 'dist/index.js', 'dist/index.d.ts'];
 

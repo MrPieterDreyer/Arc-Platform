@@ -3,18 +3,18 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-05-28T16:58:22.094Z"
+last_updated: "2026-05-28T17:02:54.448Z"
 progress:
   total_phases: 8
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 9
-  completed_plans: 8
-  percent: 89
+  completed_plans: 9
+  percent: 100
 ---
 
 # Arc + Weave Platform — STATE
 
-**Last updated:** 2026-05-28 (Plan 05 complete — Turborepo pipeline wired, TOOL-05 closed)
+**Last updated:** 2026-05-28 (Plan 06 complete — CI pipeline + release workflow wired, TOOL-06 closed)
 
 ---
 
@@ -28,14 +28,14 @@ progress:
 
 ## Current Position
 
-Phase: 00 (tooling-foundations) — EXECUTING
-Plan: 6 of 9 (Plans 01, 02, 03, 09, 04, 05 complete)
+Phase: 00 (tooling-foundations) — COMPLETE
+Plan: 9 of 9 (Plans 01, 02, 03, 09, 04, 05, 07, 06 complete — Phase 00 DONE)
 
 - **Milestone:** v0.1 (Arc + Weave Platform v1 — Phases 0 through 6)
 - **Phase:** 0 — Tooling & Foundations
 - **Plan:** Planned — 9 plans across 2 waves (`.planning/phases/00-tooling-foundations/00-0{1..9}-PLAN.md`)
-- **Status:** Executing Phase 00
-- **Progress:** [█████████░] 89%
+- **Status:** Phase 00 COMPLETE — all 9 plans done
+- **Progress:** [██████████] 100%
 
 ### Phase 0 Plan Map
 
@@ -89,7 +89,10 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | ARC_ALLOW_V1_PUBLISH=true env flag is the sole escape hatch for major bumps in CI (ADR-0001) | 00-07 | Accepted |
 | turbo.json tasks key (v2) + dependsOn ^build on test + narrow inputs per task for cache correctness | 00-05 | Accepted |
 | vitest --run required for all packages when invoked via turbo (prevents watch mode) | 00-05 | Accepted |
-| Phase 00 P07 | 9m | 2 tasks | 5 files |
+| Each CI job re-installs deps (frozen-lockfile) for isolation; Node matrix [20,22] scoped to test job only | 00-06 | Accepted |
+| id-token:write permission in release.yml for npm provenance attestation (supply-chain security) | 00-06 | Accepted |
+| verify-ci-workflow.mjs checks both job names and command strings to prevent silent regressions | 00-06 | Accepted |
+| Phase 00 P06 | 2min | 2 tasks | 4 files |
 
 ### Plan Execution Metrics
 
@@ -101,6 +104,7 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | 00-04 tsup per-package builds + TOOL-04 gate | 3m 20s | 2 | 16 |
 | 00-07 Changesets major-version gate (TOOL-07) | 9m | 2 | 5 |
 | 00-05 Turborepo pipeline + TOOL-05 cache contract | 4m | 2 | 7 |
+| 00-06 CI pipeline + release workflow (TOOL-06) | 2m | 2 | 4 |
 
 ### Open Todos (carried from research)
 
@@ -123,9 +127,9 @@ None.
 
 ## Session Continuity
 
-**Last action:** Completed Plan 07 (Changesets major-version gate). 2 commits (`3edf9d5`, `6fc20f7`). `.changeset/config.json` with `fixed: [["@arc/*"], ["@weave/*"]]`; `verify-changesets-no-major.mjs` exits 1 on major bump, 0 on patch/minor, 0 with override flag; `verify-changesets-config.mjs` TOOL-07 regression passes. TOOL-07 closed.
+**Last action:** Completed Plan 06 (CI pipeline + release workflow). 2 commits (`6f5ab43`, `158a55f`). `ci.yml` with 6 jobs (install, lint, no-next-in-core, test matrix Node 20+22, license-check, changesets-no-major); `release.yml` with changesets/action@v1 + npm provenance; `verify-ci-workflow.mjs` TOOL-06 regression gate exits 0. TOOL-06 closed. Phase 00 COMPLETE — all 9 plans done.
 
-**Next action:** Wave 2 plans — 06 (CI pipeline), 08 (license gate) may still be in flight from parallel execution.
+**Next action:** Run `/gsd:verify-work` for Phase 00 to validate the full wave. Then proceed to Phase 01.
 
 **Files to check on resume:**
 

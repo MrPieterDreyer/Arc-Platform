@@ -1,14 +1,8 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
-  "changelog": [
-    "@changesets/changelog-github",
-    { "repo": "arc-platform/arc" }
-  ],
+  "changelog": ["@changesets/changelog-github", { "repo": "arc-platform/arc" }],
   "commit": false,
-  "fixed": [
-    ["@arc/*"],
-    ["@weave/*"]
-  ],
+  "fixed": [["@arc/*"], ["@weave/*"]],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
