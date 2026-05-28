@@ -1,0 +1,29 @@
+{
+  "name": "@weave/next",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Weave — Next.js App Router integration for sections",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "lint": "biome lint ./src",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "next": ">=15.0.0",
+    "react": ">=19.0.0"
+  },
+  "dependencies": {
+    "@weave/react": "workspace:*"
+  }
+}

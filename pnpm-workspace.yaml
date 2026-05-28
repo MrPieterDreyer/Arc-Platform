@@ -1,0 +1,4 @@
+packages:
+  - 'Arc/**'
+  - 'Weave/**'
+  - 'Templates/**'
