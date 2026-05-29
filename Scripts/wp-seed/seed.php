@@ -144,6 +144,8 @@ function arc_seed_order( $product_id ) {
 }
 
 // --- Store config the contract/checkout tests rely on -----------------------
+// (Pretty permalinks + rewrite flush are handled by Scripts/seed-wp-env.mjs via
+// wp-cli — flush_rewrite_rules() here does not expose WPGraphQL's /graphql route.)
 
 update_option( 'woocommerce_currency', 'USD' );
 

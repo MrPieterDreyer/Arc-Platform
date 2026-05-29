@@ -16,16 +16,26 @@
 
 import { spawnSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import path from 'node:path';
 
+const require = createRequire(import.meta.url);
 const WP_URL = process.env.WP_URL ?? 'http://localhost:8888';
 const WP_GRAPHQL_ENDPOINT = process.env.WP_GRAPHQL_ENDPOINT ?? `${WP_URL}/graphql`;
-const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+
+// Resolve wp-env's JS entry so we can run it via `node` directly. Spawning the
+// `.cmd`/`.bin` shim with shell:false throws EINVAL on Windows (post-CVE Node),
+// and shell:true would let cmd.exe expand `%postname%`-style args.
+const wpEnvBin = path.join(
+  path.dirname(require.resolve('@wordpress/env/package.json')),
+  'bin',
+  'wp-env',
+);
 
 /** Run a wp-cli command inside the wp-env `cli` container. */
 function wp(args) {
-  const res = spawnSync(npx, ['wp-env', 'run', 'cli', 'wp', ...args], {
+  const res = spawnSync(process.execPath, [wpEnvBin, 'run', 'cli', 'wp', ...args], {
     encoding: 'utf8',
-    shell: false,
   });
   if (res.error) {
     throw res.error;
@@ -38,13 +48,19 @@ function wp(args) {
   return res.stdout ?? '';
 }
 
+// Pretty permalinks via wp-cli (registers rewrite tags). A hard flush AFTER
+// plugins/products exist is what actually exposes WPGraphQL's /graphql route —
+// flush_rewrite_rules() inside `wp eval-file` does not. Safe to pass `%` here:
+// we spawn `node` directly (no shell), so cmd.exe never expands `%postname%`.
 console.log('→ Setting pretty permalinks…');
 wp(['rewrite', 'structure', '/%postname%/', '--hard']);
-wp(['rewrite', 'flush', '--hard']);
 
 console.log('→ Seeding WooCommerce fixtures…');
 const out = wp(['eval-file', 'wp-content/arc-seed/seed.php']);
 process.stdout.write(out);
+
+console.log('→ Flushing rewrite rules (exposes /graphql)…');
+wp(['rewrite', 'flush', '--hard']);
 
 const match = out.match(/ARC_SEED_RESULT=(\{.*\})/);
 if (!match) {
