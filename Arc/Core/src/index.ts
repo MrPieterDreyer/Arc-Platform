@@ -16,3 +16,15 @@ export type {
   WooMoney,
   WooRequestOptions,
 } from './types/woo';
+
+// Phase 1 — Checkout (ARC-API-05)
+export { getCheckoutSchema, submitCheckout, getPaymentGateways } from './store-api/checkout';
+export type { WCPaymentGateway } from './store-api/checkout';
+export type {
+  WCAddress,
+  WCBillingAddress,
+  WCCheckoutPayload,
+  WCCheckoutResponse,
+  WCPaymentData,
+  WCPaymentResult,
+} from './types/checkout';
