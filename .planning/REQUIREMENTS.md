@@ -29,19 +29,19 @@ Each requirement is testable and maps to a roadmap phase. Categories follow the 
 - [ ] **ARC-API-03**: `WooClient` normalizes error responses into a single `ArcError` discriminated union
 - [ ] **ARC-API-04**: Cart module: `getCart`, `addItem`, `updateItem`, `removeItem`, `applyCoupon`, `removeCoupon`
 - [ ] **ARC-API-05**: Checkout module: `submitCheckout(payment_data)` accepts gateway-tokenized payloads; `getCheckoutSchema`
-- [x] **ARC-API-06**: Customer module: `getCustomer`, `updateCustomer`, address CRUD, order list
+- [ ] **ARC-API-06**: Customer module: `getCustomer`, `updateCustomer`, address CRUD, order list
 - [ ] **ARC-API-07**: Orders module: `getOrder`, `listCustomerOrders` with pagination
-- [x] **ARC-API-08**: Hand-authored TypeScript types for every Store API surface, with Vitest contract tests against `wp-env`
+- [ ] **ARC-API-08**: Hand-authored TypeScript types for every Store API surface, with Vitest contract tests against `wp-env`
 
 ### Arc Core — WPGraphQL Client (ARC-GQL)
 
-- [ ] **ARC-GQL-01**: `graphql-request` client wired to `/graphql` with auth header passthrough
+- [x] **ARC-GQL-01**: `graphql-request` client wired to `/graphql` with auth header passthrough
 - [ ] **ARC-GQL-02**: `@graphql-codegen/cli` produces typed query hooks from WPGraphQL schema introspection
 - [ ] **ARC-GQL-03**: Products module: `getProduct(slug)`, `getProducts(filter)`, variation matrix helper
 - [ ] **ARC-GQL-04**: Two fragments per resource — `ProductListFields` (no variations) and `ProductDetailFields` (full)
-- [ ] **ARC-GQL-05**: Collections module: `getCollection(slug)`, category tree traversal
-- [ ] **ARC-GQL-06**: Search module: `searchProducts(query, facets)`, facet helpers
-- [x] **ARC-GQL-07**: Vitest perf budget: any documented query <500ms against seeded `wp-env` fixture
+- [x] **ARC-GQL-05**: Collections module: `getCollection(slug)`, category tree traversal
+- [x] **ARC-GQL-06**: Search module: `searchProducts(query, facets)`, facet helpers
+- [ ] **ARC-GQL-07**: Vitest perf budget: any documented query <500ms against seeded `wp-env` fixture
 
 ### Arc Core — React Hooks (ARC-HOOK)
 
@@ -199,16 +199,16 @@ Every v1 requirement maps to exactly one phase.
 | ARC-API-03 | Phase 1 | Pending |
 | ARC-API-04 | Phase 1 | Pending |
 | ARC-API-05 | Phase 1 | Pending |
-| ARC-API-06 | Phase 1 | Complete |
+| ARC-API-06 | Phase 1 | Pending |
 | ARC-API-07 | Phase 1 | Pending |
-| ARC-API-08 | Phase 1 | Complete |
-| ARC-GQL-01 | Phase 1 | Pending |
+| ARC-API-08 | Phase 1 | Pending |
+| ARC-GQL-01 | Phase 1 | Complete |
 | ARC-GQL-02 | Phase 1 | Pending |
 | ARC-GQL-03 | Phase 1 | Pending |
 | ARC-GQL-04 | Phase 1 | Pending |
-| ARC-GQL-05 | Phase 1 | Pending |
-| ARC-GQL-06 | Phase 1 | Pending |
-| ARC-GQL-07 | Phase 1 | Complete |
+| ARC-GQL-05 | Phase 1 | Complete |
+| ARC-GQL-06 | Phase 1 | Complete |
+| ARC-GQL-07 | Phase 1 | Pending |
 | ARC-HOOK-01 | Phase 1 | Pending |
 | ARC-HOOK-02 | Phase 1 | Pending |
 | ARC-HOOK-03 | Phase 1 | Pending |
