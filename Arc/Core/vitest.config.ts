@@ -7,7 +7,7 @@ export default mergeConfig(
     test: {
       name: 'arc-core',
       environment: 'node',
-      include: ['src/**/*.test.ts'],
+      include: ['src/**/*.test.ts', 'src/**/*.contract.ts'],
     },
   }),
 );
