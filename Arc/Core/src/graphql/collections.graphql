@@ -1,0 +1,31 @@
+fragment CollectionListFields on ProductCategory {
+  databaseId
+  slug
+  name
+  count
+  image { sourceUrl altText }
+}
+
+query GetCollection($slug: ID!) {
+  productCategory(id: $slug, idType: SLUG) {
+    ...CollectionListFields
+    children { nodes { ...CollectionListFields } }
+    ancestors { nodes { ...CollectionListFields } }
+  }
+}
+
+query ListCollections($first: Int = 50) {
+  productCategories(first: $first, where: { hideEmpty: true }) {
+    nodes { ...CollectionListFields }
+  }
+}
+
+query GetCollectionProducts($slug: ID!, $first: Int = 24, $after: String) {
+  products(first: $first, after: $after, where: { categoryIn: [$slug] }) {
+    pageInfo { hasNextPage endCursor }
+    nodes {
+      ... on SimpleProduct { ...ProductListFields }
+      ... on VariableProduct { databaseId slug name price featuredImage { node { sourceUrl altText } } }
+    }
+  }
+}

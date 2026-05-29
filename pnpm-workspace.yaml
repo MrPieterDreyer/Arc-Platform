@@ -5,8 +5,8 @@ packages:
   - 'Templates/**'
 
 allowBuilds:
-  esbuild: set this to true or false
-  sharp: set this to true or false
+  esbuild: true
+  sharp: true
 
 catalog:
   react: ^19.2.0
