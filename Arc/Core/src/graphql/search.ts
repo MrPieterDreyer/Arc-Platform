@@ -1,3 +1,7 @@
+// TODO(codegen): Replace inline gql document with typed __generated__ import
+// after running: pnpm --filter @arc/core codegen
+// Expected import:
+//   import { SearchProductsDocument } from './__generated__/graphql.js'
 import { gql, GraphQLClient } from 'graphql-request';
 import type { WCProduct, WCProductList } from '../types/products.js';
 

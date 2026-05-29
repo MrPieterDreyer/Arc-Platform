@@ -1,3 +1,7 @@
+// TODO(codegen): Replace inline gql document with typed __generated__ import
+// after running: pnpm --filter @arc/core codegen
+// Expected import:
+//   import { GetCustomerOrdersDocument } from './__generated__/graphql.js'
 import { GraphQLClient, gql } from 'graphql-request';
 
 /** A single line item within a WPGraphQL order. */
