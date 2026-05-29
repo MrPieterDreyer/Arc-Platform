@@ -76,6 +76,8 @@ export type {
 } from './types/checkout';
 // Phase 1 — Customer types
 export type { WCCustomer, WCCustomerAddress } from './types/customer';
+// Phase 1 — ArcError discriminated union (ARC-API-03)
+export type { ArcError } from './types/errors.js';
 export type {
   WCAddress,
   WCOrder,

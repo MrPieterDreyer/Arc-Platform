@@ -1,15 +1,25 @@
 /**
  * @arc/core — Public error types
  *
- * Re-exports the ArcError discriminated union from the HTTP layer so consumers
- * can import error types from the types barrel without depending on internal
- * implementation paths.
+ * ArcError is the canonical discriminated union for all errors thrown by @arc/core.
+ * Use it for exhaustive switch/match on error kind:
  *
- * Usage:
- *   import type { WooApiError } from '@arc/core';
- *
- * For throwing / catching errors, use WooClientError directly:
- *   import { WooClientError } from '@arc/core';
+ *   try { ... } catch (e) {
+ *     if (e instanceof WooClientError) {
+ *       const err: ArcError = e.arcError;
+ *       if (err.type === 'api') console.log(err.status, err.code);
+ *       if (err.type === 'network') console.log(err.cause);
+ *     }
+ *   }
  */
 
 export type { WooApiError } from './woo.js';
+
+/**
+ * Discriminated union covering every error category @arc/core can produce.
+ * Satisfies ARC-API-03.
+ */
+export type ArcError =
+  | { type: 'api'; status: number; code: string; message: string; data?: unknown }
+  | { type: 'network'; message: string; cause?: unknown }
+  | { type: 'parse'; message: string; cause?: unknown };
