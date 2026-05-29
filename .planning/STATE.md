@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-last_updated: "2026-05-29T10:28:08.064Z"
+status: planning
+last_updated: "2026-05-29T10:43:11.952Z"
 progress:
   total_phases: 8
-  completed_phases: 0
-  total_plans: 9
-  completed_plans: 10
+  completed_phases: 2
+  total_plans: 18
+  completed_plans: 18
   percent: 100
 ---
 
@@ -33,9 +33,9 @@ Phase: 01 (arc-core) — IN PROGRESS
 Plan: 1 of TBD (Plan 01-01 complete — WooClient HTTP foundation)
 
 - **Milestone:** v0.1 (Arc + Weave Platform v1 — Phases 0 through 6)
-- **Phase:** 0 — Tooling & Foundations
-- **Plan:** Planned — 9 plans across 2 waves (`.planning/phases/00-tooling-foundations/00-0{1..9}-PLAN.md`)
-- **Status:** Phase 00 COMPLETE — all 9 plans done
+- **Phase:** 2
+- **Plan:** Not started
+- **Status:** Ready to plan
 - **Progress:** [██████████] 100%
 
 ### Phase 0 Plan Map
