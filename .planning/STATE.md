@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-last_updated: "2026-05-29T09:33:01.675Z"
+last_updated: "2026-05-29T09:50:33.852Z"
 progress:
   total_phases: 8
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 3
+  completed_phases: 0
+  total_plans: 9
+  completed_plans: 4
   percent: 100
 ---
 
@@ -96,9 +96,13 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | WooClient is framework-agnostic: fires onCartToken callback, never touches cookies directly (ADR-0006) | 01-01 | Accepted |
 | WooClientError extends Error with .code + .status — .status enables withRetry to distinguish 4xx from 5xx | 01-01 | Accepted |
 | withRetry lives in http.ts (not WooClient) — separates concerns, reusable by follow-on Phase 1 agents | 01-01 | Accepted |
+| getCustomer is session-scoped only — JSDoc warns it is NOT a full profile, links to getCustomerOrders | 01-07 | Accepted |
+| ADR-0009 customer auth strategy is Open — JWT vs App Passwords vs cookie bridge deferred to Phase 2 spike | 01-07 | Accepted |
+| createWPGraphQLClient uses requestMiddleware for auth injection — framework-agnostic, no next/* imports | 01-07 | Accepted |
 | Phase 00 P06 | 2min | 2 tasks | 4 files |
 | Phase 01 P01 | 6m | 5 tasks | 8 files |
 | Phase 01-arc-core P01 | 6m | 5 tasks | 8 files |
+| Phase 01-arc-core P01-07 | 8m | 2 tasks | 10 files |
 
 ### Plan Execution Metrics
 
@@ -115,7 +119,7 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 ### Open Todos (carried from research)
 
 - [x] Verify npm scope availability for `@arc` / `@weave` (ADR-0008) — both verified unclaimed 2026-05-28; adopted.
-- [ ] Customer auth strategy spike before Phase 1 closes (JWT vs WP session vs Store API customer endpoints).
+- [ ] Customer auth strategy spike before Phase 1 closes (JWT vs WP session vs Store API customer endpoints) — ADR-0009 stub committed, decision deferred to Phase 2.
 - [ ] Stripe Payment Intents headless WC spike before Phase 5.
 - [ ] postMessage contract design (message schema, origin validation, draft-mode token flow) before Phase 4b.
 - [ ] WP plugin distribution decision: wp.org SVN vs GitHub-only releases.
