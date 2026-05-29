@@ -40,3 +40,22 @@ export type {
   WCOrderLineItem,
   WCOrderTotals,
 } from './types/orders';
+
+// Phase 1 — Customer types
+export type { WCCustomer, WCCustomerAddress } from './types/customer';
+
+// Phase 1 — Store API customer
+export { getCustomer, updateCustomer } from './store-api/customer';
+export type { WCCustomerPatch } from './store-api/customer';
+
+// Phase 1 — GraphQL client
+export { createWPGraphQLClient } from './graphql/client';
+export type { WPGraphQLConfig } from './graphql/client';
+
+// Phase 1 — GraphQL customer
+export { getCustomerOrders } from './graphql/customer';
+export type {
+  WCCustomerOrdersResult,
+  WCGQLOrder,
+  WCGQLOrderLineItem,
+} from './graphql/customer';

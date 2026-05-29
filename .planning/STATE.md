@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-last_updated: "2026-05-29T09:50:56.725Z"
+last_updated: "2026-05-29T09:50:33.852Z"
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 9
   completed_plans: 4
-  percent: 44
+  percent: 100
 ---
 
 # Arc + Weave Platform — STATE
@@ -36,7 +36,7 @@ Plan: 1 of TBD (Plan 01-01 complete — WooClient HTTP foundation)
 - **Phase:** 0 — Tooling & Foundations
 - **Plan:** Planned — 9 plans across 2 waves (`.planning/phases/00-tooling-foundations/00-0{1..9}-PLAN.md`)
 - **Status:** Phase 00 COMPLETE — all 9 plans done
-- **Progress:** [████░░░░░░] 44%
+- **Progress:** [██████████] 100%
 
 ### Phase 0 Plan Map
 
@@ -96,12 +96,13 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | WooClient is framework-agnostic: fires onCartToken callback, never touches cookies directly (ADR-0006) | 01-01 | Accepted |
 | WooClientError extends Error with .code + .status — .status enables withRetry to distinguish 4xx from 5xx | 01-01 | Accepted |
 | withRetry lives in http.ts (not WooClient) — separates concerns, reusable by follow-on Phase 1 agents | 01-01 | Accepted |
-| getOrder returns null (not throws) on 404 — covers both 'not found' and 'wrong session'; null is safer for order confirmation page | 01-06 | Accepted |
-| Order types in src/types/orders.ts (separate from woo.ts) — cart types and order types in separate files for clear ownership | 01-06 | Accepted |
+| getCustomer is session-scoped only — JSDoc warns it is NOT a full profile, links to getCustomerOrders | 01-07 | Accepted |
+| ADR-0009 customer auth strategy is Open — JWT vs App Passwords vs cookie bridge deferred to Phase 2 spike | 01-07 | Accepted |
+| createWPGraphQLClient uses requestMiddleware for auth injection — framework-agnostic, no next/* imports | 01-07 | Accepted |
 | Phase 00 P06 | 2min | 2 tasks | 4 files |
 | Phase 01 P01 | 6m | 5 tasks | 8 files |
 | Phase 01-arc-core P01 | 6m | 5 tasks | 8 files |
-| Phase 01-arc-core P01-06 | 8m | 2 tasks | 4 files |
+| Phase 01-arc-core P01-07 | 8m | 2 tasks | 10 files |
 
 ### Plan Execution Metrics
 
@@ -118,7 +119,7 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 ### Open Todos (carried from research)
 
 - [x] Verify npm scope availability for `@arc` / `@weave` (ADR-0008) — both verified unclaimed 2026-05-28; adopted.
-- [ ] Customer auth strategy spike before Phase 1 closes (JWT vs WP session vs Store API customer endpoints).
+- [ ] Customer auth strategy spike before Phase 1 closes (JWT vs WP session vs Store API customer endpoints) — ADR-0009 stub committed, decision deferred to Phase 2.
 - [ ] Stripe Payment Intents headless WC spike before Phase 5.
 - [ ] postMessage contract design (message schema, origin validation, draft-mode token flow) before Phase 4b.
 - [ ] WP plugin distribution decision: wp.org SVN vs GitHub-only releases.
@@ -136,9 +137,9 @@ None.
 
 ## Session Continuity
 
-**Last action:** Completed Phase 01 Plan 06 (Orders module). 2 commits (`7205ea8`, `de3c266`). `getOrder(client, orderId)` against `/order/{id}`, null-on-404 session safety, hand-authored `WCOrder`/`WCAddress`/`WCOrderLineItem`/`WCOrderTotals` types, contract tests with Cart-Token session isolation coverage. ARC-API-07 + ARC-API-08 marked complete.
+**Last action:** Completed Phase 01 Plan 01 (WooClient HTTP foundation). 3 commits (`0ff0876`, `0fa9169`, `49fdb83`). `WooClient` class with 6 cart methods, Cart-Token extraction/injection, `rest_cookie_invalid_nonce` retry, `withRetry` exponential backoff, `WooClientError`, hand-authored WC Store API v1 types. 32 Vitest tests green. Build passes. no-next-in-core boundary clean.
 
-**Next action:** Proceed to Phase 01 Plan 07 — Customer + Orders WPGraphQL module (listCustomerOrders lives here, not in Store API).
+**Next action:** Proceed to Phase 01 Plan 02 — products/catalog Store API client (or assign to swarm agent).
 
 **Files to check on resume:**
 

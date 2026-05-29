@@ -14,6 +14,8 @@
     }
   },
   "dependencies": {
+    "graphql": "catalog:",
+    "graphql-request": "catalog:",
     "zod": "catalog:"
   },
   "scripts": {
