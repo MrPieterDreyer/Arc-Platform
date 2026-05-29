@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-last_updated: "2026-05-28T17:02:54.448Z"
+status: completed
+last_updated: "2026-05-29T09:33:01.675Z"
 progress:
   total_phases: 8
   completed_phases: 1
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 1
+  completed_plans: 3
   percent: 100
 ---
 
@@ -22,14 +22,15 @@ progress:
 
 **Core value:** A developer can ship a production headless WooCommerce storefront on `@arc/core` + `@arc/next` + `@weave/react` with the same productivity Shopify Hydrogen + Weaverse gives Shopify developers — and the page configuration lives inside the merchant's own WordPress, not a vendor SaaS.
 
-**Current focus:** Phase 00 — tooling-foundations
+**Current focus:** Phase 01 — arc-core
 
 ---
 
 ## Current Position
 
 Phase: 00 (tooling-foundations) — COMPLETE
-Plan: 9 of 9 (Plans 01, 02, 03, 09, 04, 05, 07, 06 complete — Phase 00 DONE)
+Phase: 01 (arc-core) — IN PROGRESS
+Plan: 1 of TBD (Plan 01-01 complete — WooClient HTTP foundation)
 
 - **Milestone:** v0.1 (Arc + Weave Platform v1 — Phases 0 through 6)
 - **Phase:** 0 — Tooling & Foundations
@@ -92,7 +93,12 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | Each CI job re-installs deps (frozen-lockfile) for isolation; Node matrix [20,22] scoped to test job only | 00-06 | Accepted |
 | id-token:write permission in release.yml for npm provenance attestation (supply-chain security) | 00-06 | Accepted |
 | verify-ci-workflow.mjs checks both job names and command strings to prevent silent regressions | 00-06 | Accepted |
+| WooClient is framework-agnostic: fires onCartToken callback, never touches cookies directly (ADR-0006) | 01-01 | Accepted |
+| WooClientError extends Error with .code + .status — .status enables withRetry to distinguish 4xx from 5xx | 01-01 | Accepted |
+| withRetry lives in http.ts (not WooClient) — separates concerns, reusable by follow-on Phase 1 agents | 01-01 | Accepted |
 | Phase 00 P06 | 2min | 2 tasks | 4 files |
+| Phase 01 P01 | 6m | 5 tasks | 8 files |
+| Phase 01-arc-core P01 | 6m | 5 tasks | 8 files |
 
 ### Plan Execution Metrics
 
@@ -127,9 +133,9 @@ None.
 
 ## Session Continuity
 
-**Last action:** Completed Plan 06 (CI pipeline + release workflow). 2 commits (`6f5ab43`, `158a55f`). `ci.yml` with 6 jobs (install, lint, no-next-in-core, test matrix Node 20+22, license-check, changesets-no-major); `release.yml` with changesets/action@v1 + npm provenance; `verify-ci-workflow.mjs` TOOL-06 regression gate exits 0. TOOL-06 closed. Phase 00 COMPLETE — all 9 plans done.
+**Last action:** Completed Phase 01 Plan 01 (WooClient HTTP foundation). 3 commits (`0ff0876`, `0fa9169`, `49fdb83`). `WooClient` class with 6 cart methods, Cart-Token extraction/injection, `rest_cookie_invalid_nonce` retry, `withRetry` exponential backoff, `WooClientError`, hand-authored WC Store API v1 types. 32 Vitest tests green. Build passes. no-next-in-core boundary clean.
 
-**Next action:** Run `/gsd:verify-work` for Phase 00 to validate the full wave. Then proceed to Phase 01.
+**Next action:** Proceed to Phase 01 Plan 02 — products/catalog Store API client (or assign to swarm agent).
 
 **Files to check on resume:**
 
