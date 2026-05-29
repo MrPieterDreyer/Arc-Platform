@@ -16,3 +16,7 @@ export type {
   WooMoney,
   WooRequestOptions,
 } from './types/woo';
+
+// Phase 1 — Cart module (Store API)
+export { getCart, addItem, updateItem, removeItem, applyCoupon, removeCoupon } from './store-api/cart.js';
+export type { AddItemPayload, UpdateItemPayload } from './store-api/cart.js';
