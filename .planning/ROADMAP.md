@@ -44,7 +44,7 @@
   3. Any documented WPGraphQL query in `@arc/core` resolves in <500ms against a seeded `wp-env` fixture (perf budget enforced in CI).
   4. `useCart`, `useProduct`, `useCollection`, `useCustomer`, `useSearch` import in a plain Vite test app with zero `next/*` symbols pulled into the bundle.
   5. Every WC Store API surface has hand-authored TypeScript types validated by Vitest contract tests against a live `wp-env`.
-**Plans**: TBD
+**Plans**: 01-01 (WooClient — COMPLETE), 01-03 (Checkout module — COMPLETE), others in progress
 
 ### Phase 2: `@arc/next`
 **Goal**: A Next.js 16 App Router developer can compose a working storefront route in a single file by importing a Hydrogen-style loader, dropping a Server Action into a Client Component, and adding a `'use cache'` + `cacheTag` helper — with cart state surviving across requests via an HttpOnly cookie bridge.

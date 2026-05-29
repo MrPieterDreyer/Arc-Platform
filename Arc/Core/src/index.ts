@@ -20,3 +20,15 @@ export type {
 // Phase 1 — Cart module (Store API)
 export { getCart, addItem, updateItem, removeItem, applyCoupon, removeCoupon } from './store-api/cart.js';
 export type { AddItemPayload, UpdateItemPayload } from './store-api/cart.js';
+
+// Phase 1 — Checkout (ARC-API-05)
+export { getCheckoutSchema, submitCheckout, getPaymentGateways } from './store-api/checkout';
+export type { WCPaymentGateway } from './store-api/checkout';
+export type {
+  WCAddress,
+  WCBillingAddress,
+  WCCheckoutPayload,
+  WCCheckoutResponse,
+  WCPaymentData,
+  WCPaymentResult,
+} from './types/checkout';

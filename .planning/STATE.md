@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-last_updated: "2026-05-29T09:48:10.979Z"
+last_updated: "2026-05-29T09:50:40.896Z"
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 9
   completed_plans: 4
-  percent: 44
+  percent: 100
 ---
 
 # Arc + Weave Platform — STATE
@@ -36,7 +36,7 @@ Plan: 1 of TBD (Plan 01-01 complete — WooClient HTTP foundation)
 - **Phase:** 0 — Tooling & Foundations
 - **Plan:** Planned — 9 plans across 2 waves (`.planning/phases/00-tooling-foundations/00-0{1..9}-PLAN.md`)
 - **Status:** Phase 00 COMPLETE — all 9 plans done
-- **Progress:** [████░░░░░░] 44%
+- **Progress:** [██████████] 100%
 
 ### Phase 0 Plan Map
 
@@ -96,10 +96,9 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | WooClient is framework-agnostic: fires onCartToken callback, never touches cookies directly (ADR-0006) | 01-01 | Accepted |
 | WooClientError extends Error with .code + .status — .status enables withRetry to distinguish 4xx from 5xx | 01-01 | Accepted |
 | withRetry lives in http.ts (not WooClient) — separates concerns, reusable by follow-on Phase 1 agents | 01-01 | Accepted |
-| Phase 00 P06 | 2min | 2 tasks | 4 files |
-| Phase 01 P01 | 6m | 5 tasks | 8 files |
-| Phase 01-arc-core P01 | 6m | 5 tasks | 8 files |
-| Phase 01-arc-core P02 | 3m | 2 tasks | 4 files |
+| WCPaymentGateway exported from store-api/checkout.ts — collocated with its function | 01-03 | Accepted |
+| submitCheckout passes payment_data verbatim — no gateway token transformation (security requirement) | 01-03 | Accepted |
+| Contract test uses globalThis cast for process.env — avoids @types/node in tsconfig lib (DOM-only project) | 01-03 | Accepted |
 
 ### Plan Execution Metrics
 
@@ -112,6 +111,8 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | 00-07 Changesets major-version gate (TOOL-07) | 9m | 2 | 5 |
 | 00-05 Turborepo pipeline + TOOL-05 cache contract | 4m | 2 | 7 |
 | 00-06 CI pipeline + release workflow (TOOL-06) | 2m | 2 | 4 |
+| 01-01 WooClient HTTP foundation | 6m | 5 | 8 |
+| 01-03 Checkout module (ARC-API-05) | 5m | 2 | 5 |
 
 ### Open Todos (carried from research)
 
@@ -134,9 +135,9 @@ None.
 
 ## Session Continuity
 
-**Last action:** Completed Phase 01 Plan 01 (WooClient HTTP foundation). 3 commits (`0ff0876`, `0fa9169`, `49fdb83`). `WooClient` class with 6 cart methods, Cart-Token extraction/injection, `rest_cookie_invalid_nonce` retry, `withRetry` exponential backoff, `WooClientError`, hand-authored WC Store API v1 types. 32 Vitest tests green. Build passes. no-next-in-core boundary clean.
+**Last action:** Completed Phase 01 Plan 03 (Checkout module — ARC-API-05). 3 commits (`b3539a1`, `3b44106`, `050a862`). `getCheckoutSchema`, `submitCheckout`, `getPaymentGateways` functions in `src/store-api/checkout.ts`. Hand-authored checkout types in `src/types/checkout.ts`. 36 Vitest tests green (was 32). Build passes. tsc --noEmit clean. Contract tests gated behind CI_WP_ENV.
 
-**Next action:** Proceed to Phase 01 Plan 02 — products/catalog Store API client (or assign to swarm agent).
+**Next action:** Phase 01 Plan 04 — customer module, or next parallel wave agent assignment.
 
 **Files to check on resume:**
 
