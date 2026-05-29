@@ -69,7 +69,31 @@ export type {
   WCProductCategory,
   WCProductAttribute,
   WCProductVariation,
+  // Store API product types (cart cross_sells / REST shape)
+  WCStoreProduct,
+  WCStoreProductImage,
+  WCStoreProductCategory,
+  WCStoreProductAttribute,
+  WCStoreProductVariation,
+  WCProductTag,
 } from './types/products';
+
+// Phase 1 — Cart types (WC* prefix, complete shapes)
+export type {
+  WCCart,
+  WCCartItem,
+  WCCartItemImage,
+  WCCartItemPrices,
+  WCCartItemTotals,
+  WCCartTotals,
+  WCCartCoupon,
+  WCCartCouponTotals,
+  WCCartFee,
+  WCCartError,
+  WCShippingRate,
+  WCShippingPackage,
+  WCTaxLine,
+} from './types/cart';
 
 // Phase 1 — Collections + Search GraphQL modules
 export { getCollection, listCollections, getCollectionProducts } from './graphql/collections';

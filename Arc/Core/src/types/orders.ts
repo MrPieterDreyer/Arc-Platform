@@ -30,13 +30,21 @@ export interface WCAddress {
 
 export interface WCOrderLineItem {
   id: number;
-  product_id: number;
-  variation_id: number;
-  quantity: number;
   name: string;
-  sku: string;
+  product_id: number;
+  /** 0 when the line item is not a variation. */
+  variation_id: number | null;
+  quantity: number;
+  tax_class: string;
+  subtotal: string;
+  subtotal_tax: string;
   total: string;
   total_tax: string;
+  taxes: unknown[];
+  meta_data: unknown[];
+  sku: string;
+  /** WC returns price as a number in order line items (unlike cart which uses strings). */
+  price: number | string;
 }
 
 // ---------------------------------------------------------------------------
@@ -45,8 +53,9 @@ export interface WCOrderLineItem {
 
 export interface WCOrderTotals {
   total_items: string;
-  total_tax: string;
+  total_discount: string;
   total_shipping: string;
+  total_tax: string;
   total_price: string;
   currency_code: string;
 }
@@ -61,10 +70,16 @@ export interface WCOrder {
   status: string;
   currency: string;
   date_created: string;
+  date_created_gmt: string;
+  date_modified: string;
   billing: WCAddress;
   shipping: WCAddress;
   line_items: WCOrderLineItem[];
   totals: WCOrderTotals;
   payment_method: string;
   payment_method_title: string;
+  customer_note: string;
+  shipping_lines: unknown[];
+  fee_lines: unknown[];
+  coupon_lines: unknown[];
 }
