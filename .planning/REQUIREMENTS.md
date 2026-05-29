@@ -24,8 +24,8 @@ Each requirement is testable and maps to a roadmap phase. Categories follow the 
 
 ### Arc Core — WC Store API Client (ARC-API)
 
-- [ ] **ARC-API-01**: `WooClient` fetch wrapper handles Cart-Token lifecycle (reads response header, persists, replays on subsequent calls)
-- [ ] **ARC-API-02**: `WooClient` handles Nonce lifecycle and auto-refreshes on `rest_cookie_invalid_nonce` errors
+- [x] **ARC-API-01**: `WooClient` fetch wrapper handles Cart-Token lifecycle (reads response header, persists, replays on subsequent calls)
+- [x] **ARC-API-02**: `WooClient` handles Nonce lifecycle and auto-refreshes on `rest_cookie_invalid_nonce` errors
 - [ ] **ARC-API-03**: `WooClient` normalizes error responses into a single `ArcError` discriminated union
 - [ ] **ARC-API-04**: Cart module: `getCart`, `addItem`, `updateItem`, `removeItem`, `applyCoupon`, `removeCoupon`
 - [ ] **ARC-API-05**: Checkout module: `submitCheckout(payment_data)` accepts gateway-tokenized payloads; `getCheckoutSchema`
@@ -194,8 +194,8 @@ Every v1 requirement maps to exactly one phase.
 | TOOL-08 | Phase 0 | Complete |
 | TOOL-09 | Phase 0 | Pending |
 | TOOL-10 | Phase 0 | Complete |
-| ARC-API-01 | Phase 1 | Pending |
-| ARC-API-02 | Phase 1 | Pending |
+| ARC-API-01 | Phase 1 | Complete — 01-01 |
+| ARC-API-02 | Phase 1 | Complete — 01-01 |
 | ARC-API-03 | Phase 1 | Pending |
 | ARC-API-04 | Phase 1 | Pending |
 | ARC-API-05 | Phase 1 | Pending |

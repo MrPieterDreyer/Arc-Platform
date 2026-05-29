@@ -1,0 +1,230 @@
+import { isWooError, withRetry } from '../http';
+import type {
+  WooApiError,
+  WooCart,
+  WooClientOptions,
+  WooRequestOptions,
+} from '../types/woo';
+
+/** Base path for all WC Store API v1 endpoints. */
+const STORE_API_PATH = '/wp-json/wc/store/v1';
+
+/** Header name WC uses to pass the session Cart-Token. */
+const CART_TOKEN_HEADER = 'Cart-Token';
+
+/** Default request timeout (10 seconds). */
+const DEFAULT_TIMEOUT_MS = 10_000;
+
+/**
+ * A typed error thrown when the WC Store API returns an error response.
+ * Carries the HTTP status code so `withRetry` can decide whether to retry.
+ */
+export class WooClientError extends Error {
+  readonly code: string;
+  readonly status: number;
+  readonly data: WooApiError['data'];
+
+  constructor(apiError: WooApiError) {
+    super(apiError.message);
+    this.name = 'WooClientError';
+    this.code = apiError.code;
+    this.status = apiError.data.status;
+    this.data = apiError.data;
+  }
+}
+
+/**
+ * Framework-agnostic WooCommerce Store API v1 client.
+ *
+ * Handles:
+ * - Cart-Token session management (extracts from response header, injects on requests)
+ * - Nonce refresh on `rest_cookie_invalid_nonce` + single retry
+ * - Exponential backoff on 5xx responses (max 3 attempts)
+ * - AbortSignal timeout (default 10 s, configurable)
+ *
+ * Does NOT set cookies — that is the responsibility of the framework layer
+ * (`@arc/next`) via the `onCartToken` callback.
+ */
+export class WooClient {
+  private readonly baseUrl: string;
+  private readonly options: Required<
+    Pick<WooClientOptions, 'timeout'> &
+      Pick<WooClientOptions, 'onCartToken' | 'getCartToken' | 'getNonce' | 'onNonce'>
+  >;
+
+  constructor(opts: WooClientOptions) {
+    // Normalize trailing slash
+    this.baseUrl = opts.baseUrl.replace(/\/+$/, '');
+    this.options = {
+      timeout: opts.timeout ?? DEFAULT_TIMEOUT_MS,
+      onCartToken: opts.onCartToken ?? (() => undefined),
+      getCartToken: opts.getCartToken ?? (() => null),
+      getNonce: opts.getNonce ?? (() => null),
+      onNonce: opts.onNonce ?? (() => undefined),
+    };
+  }
+
+  // ---------------------------------------------------------------------------
+  // Core request method
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Makes a typed fetch request to the WC Store API.
+   *
+   * - Injects Cart-Token header if one is available
+   * - Extracts Cart-Token from the response header, fires `onCartToken` on change
+   * - On `rest_cookie_invalid_nonce`: refreshes nonce via `getNonce()`, retries once
+   * - On 5xx: delegates to `withRetry` (exponential backoff, max 3 attempts)
+   */
+  async request<T>(
+    path: string,
+    init: RequestInit & WooRequestOptions = {},
+  ): Promise<T> {
+    const url = `${this.baseUrl}${STORE_API_PATH}${path}`;
+    const { signal: externalSignal, nonce: perRequestNonce, ...fetchInit } = init;
+
+    const makeRequest = async (currentNonce?: string): Promise<T> => {
+      // Build AbortSignal: combine external signal with timeout
+      const timeoutController = new AbortController();
+      const timeoutId = setTimeout(
+        () => timeoutController.abort(new Error(`WooClient request timed out after ${this.options.timeout}ms`)),
+        this.options.timeout,
+      );
+
+      let combinedSignal: AbortSignal;
+      if (externalSignal) {
+        combinedSignal = AbortSignal.any
+          ? AbortSignal.any([externalSignal, timeoutController.signal])
+          : timeoutController.signal;
+      } else {
+        combinedSignal = timeoutController.signal;
+      }
+
+      // Build headers
+      const headers = new Headers(fetchInit.headers);
+      headers.set('Content-Type', 'application/json');
+      headers.set('Accept', 'application/json');
+
+      const cartToken = this.options.getCartToken();
+      if (cartToken) {
+        headers.set(CART_TOKEN_HEADER, cartToken);
+      }
+
+      if (currentNonce) {
+        headers.set('X-WC-Store-API-Nonce', currentNonce);
+      }
+
+      let response: Response;
+      try {
+        response = await fetch(url, {
+          ...fetchInit,
+          headers,
+          signal: combinedSignal,
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
+
+      // Extract Cart-Token from response header
+      const receivedToken = response.headers.get(CART_TOKEN_HEADER);
+      if (receivedToken && receivedToken !== cartToken) {
+        await this.options.onCartToken(receivedToken);
+      }
+
+      // Parse response body
+      let body: unknown;
+      const contentType = response.headers.get('content-type') ?? '';
+      if (contentType.includes('application/json')) {
+        body = await response.json();
+      } else {
+        body = await response.text();
+      }
+
+      // Handle error responses
+      if (!response.ok) {
+        if (isWooError(body)) {
+          throw new WooClientError(body);
+        }
+        throw new WooClientError({
+          code: `http_${response.status}`,
+          message: `HTTP ${response.status} ${response.statusText}`,
+          data: { status: response.status },
+        });
+      }
+
+      return body as T;
+    };
+
+    // Nonce-retry wrapper: on rest_cookie_invalid_nonce, refresh and retry once
+    const withNonceRetry = async (): Promise<T> => {
+      const initialNonce = perRequestNonce ?? (await this.options.getNonce()) ?? undefined;
+      try {
+        return await makeRequest(initialNonce as string | undefined);
+      } catch (err) {
+        if (
+          err instanceof WooClientError &&
+          err.code === 'rest_cookie_invalid_nonce'
+        ) {
+          const freshNonce = await this.options.getNonce();
+          if (freshNonce) {
+            this.options.onNonce(freshNonce);
+            return makeRequest(freshNonce);
+          }
+        }
+        throw err;
+      }
+    };
+
+    // 5xx retry wrapper
+    return withRetry(withNonceRetry, { maxAttempts: 3, baseDelay: 1000 });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Cart operations
+  // ---------------------------------------------------------------------------
+
+  /** Fetch the current cart. First call returns a Cart-Token via `onCartToken`. */
+  getCart(): Promise<WooCart> {
+    return this.request<WooCart>('/cart');
+  }
+
+  /** Add a product to the cart. */
+  addToCart(productId: number, quantity: number): Promise<WooCart> {
+    return this.request<WooCart>('/cart/add-item', {
+      method: 'POST',
+      body: JSON.stringify({ id: productId, quantity }),
+    });
+  }
+
+  /** Update the quantity of a cart line item by key. */
+  updateCartItem(key: string, quantity: number): Promise<WooCart> {
+    return this.request<WooCart>('/cart/update-item', {
+      method: 'POST',
+      body: JSON.stringify({ key, quantity }),
+    });
+  }
+
+  /** Remove a cart line item by key. */
+  removeCartItem(key: string): Promise<WooCart> {
+    return this.request<WooCart>('/cart/remove-item', {
+      method: 'DELETE',
+      body: JSON.stringify({ key }),
+    });
+  }
+
+  /** Apply a coupon code to the cart. */
+  applyCoupon(code: string): Promise<WooCart> {
+    return this.request<WooCart>('/cart/apply-coupon', {
+      method: 'POST',
+      body: JSON.stringify({ code }),
+    });
+  }
+
+  /** Remove a coupon code from the cart. */
+  removeCoupon(code: string): Promise<WooCart> {
+    return this.request<WooCart>('/cart/remove-coupon', {
+      method: 'DELETE',
+      body: JSON.stringify({ code }),
+    });
+  }
+}

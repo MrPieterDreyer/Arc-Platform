@@ -12,6 +12,9 @@ catalogs:
     react:
       specifier: ^19.2.0
       version: 19.2.6
+    zod:
+      specifier: ^4.4.3
+      version: 4.4.3
 
 importers:
 
@@ -42,7 +45,11 @@ importers:
         specifier: 4.1.7
         version: 4.1.7(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1)(vite@8.0.14(esbuild@0.27.7))
 
-  Arc/Core: {}
+  Arc/Core:
+    dependencies:
+      zod:
+        specifier: 'catalog:'
+        version: 4.4.3
 
   Arc/Next:
     dependencies:
@@ -1975,6 +1982,9 @@ packages:
   xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
 
+  zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+
 snapshots:
 
   '@asamuzakjp/css-color@5.1.11':
@@ -3590,3 +3600,5 @@ snapshots:
   xml-name-validator@5.0.0: {}
 
   xmlchars@2.2.0: {}
+
+  zod@4.4.3: {}
