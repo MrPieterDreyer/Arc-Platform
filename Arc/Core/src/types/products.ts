@@ -37,6 +37,7 @@ export interface WCProduct {
   featuredImage: { node: WCProductImage } | null;
   categories?: { nodes: WCProductCategory[] };
   attributes?: { nodes: WCProductAttribute[] };
+  variations?: { nodes: WCProductVariation[] };
 }
 
 /** Pagination cursor information returned by WPGraphQL connections. */
