@@ -16,3 +16,12 @@ export type {
   WooMoney,
   WooRequestOptions,
 } from './types/woo';
+
+// Phase 1 — Orders (Store API)
+export { getOrder } from './store-api/orders';
+export type {
+  WCAddress,
+  WCOrder,
+  WCOrderLineItem,
+  WCOrderTotals,
+} from './types/orders';
