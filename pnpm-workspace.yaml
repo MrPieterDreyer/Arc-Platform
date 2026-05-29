@@ -6,6 +6,7 @@ packages:
 
 allowBuilds:
   esbuild: true
+  fs-ext-extra-prebuilt: true
   sharp: true
 
 catalog:

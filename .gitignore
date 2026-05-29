@@ -3,6 +3,7 @@ node_modules/
 .planning/
 Artifacts/
 .env
+.env.wp-test
 *.log
 dist/
 .next/
