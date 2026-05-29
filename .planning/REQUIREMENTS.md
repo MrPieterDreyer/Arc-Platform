@@ -30,7 +30,7 @@ Each requirement is testable and maps to a roadmap phase. Categories follow the 
 - [ ] **ARC-API-04**: Cart module: `getCart`, `addItem`, `updateItem`, `removeItem`, `applyCoupon`, `removeCoupon`
 - [ ] **ARC-API-05**: Checkout module: `submitCheckout(payment_data)` accepts gateway-tokenized payloads; `getCheckoutSchema`
 - [ ] **ARC-API-06**: Customer module: `getCustomer`, `updateCustomer`, address CRUD, order list
-- [ ] **ARC-API-07**: Orders module: `getOrder`, `listCustomerOrders` with pagination
+- [ ] **ARC-API-07**: Orders module: `getOrder`, `getCustomerOrders` (via WPGraphQL — Store API has no authenticated list-orders endpoint)
 - [ ] **ARC-API-08**: Hand-authored TypeScript types for every Store API surface, with Vitest contract tests against `wp-env`
 
 ### Arc Core — WPGraphQL Client (ARC-GQL)
