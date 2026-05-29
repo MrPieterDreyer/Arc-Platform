@@ -4,9 +4,10 @@
  *
  * Client Component only — no next/* imports.
  */
-import { useCallback, useEffect, useState } from 'react';
+
 import type { GraphQLClient } from 'graphql-request';
-import type { WCCollection, WCCollectionList } from '../graphql/collections.js';
+import { useCallback, useEffect, useState } from 'react';
+import type { WCCollection } from '../graphql/collections.js';
 import { getCollection, getCollectionProducts } from '../graphql/collections.js';
 import type { WCProductList } from '../types/products.js';
 
@@ -38,10 +39,7 @@ export function useCollection(client: GraphQLClient, slug: string): CollectionSt
     setLoading(true);
     setError(null);
 
-    Promise.all([
-      getCollection(client, slug),
-      getCollectionProducts(client, slug),
-    ])
+    Promise.all([getCollection(client, slug), getCollectionProducts(client, slug)])
       .then(([col, prods]) => {
         if (!cancelled) {
           setCollection(col);
@@ -56,7 +54,9 @@ export function useCollection(client: GraphQLClient, slug: string): CollectionSt
         }
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [client, slug]);
 
   const loadMore = useCallback(async () => {

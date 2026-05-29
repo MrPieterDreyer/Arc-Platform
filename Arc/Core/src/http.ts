@@ -35,10 +35,7 @@ export interface RetryOptions {
  * Only retries when `fn` throws an error with a `.status` property that is
  * >= 500. All other errors are re-thrown immediately without retrying.
  */
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  opts: RetryOptions = {},
-): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, opts: RetryOptions = {}): Promise<T> {
   const maxAttempts = opts.maxAttempts ?? 3;
   const baseDelay = opts.baseDelay ?? 1000;
 
@@ -54,7 +51,7 @@ export async function withRetry<T>(
         err !== null &&
         typeof err === 'object' &&
         typeof (err as Record<string, unknown>).status === 'number'
-          ? (err as Record<string, unknown>).status as number
+          ? ((err as Record<string, unknown>).status as number)
           : null;
 
       // Only retry on 5xx

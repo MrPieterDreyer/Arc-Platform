@@ -9,11 +9,11 @@
  *   - WP_GRAPHQL_ENDPOINT env var (default: http://localhost:8888/graphql)
  *   - TEST_JWT_TOKEN env var (optional — required for auth GQL tests)
  */
-import { describe, test, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { WooClient } from '../../client/WooClient.js';
-import { getCustomer, updateCustomer } from '../../store-api/customer.js';
 import { createWPGraphQLClient } from '../../graphql/client.js';
 import { getCustomerOrders } from '../../graphql/customer.js';
+import { getCustomer, updateCustomer } from '../../store-api/customer.js';
 
 const client = new WooClient({
   baseUrl: process.env.WP_URL ?? 'http://localhost:8888',

@@ -9,8 +9,8 @@
  * No next/* imports — framework-agnostic.
  */
 import { useCallback, useOptimistic, useSyncExternalStore } from 'react';
-import type { WooCart, WooCartItem } from '../types/woo.js';
-import { WooClient } from '../client/WooClient.js';
+import type { WooClient } from '../client/WooClient.js';
+import type { AddItemPayload, UpdateItemPayload } from '../store-api/cart.js';
 import {
   addItem,
   applyCoupon,
@@ -19,7 +19,7 @@ import {
   removeItem,
   updateItem,
 } from '../store-api/cart.js';
-import type { AddItemPayload, UpdateItemPayload } from '../store-api/cart.js';
+import type { WooCart, WooCartItem } from '../types/woo.js';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -122,10 +122,7 @@ export function getOrCreateCartStore(client: WooClient): CartStore {
 // Optimistic reducer
 // ---------------------------------------------------------------------------
 
-function optimisticReducer(
-  current: WooCart | null,
-  action: OptimisticAction,
-): WooCart | null {
+function optimisticReducer(current: WooCart | null, action: OptimisticAction): WooCart | null {
   if (!current) return current;
   const cart = { ...current, items: [...current.items] };
 
@@ -162,10 +159,7 @@ export function useCart(client: WooClient): CartState {
   );
 
   // useOptimistic wraps the real cart with an optimistic layer.
-  const [optimisticCart, dispatchOptimistic] = useOptimistic(
-    snapshot.cart,
-    optimisticReducer,
-  );
+  const [optimisticCart, dispatchOptimistic] = useOptimistic(snapshot.cart, optimisticReducer);
 
   const refresh = useCallback(() => store.refresh(client), [store, client]);
 

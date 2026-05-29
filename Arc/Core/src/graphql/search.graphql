@@ -2,10 +2,26 @@
 
 query SearchProducts($search: String!, $first: Int = 24, $after: String) {
   products(first: $first, after: $after, where: { search: $search, status: "publish" }) {
-    pageInfo { hasNextPage endCursor }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
     nodes {
-      ... on SimpleProduct { ...ProductListFields }
-      ... on VariableProduct { databaseId slug name price featuredImage { node { sourceUrl altText } } }
+      ... on SimpleProduct {
+        ...ProductListFields
+      }
+      ... on VariableProduct {
+        databaseId
+        slug
+        name
+        price
+        featuredImage {
+          node {
+            sourceUrl
+            altText
+          }
+        }
+      }
     }
   }
 }

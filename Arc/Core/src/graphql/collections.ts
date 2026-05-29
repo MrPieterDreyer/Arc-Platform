@@ -3,7 +3,7 @@
 // Expected imports:
 //   import { GetCollectionDocument, ListCollectionsDocument, GetCollectionProductsDocument }
 //     from './__generated__/graphql.js'
-import { gql, GraphQLClient } from 'graphql-request';
+import { type GraphQLClient, gql } from 'graphql-request';
 import type { WCProduct, WCProductList } from '../types/products.js';
 
 export interface WCCollection {

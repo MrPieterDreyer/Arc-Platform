@@ -110,7 +110,7 @@ describe('WooClient — Cart-Token handling', () => {
 
   it('does NOT call onCartToken when token is unchanged', async () => {
     const onCartToken = vi.fn();
-    let storedToken = 'tok_existing';
+    const storedToken = 'tok_existing';
 
     vi.spyOn(globalThis, 'fetch').mockImplementation(async () =>
       makeJsonResponse(STUB_CART, 200, { 'Cart-Token': 'tok_existing' }),

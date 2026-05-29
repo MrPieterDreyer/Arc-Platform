@@ -6,11 +6,7 @@
  */
 import { describe, expect, it, vi } from 'vitest';
 import { WooClient } from '../client/WooClient';
-import {
-  getCheckoutSchema,
-  getPaymentGateways,
-  submitCheckout,
-} from '../store-api/checkout';
+import { getCheckoutSchema, getPaymentGateways, submitCheckout } from '../store-api/checkout';
 import type { WCCheckoutPayload } from '../types/checkout';
 
 // ---------------------------------------------------------------------------

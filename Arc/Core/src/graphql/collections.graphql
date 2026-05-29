@@ -3,29 +3,58 @@ fragment CollectionListFields on ProductCategory {
   slug
   name
   count
-  image { sourceUrl altText }
+  image {
+    sourceUrl
+    altText
+  }
 }
 
 query GetCollection($slug: ID!) {
   productCategory(id: $slug, idType: SLUG) {
     ...CollectionListFields
-    children { nodes { ...CollectionListFields } }
-    ancestors { nodes { ...CollectionListFields } }
+    children {
+      nodes {
+        ...CollectionListFields
+      }
+    }
+    ancestors {
+      nodes {
+        ...CollectionListFields
+      }
+    }
   }
 }
 
 query ListCollections($first: Int = 50) {
   productCategories(first: $first, where: { hideEmpty: true }) {
-    nodes { ...CollectionListFields }
+    nodes {
+      ...CollectionListFields
+    }
   }
 }
 
 query GetCollectionProducts($slug: ID!, $first: Int = 24, $after: String) {
   products(first: $first, after: $after, where: { categoryIn: [$slug] }) {
-    pageInfo { hasNextPage endCursor }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
     nodes {
-      ... on SimpleProduct { ...ProductListFields }
-      ... on VariableProduct { databaseId slug name price featuredImage { node { sourceUrl altText } } }
+      ... on SimpleProduct {
+        ...ProductListFields
+      }
+      ... on VariableProduct {
+        databaseId
+        slug
+        name
+        price
+        featuredImage {
+          node {
+            sourceUrl
+            altText
+          }
+        }
+      }
     }
   }
 }

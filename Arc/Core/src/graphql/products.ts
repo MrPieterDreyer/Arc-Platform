@@ -1,11 +1,7 @@
 // Temporary: inline documents — replace with __generated__ imports after `pnpm codegen` runs
 // against a live wp-env instance.
-import { gql, type GraphQLClient } from 'graphql-request';
-import type {
-  WCProduct,
-  WCProductImage,
-  WCProductVariation,
-} from '../types/products';
+import { type GraphQLClient, gql } from 'graphql-request';
+import type { WCProduct, WCProductImage, WCProductVariation } from '../types/products';
 
 // ---------------------------------------------------------------------------
 // Inline document definitions (mirrors products.graphql exactly)
@@ -120,10 +116,7 @@ interface WhereArgs {
  * Fetches a single product by slug.
  * Returns null when no product matches or the product is not published.
  */
-export async function getProduct(
-  client: GraphQLClient,
-  slug: string,
-): Promise<WCProduct | null> {
+export async function getProduct(client: GraphQLClient, slug: string): Promise<WCProduct | null> {
   const data = await client.request<RawProductResponse>(GetProductDocument, {
     slug,
   });
@@ -144,9 +137,7 @@ export async function getProducts(
   if (filter?.tag) where.tagIn = [filter.tag];
   if (filter?.onSale !== undefined) where.onSale = filter.onSale;
   if (filter?.orderby) {
-    where.orderby = [
-      { field: filter.orderby, order: filter.order ?? 'ASC' },
-    ];
+    where.orderby = [{ field: filter.orderby, order: filter.order ?? 'ASC' }];
   }
 
   const data = await client.request<RawProductsResponse>(GetProductsDocument, {

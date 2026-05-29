@@ -6,11 +6,12 @@
  *
  * Client Component only — no next/* imports.
  */
-import { useEffect, useState } from 'react';
+
 import type { GraphQLClient } from 'graphql-request';
-import type { WCProduct } from '../types/products.js';
-import { searchProducts } from '../graphql/search.js';
+import { useEffect, useState } from 'react';
 import type { WCSearchFilter } from '../graphql/search.js';
+import { searchProducts } from '../graphql/search.js';
+import type { WCProduct } from '../types/products.js';
 
 export interface SearchState {
   query: string;
@@ -60,7 +61,9 @@ export function useSearch(
         });
     }, debounceMs);
 
-    return () => { clearTimeout(timerId); };
+    return () => {
+      clearTimeout(timerId);
+    };
   }, [client, query, debounceMs, filter]);
 
   return { query, setQuery, results, loading, error };

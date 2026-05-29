@@ -78,11 +78,7 @@ query GetProduct($slug: ID!) {
   }
 }
 
-query GetProducts(
-  $first: Int = 24
-  $after: String
-  $where: RootQueryToProductConnectionWhereArgs
-) {
+query GetProducts($first: Int = 24, $after: String, $where: RootQueryToProductConnectionWhereArgs) {
   products(first: $first, after: $after, where: $where) {
     pageInfo {
       hasNextPage

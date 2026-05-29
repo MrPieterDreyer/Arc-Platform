@@ -5,8 +5,8 @@
  * entirely to `client.request()` — no direct fetch calls, no header logic.
  */
 import type { WooClient } from '../client/WooClient';
-import type { WooCart } from '../types/woo';
 import type { WCCheckoutPayload, WCCheckoutResponse } from '../types/checkout';
+import type { WooCart } from '../types/woo';
 
 // ---------------------------------------------------------------------------
 // Payment gateway type
@@ -61,8 +61,6 @@ export async function submitCheckout(
  *
  * GET /payment-gateways — returns an array of enabled payment methods.
  */
-export async function getPaymentGateways(
-  client: WooClient,
-): Promise<WCPaymentGateway[]> {
+export async function getPaymentGateways(client: WooClient): Promise<WCPaymentGateway[]> {
   return client.request<WCPaymentGateway[]>('/payment-gateways');
 }

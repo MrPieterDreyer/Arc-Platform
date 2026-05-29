@@ -4,10 +4,11 @@
  * Client Component only — for RSC, use getProduct() from @arc/next server loader.
  * No next/* imports — framework-agnostic.
  */
-import { useEffect, useState } from 'react';
+
 import type { GraphQLClient } from 'graphql-request';
-import type { WCProduct, WCProductVariation } from '../types/products.js';
+import { useEffect, useState } from 'react';
 import { getProduct } from '../graphql/products.js';
+import type { WCProduct, WCProductVariation } from '../types/products.js';
 
 export interface ProductState {
   product: WCProduct | null;
@@ -51,7 +52,9 @@ export function useProduct(client: GraphQLClient, slug: string): ProductState {
         }
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [client, slug]);
 
   return { product, loading, error, selectedVariation, setSelectedVariation };

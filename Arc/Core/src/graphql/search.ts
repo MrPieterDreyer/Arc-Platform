@@ -2,7 +2,7 @@
 // after running: pnpm --filter @arc/core codegen
 // Expected import:
 //   import { SearchProductsDocument } from './__generated__/graphql.js'
-import { gql, GraphQLClient } from 'graphql-request';
+import { type GraphQLClient, gql } from 'graphql-request';
 import type { WCProduct, WCProductList } from '../types/products.js';
 
 export interface WCSearchFilter {

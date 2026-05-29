@@ -7,7 +7,7 @@
  * Run with a live wp-env:
  *   CI_WP_ENV=true WP_GRAPHQL_ENDPOINT=http://localhost:8888/graphql pnpm --filter @arc/core test --run
  */
-import { describe, test, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { createWPGraphQLClient } from '../../graphql/client';
 import { getProduct, getProducts, getProductVariations } from '../../graphql/products';
 
@@ -15,10 +15,8 @@ const gqlClient = createWPGraphQLClient({
   endpoint: process.env.WP_GRAPHQL_ENDPOINT ?? 'http://localhost:8888/graphql',
 });
 
-const TEST_PRODUCT_SLUG =
-  process.env.TEST_PRODUCT_SLUG ?? 'test-product';
-const TEST_VARIABLE_PRODUCT_SLUG =
-  process.env.TEST_VARIABLE_PRODUCT_SLUG ?? 'test-variable';
+const TEST_PRODUCT_SLUG = process.env.TEST_PRODUCT_SLUG ?? 'test-product';
+const TEST_VARIABLE_PRODUCT_SLUG = process.env.TEST_VARIABLE_PRODUCT_SLUG ?? 'test-variable';
 
 describe('Products GQL — ARC-GQL-03 + ARC-GQL-04', () => {
   // -------------------------------------------------------------------------
@@ -49,10 +47,9 @@ describe('Products GQL — ARC-GQL-03 + ARC-GQL-04', () => {
       expect(list.nodes.length).toBeGreaterThanOrEqual(0);
       expect(typeof list.pageInfo.hasNextPage).toBe('boolean');
       // endCursor may be null when list is empty or single page
-      expect(
-        list.pageInfo.endCursor === null ||
-          typeof list.pageInfo.endCursor === 'string',
-      ).toBe(true);
+      expect(list.pageInfo.endCursor === null || typeof list.pageInfo.endCursor === 'string').toBe(
+        true,
+      );
     },
   );
 
@@ -127,10 +124,7 @@ describe('Collections GQL — ARC-GQL-05', () => {
 // Placeholder: Search GQL — ARC-GQL-06 (filled by Plan 01-05)
 // ---------------------------------------------------------------------------
 describe('Search GQL — ARC-GQL-06', () => {
-  test.skipIf(!process.env.CI_WP_ENV)(
-    'placeholder — searchProducts (Plan 01-05)',
-    () => {
-      // Implementation added by Plan 01-05
-    },
-  );
+  test.skipIf(!process.env.CI_WP_ENV)('placeholder — searchProducts (Plan 01-05)', () => {
+    // Implementation added by Plan 01-05
+  });
 });

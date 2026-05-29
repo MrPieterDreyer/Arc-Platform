@@ -10,7 +10,7 @@
  * This is a Store API architectural limitation, not a bug.
  * Reference: https://developer.woocommerce.com/docs/apis/store-api/resources-endpoints/order/
  */
-import { WooClient, WooClientError } from '../client/WooClient.js';
+import { type WooClient, WooClientError } from '../client/WooClient.js';
 import type { WCOrder } from '../types/orders.js';
 
 /**
@@ -21,10 +21,7 @@ import type { WCOrder } from '../types/orders.js';
  *
  * Use this on the order confirmation page after checkout.
  */
-export async function getOrder(
-  client: WooClient,
-  orderId: number,
-): Promise<WCOrder | null> {
+export async function getOrder(client: WooClient, orderId: number): Promise<WCOrder | null> {
   try {
     return await client.request<WCOrder>(`/order/${orderId}`);
   } catch (err) {

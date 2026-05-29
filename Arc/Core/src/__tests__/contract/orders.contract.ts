@@ -13,28 +13,22 @@ describe('Orders API — ARC-API-07', () => {
     baseUrl: process.env['WP_URL'] ?? 'http://localhost:8888',
   });
 
-  test.skipIf(!process.env['CI_WP_ENV'])(
-    'getOrder — valid session order',
-    async () => {
-      const orderId = Number(process.env['TEST_ORDER_ID'] ?? 0);
-      expect(orderId).toBeGreaterThan(0);
+  test.skipIf(!process.env['CI_WP_ENV'])('getOrder — valid session order', async () => {
+    const orderId = Number(process.env['TEST_ORDER_ID'] ?? 0);
+    expect(orderId).toBeGreaterThan(0);
 
-      const order = await getOrder(client, orderId);
-      expect(order).not.toBeNull();
-      expect(order?.id).toBe(orderId);
-      expect(Array.isArray(order?.line_items)).toBe(true);
-      expect(typeof order?.status).toBe('string');
-      expect(order?.totals).toBeDefined();
-    },
-  );
+    const order = await getOrder(client, orderId);
+    expect(order).not.toBeNull();
+    expect(order?.id).toBe(orderId);
+    expect(Array.isArray(order?.line_items)).toBe(true);
+    expect(typeof order?.status).toBe('string');
+    expect(order?.totals).toBeDefined();
+  });
 
-  test.skipIf(!process.env['CI_WP_ENV'])(
-    'getOrder — non-existent ID returns null',
-    async () => {
-      const result = await getOrder(client, 999999);
-      expect(result).toBeNull();
-    },
-  );
+  test.skipIf(!process.env['CI_WP_ENV'])('getOrder — non-existent ID returns null', async () => {
+    const result = await getOrder(client, 999999);
+    expect(result).toBeNull();
+  });
 
   // Verifies Cart-Token session isolation — critical for multi-tenant security
   test.skipIf(!process.env['CI_WP_ENV'])(

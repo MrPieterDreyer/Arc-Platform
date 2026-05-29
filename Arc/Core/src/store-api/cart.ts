@@ -8,8 +8,8 @@
  * No fetch calls, no header management, no cookie access in this file.
  */
 
+import type { WooClient } from '../client/WooClient.js';
 import type { WooCart } from '../types/woo.js';
-import { WooClient } from '../client/WooClient.js';
 
 // ---------------------------------------------------------------------------
 // Payload types

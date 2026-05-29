@@ -6,10 +6,33 @@ query GetCustomerOrders($first: Int = 10, $after: String) {
     email
     firstName
     lastName
-    billing { firstName lastName address1 address2 city state postcode country phone email }
-    shipping { firstName lastName address1 address2 city state postcode country }
+    billing {
+      firstName
+      lastName
+      address1
+      address2
+      city
+      state
+      postcode
+      country
+      phone
+      email
+    }
+    shipping {
+      firstName
+      lastName
+      address1
+      address2
+      city
+      state
+      postcode
+      country
+    }
     orders(first: $first, after: $after) {
-      pageInfo { hasNextPage endCursor }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
       nodes {
         databaseId
         orderNumber
@@ -21,7 +44,12 @@ query GetCustomerOrders($first: Int = 10, $after: String) {
             productId
             quantity
             total
-            product { node { name slug } }
+            product {
+              node {
+                name
+                slug
+              }
+            }
           }
         }
       }

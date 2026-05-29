@@ -3,7 +3,102 @@ export const __ARC_CORE_VERSION = '0.0.1';
 
 // Phase 1 — WooClient HTTP foundation
 export { WooClient, WooClientError } from './client/WooClient';
+export type { WPGraphQLConfig } from './graphql/client';
+// Phase 1 — GraphQL client
+export { createWPGraphQLClient } from './graphql/client';
+export type { WCCollection, WCCollectionList } from './graphql/collections';
+// Phase 1 — Collections + Search GraphQL modules
+export { getCollection, getCollectionProducts, listCollections } from './graphql/collections';
+export type {
+  WCCustomerOrdersResult,
+  WCGQLOrder,
+  WCGQLOrderLineItem,
+} from './graphql/customer';
+// Phase 1 — GraphQL customer
+export { getCustomerOrders } from './graphql/customer';
+export type { WCProductFilter } from './graphql/products';
+// Phase 1 — Products GraphQL module
+export { getProduct, getProducts, getProductVariations } from './graphql/products';
+export type { WCSearchFilter } from './graphql/search';
+export { searchProducts } from './graphql/search';
+export type { CartActions, CartSnapshot, CartState } from './hooks/useCart.js';
+// Phase 1 — Hooks (React 19 — Client Components only)
+export { getOrCreateCartStore, useCart } from './hooks/useCart.js';
+export type { CollectionState } from './hooks/useCollection.js';
+export { useCollection } from './hooks/useCollection.js';
+export type { CustomerState } from './hooks/useCustomer.js';
+export { useCustomer } from './hooks/useCustomer.js';
+export type { ProductState } from './hooks/useProduct.js';
+export { useProduct } from './hooks/useProduct.js';
+export type { SearchState } from './hooks/useSearch.js';
+export { useSearch } from './hooks/useSearch.js';
 export { isWooError, sleep, withRetry } from './http';
+export type { AddItemPayload, UpdateItemPayload } from './store-api/cart.js';
+// Phase 1 — Cart module (Store API)
+export {
+  addItem,
+  applyCoupon,
+  getCart,
+  removeCoupon,
+  removeItem,
+  updateItem,
+} from './store-api/cart.js';
+export type { WCPaymentGateway } from './store-api/checkout';
+// Phase 1 — Checkout (ARC-API-05)
+export { getCheckoutSchema, getPaymentGateways, submitCheckout } from './store-api/checkout';
+export type { WCCustomerPatch } from './store-api/customer';
+// Phase 1 — Store API customer
+export { getCustomer, updateCustomer } from './store-api/customer';
+// Phase 1 — Orders (Store API)
+export { getOrder } from './store-api/orders';
+// Phase 1 — Cart types (WC* prefix, complete shapes)
+export type {
+  WCCart,
+  WCCartCoupon,
+  WCCartCouponTotals,
+  WCCartError,
+  WCCartFee,
+  WCCartItem,
+  WCCartItemImage,
+  WCCartItemPrices,
+  WCCartItemTotals,
+  WCCartTotals,
+  WCShippingPackage,
+  WCShippingRate,
+  WCTaxLine,
+} from './types/cart';
+export type {
+  WCBillingAddress,
+  WCCheckoutPayload,
+  WCCheckoutResponse,
+  WCPaymentData,
+  WCPaymentResult,
+} from './types/checkout';
+// Phase 1 — Customer types
+export type { WCCustomer, WCCustomerAddress } from './types/customer';
+export type {
+  WCAddress,
+  WCOrder,
+  WCOrderLineItem,
+  WCOrderTotals,
+} from './types/orders';
+// Phase 1 — Product + catalog types
+export type {
+  WCPageInfo,
+  WCProduct,
+  WCProductAttribute,
+  WCProductCategory,
+  WCProductImage,
+  WCProductList,
+  WCProductTag,
+  WCProductVariation,
+  // Store API product types (cart cross_sells / REST shape)
+  WCStoreProduct,
+  WCStoreProductAttribute,
+  WCStoreProductCategory,
+  WCStoreProductImage,
+  WCStoreProductVariation,
+} from './types/products';
 export type {
   WooApiError,
   WooCart,
@@ -16,103 +111,3 @@ export type {
   WooMoney,
   WooRequestOptions,
 } from './types/woo';
-
-// Phase 1 — Cart module (Store API)
-export { getCart, addItem, updateItem, removeItem, applyCoupon, removeCoupon } from './store-api/cart.js';
-export type { AddItemPayload, UpdateItemPayload } from './store-api/cart.js';
-
-// Phase 1 — Checkout (ARC-API-05)
-export { getCheckoutSchema, submitCheckout, getPaymentGateways } from './store-api/checkout';
-export type { WCPaymentGateway } from './store-api/checkout';
-export type {
-  WCBillingAddress,
-  WCCheckoutPayload,
-  WCCheckoutResponse,
-  WCPaymentData,
-  WCPaymentResult,
-} from './types/checkout';
-
-// Phase 1 — Orders (Store API)
-export { getOrder } from './store-api/orders';
-export type {
-  WCAddress,
-  WCOrder,
-  WCOrderLineItem,
-  WCOrderTotals,
-} from './types/orders';
-
-// Phase 1 — Customer types
-export type { WCCustomer, WCCustomerAddress } from './types/customer';
-
-// Phase 1 — Store API customer
-export { getCustomer, updateCustomer } from './store-api/customer';
-export type { WCCustomerPatch } from './store-api/customer';
-
-// Phase 1 — GraphQL client
-export { createWPGraphQLClient } from './graphql/client';
-export type { WPGraphQLConfig } from './graphql/client';
-
-// Phase 1 — GraphQL customer
-export { getCustomerOrders } from './graphql/customer';
-export type {
-  WCCustomerOrdersResult,
-  WCGQLOrder,
-  WCGQLOrderLineItem,
-} from './graphql/customer';
-
-// Phase 1 — Product + catalog types
-export type {
-  WCProduct,
-  WCProductList,
-  WCPageInfo,
-  WCProductImage,
-  WCProductCategory,
-  WCProductAttribute,
-  WCProductVariation,
-  // Store API product types (cart cross_sells / REST shape)
-  WCStoreProduct,
-  WCStoreProductImage,
-  WCStoreProductCategory,
-  WCStoreProductAttribute,
-  WCStoreProductVariation,
-  WCProductTag,
-} from './types/products';
-
-// Phase 1 — Cart types (WC* prefix, complete shapes)
-export type {
-  WCCart,
-  WCCartItem,
-  WCCartItemImage,
-  WCCartItemPrices,
-  WCCartItemTotals,
-  WCCartTotals,
-  WCCartCoupon,
-  WCCartCouponTotals,
-  WCCartFee,
-  WCCartError,
-  WCShippingRate,
-  WCShippingPackage,
-  WCTaxLine,
-} from './types/cart';
-
-// Phase 1 — Collections + Search GraphQL modules
-export { getCollection, listCollections, getCollectionProducts } from './graphql/collections';
-export type { WCCollection, WCCollectionList } from './graphql/collections';
-export { searchProducts } from './graphql/search';
-export type { WCSearchFilter } from './graphql/search';
-
-// Phase 1 — Products GraphQL module
-export { getProduct, getProducts, getProductVariations } from './graphql/products';
-export type { WCProductFilter } from './graphql/products';
-
-// Phase 1 — Hooks (React 19 — Client Components only)
-export { useCart, getOrCreateCartStore } from './hooks/useCart.js';
-export type { CartState, CartSnapshot, CartActions } from './hooks/useCart.js';
-export { useProduct } from './hooks/useProduct.js';
-export type { ProductState } from './hooks/useProduct.js';
-export { useCollection } from './hooks/useCollection.js';
-export type { CollectionState } from './hooks/useCollection.js';
-export { useCustomer } from './hooks/useCustomer.js';
-export type { CustomerState } from './hooks/useCustomer.js';
-export { useSearch } from './hooks/useSearch.js';
-export type { SearchState } from './hooks/useSearch.js';

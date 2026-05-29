@@ -1,4 +1,4 @@
-import { WooClient } from '../client/WooClient.js';
+import type { WooClient } from '../client/WooClient.js';
 import type { WCCustomer, WCCustomerAddress } from '../types/customer.js';
 
 /**
@@ -35,10 +35,7 @@ export function getCustomer(client: WooClient): Promise<WCCustomer> {
  * @param client - WooClient instance
  * @param patch  - Partial billing and/or shipping address fields to update
  */
-export function updateCustomer(
-  client: WooClient,
-  patch: WCCustomerPatch,
-): Promise<WCCustomer> {
+export function updateCustomer(client: WooClient, patch: WCCustomerPatch): Promise<WCCustomer> {
   return client.request<WCCustomer>('/customer', {
     method: 'POST',
     body: JSON.stringify(patch),

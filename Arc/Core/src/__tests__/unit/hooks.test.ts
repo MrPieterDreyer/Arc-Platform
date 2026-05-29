@@ -80,10 +80,16 @@ describe('ARC-HOOK-01: useCart', () => {
 
     // After setCart, both see the update
     let notified = 0;
-    store.subscribe(() => { notified++; });
-    store.subscribe(() => { notified++; });
+    store.subscribe(() => {
+      notified++;
+    });
+    store.subscribe(() => {
+      notified++;
+    });
 
-    act(() => { store.setCart(cartWithItem as never); });
+    act(() => {
+      store.setCart(cartWithItem as never);
+    });
     expect(notified).toBe(2);
     expect(store.getSnapshot().cart?.item_count).toBe(2);
   });
@@ -104,7 +110,9 @@ describe('ARC-HOOK-01: useCart', () => {
     expect(result.current.cart).toBeNull();
 
     // After refresh
-    await act(async () => { await result.current.refresh(); });
+    await act(async () => {
+      await result.current.refresh();
+    });
     expect(result.current.cart?.item_count).toBe(2);
   });
 });
@@ -193,7 +201,9 @@ describe('ARC-HOOK-03: useCollection', () => {
     expect(result.current.products?.pageInfo.hasNextPage).toBe(true);
 
     // loadMore — appends next page
-    await act(async () => { await result.current.loadMore(); });
+    await act(async () => {
+      await result.current.loadMore();
+    });
     expect(getProductsSpy).toHaveBeenCalledWith(mockGqlClient, 'shoes', { after: 'cursor-1' });
     expect(result.current.products?.nodes).toHaveLength(2);
     expect(result.current.products?.pageInfo.hasNextPage).toBe(false);
@@ -213,8 +223,32 @@ describe('ARC-HOOK-04: useCustomer', () => {
       email: 'guest@example.com',
       first_name: 'Jane',
       last_name: 'Doe',
-      billing: { first_name: 'Jane', address_1: '123 Main St', city: 'Portland', country: 'US', last_name: 'Doe', company: '', address_2: '', state: 'OR', postcode: '97201', phone: '', email: 'guest@example.com' },
-      shipping: { first_name: 'Jane', address_1: '123 Main St', city: 'Portland', country: 'US', last_name: 'Doe', company: '', address_2: '', state: 'OR', postcode: '97201', phone: '', email: '' },
+      billing: {
+        first_name: 'Jane',
+        address_1: '123 Main St',
+        city: 'Portland',
+        country: 'US',
+        last_name: 'Doe',
+        company: '',
+        address_2: '',
+        state: 'OR',
+        postcode: '97201',
+        phone: '',
+        email: 'guest@example.com',
+      },
+      shipping: {
+        first_name: 'Jane',
+        address_1: '123 Main St',
+        city: 'Portland',
+        country: 'US',
+        last_name: 'Doe',
+        company: '',
+        address_2: '',
+        state: 'OR',
+        postcode: '97201',
+        phone: '',
+        email: '',
+      },
     };
 
     vi.spyOn(storeApiCustomer, 'getCustomer').mockResolvedValue(customerFixture as never);
@@ -234,8 +268,23 @@ describe('ARC-HOOK-04: useCustomer', () => {
     const storeApiCustomer = await import('../../store-api/customer.js');
     const gqlCustomer = await import('../../graphql/customer.js');
 
-    const customerFixture = { id: 1, email: 'member@example.com', first_name: 'John', last_name: 'Smith', billing: {}, shipping: {} };
-    const ordersFixture = { databaseId: 1, email: 'member@example.com', firstName: 'John', lastName: 'Smith', billing: {}, shipping: {}, orders: { pageInfo: { hasNextPage: false, endCursor: null }, nodes: [] } };
+    const customerFixture = {
+      id: 1,
+      email: 'member@example.com',
+      first_name: 'John',
+      last_name: 'Smith',
+      billing: {},
+      shipping: {},
+    };
+    const ordersFixture = {
+      databaseId: 1,
+      email: 'member@example.com',
+      firstName: 'John',
+      lastName: 'Smith',
+      billing: {},
+      shipping: {},
+      orders: { pageInfo: { hasNextPage: false, endCursor: null }, nodes: [] },
+    };
 
     vi.spyOn(storeApiCustomer, 'getCustomer').mockResolvedValue(customerFixture as never);
     vi.spyOn(gqlCustomer, 'getCustomerOrders').mockResolvedValue(ordersFixture as never);
@@ -253,8 +302,12 @@ describe('ARC-HOOK-04: useCustomer', () => {
 // ARC-HOOK-05: useSearch
 // ---------------------------------------------------------------------------
 describe('ARC-HOOK-05: useSearch', () => {
-  beforeEach(() => { vi.useFakeTimers(); });
-  afterEach(() => { vi.useRealTimers(); });
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
   it('debounces the query and calls searchProducts after debounce delay', async () => {
     const { useSearch } = await import('../../hooks/useSearch.js');
@@ -262,24 +315,34 @@ describe('ARC-HOOK-05: useSearch', () => {
 
     const resultFixture = {
       pageInfo: { hasNextPage: false, endCursor: null },
-      nodes: [{ databaseId: 1, slug: 'shirt-a', name: 'Shirt A', price: '$25', featuredImage: null }],
+      nodes: [
+        { databaseId: 1, slug: 'shirt-a', name: 'Shirt A', price: '$25', featuredImage: null },
+      ],
     };
 
-    const searchSpy = vi.spyOn(gqlSearch, 'searchProducts').mockResolvedValue(resultFixture as never);
+    const searchSpy = vi
+      .spyOn(gqlSearch, 'searchProducts')
+      .mockResolvedValue(resultFixture as never);
 
     const mockGqlClient = {} as Parameters<typeof useSearch>[0];
     const { result } = renderHook(() => useSearch(mockGqlClient, 300));
 
     // Set query — should not fire immediately
-    act(() => { result.current.setQuery('shirt'); });
+    act(() => {
+      result.current.setQuery('shirt');
+    });
     expect(searchSpy).not.toHaveBeenCalled();
 
     // Advance 250ms — still not fired
-    act(() => { vi.advanceTimersByTime(250); });
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
     expect(searchSpy).not.toHaveBeenCalled();
 
     // Advance remaining 50ms — now fires
-    await act(async () => { vi.advanceTimersByTime(50); });
+    await act(async () => {
+      vi.advanceTimersByTime(50);
+    });
     expect(searchSpy).toHaveBeenCalledOnce();
     expect(searchSpy).toHaveBeenCalledWith(mockGqlClient, 'shirt', undefined);
   });
@@ -297,13 +360,21 @@ describe('ARC-HOOK-05: useSearch', () => {
     const { result } = renderHook(() => useSearch(mockGqlClient, 300));
 
     // First query
-    act(() => { result.current.setQuery('shoes'); });
+    act(() => {
+      result.current.setQuery('shoes');
+    });
     // Advance only 200ms
-    act(() => { vi.advanceTimersByTime(200); });
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
     // Before it fires, set new query
-    act(() => { result.current.setQuery('boots'); });
+    act(() => {
+      result.current.setQuery('boots');
+    });
     // Advance full 300ms from new query
-    await act(async () => { vi.advanceTimersByTime(300); });
+    await act(async () => {
+      vi.advanceTimersByTime(300);
+    });
 
     // searchProducts called exactly once with 'boots' (not 'shoes')
     expect(searchSpy).toHaveBeenCalledOnce();
@@ -318,8 +389,12 @@ describe('ARC-HOOK-05: useSearch', () => {
     const mockGqlClient = {} as Parameters<typeof useSearch>[0];
     const { result } = renderHook(() => useSearch(mockGqlClient, 300));
 
-    act(() => { result.current.setQuery('  '); });
-    await act(async () => { vi.advanceTimersByTime(300); });
+    act(() => {
+      result.current.setQuery('  ');
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(300);
+    });
     expect(searchSpy).not.toHaveBeenCalled();
   });
 });

@@ -13,15 +13,15 @@
  *   - CI_WP_ENV=true to enable the tests
  */
 
-import { describe, test, beforeEach, expect } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { WooClient } from '../../client/WooClient.js';
 import {
-  getCart,
   addItem,
+  applyCoupon,
+  getCart,
+  removeCoupon,
   removeItem,
   updateItem,
-  applyCoupon,
-  removeCoupon,
 } from '../../store-api/cart.js';
 
 // ---------------------------------------------------------------------------

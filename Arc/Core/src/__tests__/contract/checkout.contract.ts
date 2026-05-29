@@ -8,12 +8,14 @@
  */
 import { describe, expect, test } from 'vitest';
 import { WooClient } from '../../client/WooClient';
-import { getCheckoutSchema, getPaymentGateways, submitCheckout } from '../../store-api/checkout';
+import { getCheckoutSchema, getPaymentGateways } from '../../store-api/checkout';
 
 // Use globalThis cast to avoid requiring @types/node in tsconfig lib
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const env = (globalThis as any).process?.env ?? {};
-const client = new WooClient({ baseUrl: (env.WP_URL as string | undefined) ?? 'http://localhost:8888' });
+const client = new WooClient({
+  baseUrl: (env.WP_URL as string | undefined) ?? 'http://localhost:8888',
+});
 
 describe('Checkout API — ARC-API-05', () => {
   // -------------------------------------------------------------------------

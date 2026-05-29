@@ -115,7 +115,9 @@ describe('withRetry', () => {
     const fn = vi.fn().mockRejectedValue(serverError);
 
     // Attach rejects assertion FIRST, then advance timers
-    const assertion = expect(withRetry(fn, { maxAttempts: 3, baseDelay: 100 })).rejects.toMatchObject({ status: 503 });
+    const assertion = expect(
+      withRetry(fn, { maxAttempts: 3, baseDelay: 100 }),
+    ).rejects.toMatchObject({ status: 503 });
     await vi.advanceTimersByTimeAsync(300);
     await assertion;
     expect(fn).toHaveBeenCalledTimes(3);

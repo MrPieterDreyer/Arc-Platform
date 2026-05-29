@@ -1,10 +1,5 @@
 import { isWooError, withRetry } from '../http';
-import type {
-  WooApiError,
-  WooCart,
-  WooClientOptions,
-  WooRequestOptions,
-} from '../types/woo';
+import type { WooApiError, WooCart, WooClientOptions, WooRequestOptions } from '../types/woo';
 
 /** Base path for all WC Store API v1 endpoints. */
 const STORE_API_PATH = '/wp-json/wc/store/v1';
@@ -76,10 +71,7 @@ export class WooClient {
    * - On `rest_cookie_invalid_nonce`: refreshes nonce via `getNonce()`, retries once
    * - On 5xx: delegates to `withRetry` (exponential backoff, max 3 attempts)
    */
-  async request<T>(
-    path: string,
-    init: RequestInit & WooRequestOptions = {},
-  ): Promise<T> {
+  async request<T>(path: string, init: RequestInit & WooRequestOptions = {}): Promise<T> {
     const url = `${this.baseUrl}${STORE_API_PATH}${path}`;
     const { signal: externalSignal, nonce: perRequestNonce, ...fetchInit } = init;
 
@@ -87,7 +79,10 @@ export class WooClient {
       // Build AbortSignal: combine external signal with timeout
       const timeoutController = new AbortController();
       const timeoutId = setTimeout(
-        () => timeoutController.abort(new Error(`WooClient request timed out after ${this.options.timeout}ms`)),
+        () =>
+          timeoutController.abort(
+            new Error(`WooClient request timed out after ${this.options.timeout}ms`),
+          ),
         this.options.timeout,
       );
 
@@ -161,10 +156,7 @@ export class WooClient {
       try {
         return await makeRequest(initialNonce as string | undefined);
       } catch (err) {
-        if (
-          err instanceof WooClientError &&
-          err.code === 'rest_cookie_invalid_nonce'
-        ) {
+        if (err instanceof WooClientError && err.code === 'rest_cookie_invalid_nonce') {
           const freshNonce = await this.options.getNonce();
           if (freshNonce) {
             this.options.onNonce(freshNonce);
