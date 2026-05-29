@@ -104,3 +104,15 @@ export type { WCSearchFilter } from './graphql/search';
 // Phase 1 — Products GraphQL module
 export { getProduct, getProducts, getProductVariations } from './graphql/products';
 export type { WCProductFilter } from './graphql/products';
+
+// Phase 1 — Hooks (React 19 — Client Components only)
+export { useCart, getOrCreateCartStore } from './hooks/useCart.js';
+export type { CartState, CartSnapshot, CartActions } from './hooks/useCart.js';
+export { useProduct } from './hooks/useProduct.js';
+export type { ProductState } from './hooks/useProduct.js';
+export { useCollection } from './hooks/useCollection.js';
+export type { CollectionState } from './hooks/useCollection.js';
+export { useCustomer } from './hooks/useCustomer.js';
+export type { CustomerState } from './hooks/useCustomer.js';
+export { useSearch } from './hooks/useSearch.js';
+export type { SearchState } from './hooks/useSearch.js';
