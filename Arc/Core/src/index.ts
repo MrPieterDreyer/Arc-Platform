@@ -25,10 +25,18 @@ export type { AddItemPayload, UpdateItemPayload } from './store-api/cart.js';
 export { getCheckoutSchema, submitCheckout, getPaymentGateways } from './store-api/checkout';
 export type { WCPaymentGateway } from './store-api/checkout';
 export type {
-  WCAddress,
   WCBillingAddress,
   WCCheckoutPayload,
   WCCheckoutResponse,
   WCPaymentData,
   WCPaymentResult,
 } from './types/checkout';
+
+// Phase 1 — Orders (Store API)
+export { getOrder } from './store-api/orders';
+export type {
+  WCAddress,
+  WCOrder,
+  WCOrderLineItem,
+  WCOrderTotals,
+} from './types/orders';
