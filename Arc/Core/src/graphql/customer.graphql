@@ -1,0 +1,30 @@
+# Requires auth token in Authorization header (JWT or Application Password)
+# Auth token must be provided via createWPGraphQLClient({ authToken: () => token })
+query GetCustomerOrders($first: Int = 10, $after: String) {
+  customer {
+    databaseId
+    email
+    firstName
+    lastName
+    billing { firstName lastName address1 address2 city state postcode country phone email }
+    shipping { firstName lastName address1 address2 city state postcode country }
+    orders(first: $first, after: $after) {
+      pageInfo { hasNextPage endCursor }
+      nodes {
+        databaseId
+        orderNumber
+        status
+        total
+        date
+        lineItems {
+          nodes {
+            productId
+            quantity
+            total
+            product { node { name slug } }
+          }
+        }
+      }
+    }
+  }
+}
