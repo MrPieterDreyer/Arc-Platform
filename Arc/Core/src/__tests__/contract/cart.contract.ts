@@ -123,4 +123,41 @@ describe('Cart API — ARC-API-04', () => {
       expect(cart.coupons).toHaveLength(0);
     },
   );
+
+  test.skipIf(!process.env['CI_WP_ENV'])(
+    'two WooClient instances sharing the same Cart-Token return identical cart contents',
+    async () => {
+      // Shared token state — simulates two browser tabs sharing the same
+      // arc_cart_token cookie. Both tabs share the same Cart-Token value,
+      // so both see the same server-side WC session.
+      let sharedToken: string | null = null;
+
+      // Step 1: Create first client — it captures the Cart-Token into sharedToken
+      const client1 = new WooClient({
+        baseUrl: process.env['WP_URL'] ?? 'http://localhost:8888',
+        getCartToken: () => sharedToken,
+        onCartToken: (token) => {
+          sharedToken = token;
+        },
+      });
+
+      // Fetch cart with client1 — this causes WC to issue a Cart-Token response header
+      const cart1 = await getCart(client1);
+      expect(sharedToken).toBeTruthy(); // Cart-Token must have been captured
+
+      // Step 2: Create second client using the same shared token via closure
+      const client2 = new WooClient({
+        baseUrl: process.env['WP_URL'] ?? 'http://localhost:8888',
+        getCartToken: () => sharedToken, // same token = same WC session
+        onCartToken: (token) => {
+          sharedToken = token;
+        },
+      });
+
+      // Step 3: Both clients should see the same cart contents
+      const cart2 = await getCart(client2);
+      expect(cart2.item_count).toBe(cart1.item_count);
+      expect(cart2.totals.total_price).toBe(cart1.totals.total_price);
+    },
+  );
 });

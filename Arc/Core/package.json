@@ -18,11 +18,16 @@
     "graphql-request": "catalog:",
     "zod": "catalog:"
   },
+  "devDependencies": {
+    "@graphql-codegen/cli": "catalog:",
+    "@graphql-codegen/client-preset": "catalog:"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "biome lint ./src",
     "format:check": "biome format ./src",
-    "test": "vitest --run"
+    "test": "vitest --run",
+    "codegen": "graphql-codegen --config codegen.ts"
   }
 }
