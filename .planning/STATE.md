@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-last_updated: "2026-05-29T09:33:01.675Z"
+last_updated: "2026-05-29T09:53:04.347Z"
 progress:
   total_phases: 8
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 3
+  completed_phases: 0
+  total_plans: 9
+  completed_plans: 4
   percent: 100
 ---
 
@@ -96,9 +96,14 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | WooClient is framework-agnostic: fires onCartToken callback, never touches cookies directly (ADR-0006) | 01-01 | Accepted |
 | WooClientError extends Error with .code + .status — .status enables withRetry to distinguish 4xx from 5xx | 01-01 | Accepted |
 | withRetry lives in http.ts (not WooClient) — separates concerns, reusable by follow-on Phase 1 agents | 01-01 | Accepted |
+| WCProduct/WCPageInfo/WCProductList typed in types/products.ts — catalog types distinct from Store API woo.ts types | 01-05 | Accepted |
+| vitest.config.ts include extended to *.contract.ts — contract test discovery for Phase 1 GQL contract tests | 01-05 | Accepted |
+| pnpm-workspace.yaml allowBuilds fixed from placeholder strings to true for esbuild + sharp (was blocking all builds) | 01-05 | Accepted |
+| GraphQLClient headers factory uses Record<string,string> not object spread — required for TS strict HeadersInit compatibility | 01-05 | Accepted |
 | Phase 00 P06 | 2min | 2 tasks | 4 files |
 | Phase 01 P01 | 6m | 5 tasks | 8 files |
 | Phase 01-arc-core P01 | 6m | 5 tasks | 8 files |
+| Phase 01-arc-core P01-05 | 12m | 2 tasks | 12 files |
 
 ### Plan Execution Metrics
 
@@ -111,6 +116,7 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | 00-07 Changesets major-version gate (TOOL-07) | 9m | 2 | 5 |
 | 00-05 Turborepo pipeline + TOOL-05 cache contract | 4m | 2 | 7 |
 | 00-06 CI pipeline + release workflow (TOOL-06) | 2m | 2 | 4 |
+| 01-05 Collections + Search GraphQL modules | 12m | 2 | 12 |
 
 ### Open Todos (carried from research)
 
@@ -133,9 +139,9 @@ None.
 
 ## Session Continuity
 
-**Last action:** Completed Phase 01 Plan 01 (WooClient HTTP foundation). 3 commits (`0ff0876`, `0fa9169`, `49fdb83`). `WooClient` class with 6 cart methods, Cart-Token extraction/injection, `rest_cookie_invalid_nonce` retry, `withRetry` exponential backoff, `WooClientError`, hand-authored WC Store API v1 types. 32 Vitest tests green. Build passes. no-next-in-core boundary clean.
+**Last action:** Completed Phase 01 Plan 05 (Collections + Search GraphQL modules). 2 commits (`a40da36`, `799f986`). `createWPGraphQLClient`, `getCollection`, `listCollections`, `getCollectionProducts`, `searchProducts` — all exported. `CollectionListFields` fragment + 3 collection queries + SearchProducts query in .graphql files. 6 contract tests skip cleanly without CI_WP_ENV. 36 unit tests green. Build passes. ARC-GQL-01, ARC-GQL-05, ARC-GQL-06 marked complete.
 
-**Next action:** Proceed to Phase 01 Plan 02 — products/catalog Store API client (or assign to swarm agent).
+**Next action:** Parallel swarm completing — await 01-04 (Products GQL) and other Wave 1 plans.
 
 **Files to check on resume:**
 
