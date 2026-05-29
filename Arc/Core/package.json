@@ -13,6 +13,9 @@
       "require": "./dist/index.js"
     }
   },
+  "dependencies": {
+    "zod": "catalog:"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

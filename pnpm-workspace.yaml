@@ -4,6 +4,10 @@ packages:
   - 'Weave/**'
   - 'Templates/**'
 
+allowBuilds:
+  esbuild: set this to true or false
+  sharp: set this to true or false
+
 catalog:
   react: ^19.2.0
   react-dom: ^19.2.0
