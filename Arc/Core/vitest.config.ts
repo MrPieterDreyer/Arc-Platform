@@ -8,9 +8,7 @@ export default mergeConfig(
       name: 'arc-core',
       environment: 'node',
       include: ['src/**/*.test.ts', 'src/**/*.contract.ts'],
-      environmentMatchGlobs: [
-        ['src/__tests__/unit/hooks.test.ts', 'jsdom'],
-      ],
+      environmentMatchGlobs: [['src/__tests__/unit/hooks.test.ts', 'jsdom']],
       setupFiles: ['@testing-library/jest-dom/vitest'],
     },
   }),
