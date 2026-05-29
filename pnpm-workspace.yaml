@@ -4,9 +4,8 @@ packages:
   - 'Weave/**'
   - 'Templates/**'
 
-allowBuilds:
-  esbuild: set this to true or false
-  sharp: set this to true or false
+onlyBuiltDependencies:
+  - esbuild
 
 catalog:
   react: ^19.2.0
@@ -15,3 +14,7 @@ catalog:
   typescript: 5.9.3
   graphql: ^16.14.0
   zod: ^4.4.3
+
+allowBuilds:
+  esbuild: set this to true or false
+  sharp: set this to true or false

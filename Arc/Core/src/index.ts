@@ -16,3 +16,20 @@ export type {
   WooMoney,
   WooRequestOptions,
 } from './types/woo';
+
+// Phase 1 — WPGraphQL client factory
+export { createWPGraphQLClient } from './graphql/client';
+export type { WPGraphQLConfig } from './graphql/client';
+
+// Phase 1 — Products GraphQL module
+export { getProduct, getProducts, getProductVariations } from './graphql/products';
+export type { WCProductFilter, WCProductList } from './graphql/products';
+
+// Phase 1 — Product types
+export type {
+  WCProduct,
+  WCProductAttribute,
+  WCProductCategory,
+  WCProductImage,
+  WCProductVariation,
+} from './types/products';

@@ -1,0 +1,109 @@
+fragment ProductListFields on SimpleProduct {
+  databaseId
+  slug
+  name
+  price
+  regularPrice
+  salePrice
+  onSale
+  featuredImage {
+    node {
+      sourceUrl
+      altText
+    }
+  }
+  productCategories {
+    nodes {
+      slug
+      name
+    }
+  }
+}
+
+fragment ProductDetailFields on SimpleProduct {
+  ...ProductListFields
+  description
+  shortDescription
+  galleryImages {
+    nodes {
+      sourceUrl
+      altText
+    }
+  }
+  attributes {
+    nodes {
+      name
+      options
+    }
+  }
+  related {
+    nodes {
+      ...ProductListFields
+    }
+  }
+}
+
+fragment VariableProductDetailFields on VariableProduct {
+  databaseId
+  slug
+  name
+  price
+  variations {
+    nodes {
+      databaseId
+      price
+      stockStatus
+      attributes {
+        nodes {
+          name
+          value
+        }
+      }
+      image {
+        sourceUrl
+        altText
+      }
+    }
+  }
+}
+
+query GetProduct($slug: ID!) {
+  product(id: $slug, idType: SLUG) {
+    ... on SimpleProduct {
+      ...ProductDetailFields
+    }
+    ... on VariableProduct {
+      ...VariableProductDetailFields
+    }
+  }
+}
+
+query GetProducts(
+  $first: Int = 24
+  $after: String
+  $where: RootQueryToProductConnectionWhereArgs
+) {
+  products(first: $first, after: $after, where: $where) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      ... on SimpleProduct {
+        ...ProductListFields
+      }
+      ... on VariableProduct {
+        databaseId
+        slug
+        name
+        price
+        featuredImage {
+          node {
+            sourceUrl
+            altText
+          }
+        }
+      }
+    }
+  }
+}
