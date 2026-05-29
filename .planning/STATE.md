@@ -3,18 +3,18 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-last_updated: "2026-05-29T09:53:04.347Z"
+last_updated: "2026-05-29T10:28:08.064Z"
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 9
-  completed_plans: 4
+  completed_plans: 10
   percent: 100
 ---
 
 # Arc + Weave Platform — STATE
 
-**Last updated:** 2026-05-28 (Plan 06 complete — CI pipeline + release workflow wired, TOOL-06 closed)
+**Last updated:** 2026-05-29 (Plan 01-09 complete — React 19 hooks layer, all 5 hooks implemented, ARC-HOOK-01..05 closed)
 
 ---
 
@@ -94,6 +94,10 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | id-token:write permission in release.yml for npm provenance attestation (supply-chain security) | 00-06 | Accepted |
 | verify-ci-workflow.mjs checks both job names and command strings to prevent silent regressions | 00-06 | Accepted |
 | WooClient is framework-agnostic: fires onCartToken callback, never touches cookies directly (ADR-0006) | 01-01 | Accepted |
+| useCart uses WooCart (types/woo.ts) not WCCart — matches store-api/cart.ts return type; item_count not items_count | 01-09 | Accepted |
+| CartStore.getSnapshot() returns stable cached _snapshot object — required by useSyncExternalStore Object.is stability check | 01-09 | Accepted |
+| WeakMap CartStore singleton — one store per WooClient instance, shared reactive cart state with no Provider boilerplate | 01-09 | Accepted |
+| environmentMatchGlobs scopes jsdom to hooks.test.ts only — all other @arc/core tests stay on node environment | 01-09 | Accepted |
 | WooClientError extends Error with .code + .status — .status enables withRetry to distinguish 4xx from 5xx | 01-01 | Accepted |
 | withRetry lives in http.ts (not WooClient) — separates concerns, reusable by follow-on Phase 1 agents | 01-01 | Accepted |
 | WCProduct/WCPageInfo/WCProductList typed in types/products.ts — catalog types distinct from Store API woo.ts types | 01-05 | Accepted |
@@ -104,6 +108,8 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | Phase 01 P01 | 6m | 5 tasks | 8 files |
 | Phase 01-arc-core P01 | 6m | 5 tasks | 8 files |
 | Phase 01-arc-core P01-05 | 12m | 2 tasks | 12 files |
+| Phase 01-arc-core P01-09 | 18m | 2 tasks | 9 files |
+| Phase 01-arc-core P09 | 18min | 2 tasks | 9 files |
 
 ### Plan Execution Metrics
 
@@ -139,9 +145,9 @@ None.
 
 ## Session Continuity
 
-**Last action:** Completed Phase 01 Plan 05 (Collections + Search GraphQL modules). 2 commits (`a40da36`, `799f986`). `createWPGraphQLClient`, `getCollection`, `listCollections`, `getCollectionProducts`, `searchProducts` — all exported. `CollectionListFields` fragment + 3 collection queries + SearchProducts query in .graphql files. 6 contract tests skip cleanly without CI_WP_ENV. 36 unit tests green. Build passes. ARC-GQL-01, ARC-GQL-05, ARC-GQL-06 marked complete.
+**Last action:** Completed Phase 01 Plan 09 (React 19 hooks layer). 2 commits (`c2f9af9`, `1446ebe`). All 5 hooks implemented: `useCart` (WeakMap CartStore + useSyncExternalStore + useOptimistic), `useProduct`, `useCollection`, `useCustomer`, `useSearch` (debounced 300ms). 11/11 unit tests green. Build passes. ARC-HOOK-01..05 marked complete. Phase 01 arc-core is now functionally complete.
 
-**Next action:** Parallel swarm completing — await 01-04 (Products GQL) and other Wave 1 plans.
+**Next action:** Phase 02 (arc-next) — Next.js 16 integration layer consuming @arc/core hooks.
 
 **Files to check on resume:**
 

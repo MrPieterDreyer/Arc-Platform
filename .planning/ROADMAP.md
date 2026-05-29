@@ -130,7 +130,7 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 0. Tooling & Foundations | 9/9 | Complete   | 2026-05-28 |
-| 1. `@arc/core` | 2/9 | In Progress|  |
+| 1. `@arc/core` | 8/9 | In Progress|  |
 | 2. `@arc/next` | 0/0 | Not started | - |
 | 3. `@weave/react` | 0/0 | Not started | - |
 | 4a. Weave WP Plugin (storage + REST) | 0/0 | Not started | - |

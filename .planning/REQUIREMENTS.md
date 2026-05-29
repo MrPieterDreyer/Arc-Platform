@@ -45,11 +45,11 @@ Each requirement is testable and maps to a roadmap phase. Categories follow the 
 
 ### Arc Core — React Hooks (ARC-HOOK)
 
-- [ ] **ARC-HOOK-01**: `useCart()` — reactive cart state with optimistic mutations
-- [ ] **ARC-HOOK-02**: `useProduct(slug)` — single product with variation state
-- [ ] **ARC-HOOK-03**: `useCollection(slug)` — collection with pagination
-- [ ] **ARC-HOOK-04**: `useCustomer()` — current customer + address management
-- [ ] **ARC-HOOK-05**: `useSearch(query)` — debounced search with facet state
+- [x] **ARC-HOOK-01**: `useCart()` — reactive cart state with optimistic mutations
+- [x] **ARC-HOOK-02**: `useProduct(slug)` — single product with variation state
+- [x] **ARC-HOOK-03**: `useCollection(slug)` — collection with pagination
+- [x] **ARC-HOOK-04**: `useCustomer()` — current customer + address management
+- [x] **ARC-HOOK-05**: `useSearch(query)` — debounced search with facet state
 
 ### Arc Next — Next.js 16 Adapter (ARC-NEXT)
 
@@ -209,11 +209,11 @@ Every v1 requirement maps to exactly one phase.
 | ARC-GQL-05 | Phase 1 | Pending |
 | ARC-GQL-06 | Phase 1 | Pending |
 | ARC-GQL-07 | Phase 1 | Pending |
-| ARC-HOOK-01 | Phase 1 | Pending |
-| ARC-HOOK-02 | Phase 1 | Pending |
-| ARC-HOOK-03 | Phase 1 | Pending |
-| ARC-HOOK-04 | Phase 1 | Pending |
-| ARC-HOOK-05 | Phase 1 | Pending |
+| ARC-HOOK-01 | Phase 1 | Complete |
+| ARC-HOOK-02 | Phase 1 | Complete |
+| ARC-HOOK-03 | Phase 1 | Complete |
+| ARC-HOOK-04 | Phase 1 | Complete |
+| ARC-HOOK-05 | Phase 1 | Complete |
 | ARC-NEXT-01 | Phase 2 | Pending |
 | ARC-NEXT-02 | Phase 2 | Pending |
 | ARC-NEXT-03 | Phase 2 | Pending |
