@@ -37,10 +37,10 @@ Each requirement is testable and maps to a roadmap phase. Categories follow the 
 
 - [x] **ARC-GQL-01**: `graphql-request` client wired to `/graphql` with auth header passthrough
 - [ ] **ARC-GQL-02**: `@graphql-codegen/cli` produces typed query hooks from WPGraphQL schema introspection
-- [ ] **ARC-GQL-03**: Products module: `getProduct(slug)`, `getProducts(filter)`, variation matrix helper
-- [ ] **ARC-GQL-04**: Two fragments per resource — `ProductListFields` (no variations) and `ProductDetailFields` (full)
-- [x] **ARC-GQL-05**: Collections module: `getCollection(slug)`, category tree traversal
-- [x] **ARC-GQL-06**: Search module: `searchProducts(query, facets)`, facet helpers
+- [x] **ARC-GQL-03**: Products module: `getProduct(slug)`, `getProducts(filter)`, variation matrix helper
+- [x] **ARC-GQL-04**: Two fragments per resource — `ProductListFields` (no variations) and `ProductDetailFields` (full)
+- [ ] **ARC-GQL-05**: Collections module: `getCollection(slug)`, category tree traversal
+- [ ] **ARC-GQL-06**: Search module: `searchProducts(query, facets)`, facet helpers
 - [ ] **ARC-GQL-07**: Vitest perf budget: any documented query <500ms against seeded `wp-env` fixture
 
 ### Arc Core — React Hooks (ARC-HOOK)
@@ -204,10 +204,10 @@ Every v1 requirement maps to exactly one phase.
 | ARC-API-08 | Phase 1 | Pending |
 | ARC-GQL-01 | Phase 1 | Complete |
 | ARC-GQL-02 | Phase 1 | Pending |
-| ARC-GQL-03 | Phase 1 | Pending |
-| ARC-GQL-04 | Phase 1 | Pending |
-| ARC-GQL-05 | Phase 1 | Complete |
-| ARC-GQL-06 | Phase 1 | Complete |
+| ARC-GQL-03 | Phase 1 | Complete |
+| ARC-GQL-04 | Phase 1 | Complete |
+| ARC-GQL-05 | Phase 1 | Pending |
+| ARC-GQL-06 | Phase 1 | Pending |
 | ARC-GQL-07 | Phase 1 | Pending |
 | ARC-HOOK-01 | Phase 1 | Pending |
 | ARC-HOOK-02 | Phase 1 | Pending |

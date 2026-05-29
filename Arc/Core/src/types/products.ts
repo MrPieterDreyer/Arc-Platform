@@ -9,6 +9,24 @@ export interface WCProductImage {
   altText: string;
 }
 
+export interface WCProductCategory {
+  slug: string;
+  name: string;
+}
+
+export interface WCProductAttribute {
+  name: string;
+  options?: string[];
+}
+
+export interface WCProductVariation {
+  databaseId: number;
+  price: string;
+  stockStatus: string;
+  attributes: Array<{ name: string; value: string }>;
+  image: WCProductImage | null;
+}
+
 /** Minimal product fields returned by list/search queries (ProductListFields fragment). */
 export interface WCProduct {
   databaseId: number;
@@ -17,6 +35,8 @@ export interface WCProduct {
   /** Formatted price string, e.g. "$29.99". */
   price: string | null;
   featuredImage: { node: WCProductImage } | null;
+  categories?: { nodes: WCProductCategory[] };
+  attributes?: { nodes: WCProductAttribute[] };
 }
 
 /** Pagination cursor information returned by WPGraphQL connections. */

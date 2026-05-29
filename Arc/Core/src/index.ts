@@ -18,6 +18,7 @@ export type {
 } from './types/woo';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Phase 1 — Cart module (Store API)
 export { getCart, addItem, updateItem, removeItem, applyCoupon, removeCoupon } from './store-api/cart.js';
 export type { AddItemPayload, UpdateItemPayload } from './store-api/cart.js';
@@ -62,10 +63,22 @@ export type {
 } from './graphql/customer';
 
 // Phase 1 — Product + catalog types
-export type { WCProduct, WCProductList, WCPageInfo } from './types/products';
+export type {
+  WCProduct,
+  WCProductList,
+  WCPageInfo,
+  WCProductImage,
+  WCProductCategory,
+  WCProductAttribute,
+  WCProductVariation,
+} from './types/products';
 
 // Phase 1 — Collections + Search GraphQL modules
 export { getCollection, listCollections, getCollectionProducts } from './graphql/collections';
 export type { WCCollection, WCCollectionList } from './graphql/collections';
 export { searchProducts } from './graphql/search';
 export type { WCSearchFilter } from './graphql/search';
+
+// Phase 1 — Products GraphQL module
+export { getProduct, getProducts, getProductVariations } from './graphql/products';
+export type { WCProductFilter } from './graphql/products';
