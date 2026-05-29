@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-last_updated: "2026-05-29T09:33:01.675Z"
+last_updated: "2026-05-29T09:48:10.979Z"
 progress:
   total_phases: 8
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 3
-  percent: 100
+  completed_phases: 0
+  total_plans: 9
+  completed_plans: 4
+  percent: 44
 ---
 
 # Arc + Weave Platform — STATE
@@ -36,7 +36,7 @@ Plan: 1 of TBD (Plan 01-01 complete — WooClient HTTP foundation)
 - **Phase:** 0 — Tooling & Foundations
 - **Plan:** Planned — 9 plans across 2 waves (`.planning/phases/00-tooling-foundations/00-0{1..9}-PLAN.md`)
 - **Status:** Phase 00 COMPLETE — all 9 plans done
-- **Progress:** [██████████] 100%
+- **Progress:** [████░░░░░░] 44%
 
 ### Phase 0 Plan Map
 
@@ -99,6 +99,7 @@ Validation contract (`00-VALIDATION.md`) is `nyquist_compliant: true` — every 
 | Phase 00 P06 | 2min | 2 tasks | 4 files |
 | Phase 01 P01 | 6m | 5 tasks | 8 files |
 | Phase 01-arc-core P01 | 6m | 5 tasks | 8 files |
+| Phase 01-arc-core P02 | 3m | 2 tasks | 4 files |
 
 ### Plan Execution Metrics
 
