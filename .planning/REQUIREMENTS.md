@@ -30,8 +30,8 @@ Each requirement is testable and maps to a roadmap phase. Categories follow the 
 - [ ] **ARC-API-04**: Cart module: `getCart`, `addItem`, `updateItem`, `removeItem`, `applyCoupon`, `removeCoupon`
 - [ ] **ARC-API-05**: Checkout module: `submitCheckout(payment_data)` accepts gateway-tokenized payloads; `getCheckoutSchema`
 - [ ] **ARC-API-06**: Customer module: `getCustomer`, `updateCustomer`, address CRUD, order list
-- [ ] **ARC-API-07**: Orders module: `getOrder`, `listCustomerOrders` with pagination
-- [ ] **ARC-API-08**: Hand-authored TypeScript types for every Store API surface, with Vitest contract tests against `wp-env`
+- [x] **ARC-API-07**: Orders module: `getOrder`, `listCustomerOrders` with pagination
+- [x] **ARC-API-08**: Hand-authored TypeScript types for every Store API surface, with Vitest contract tests against `wp-env`
 
 ### Arc Core — WPGraphQL Client (ARC-GQL)
 
@@ -200,8 +200,8 @@ Every v1 requirement maps to exactly one phase.
 | ARC-API-04 | Phase 1 | Pending |
 | ARC-API-05 | Phase 1 | Pending |
 | ARC-API-06 | Phase 1 | Pending |
-| ARC-API-07 | Phase 1 | Pending |
-| ARC-API-08 | Phase 1 | Pending |
+| ARC-API-07 | Phase 1 | Complete |
+| ARC-API-08 | Phase 1 | Complete |
 | ARC-GQL-01 | Phase 1 | Pending |
 | ARC-GQL-02 | Phase 1 | Pending |
 | ARC-GQL-03 | Phase 1 | Pending |
