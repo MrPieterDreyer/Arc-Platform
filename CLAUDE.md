@@ -1,5 +1,7 @@
 # Arc Platform — Claude Code Context
 
+> **All agents:** See [AGENTS.md](./AGENTS.md) for git, PR, and boundary rules shared across Cursor, Claude Code, GSD, Trigger, and other tools.
+
 ## Project at a glance
 
 Arc is an open-source headless WooCommerce framework (like Shopify Hydrogen, but for WooCommerce).
@@ -33,17 +35,25 @@ D:\00. Arc Platform\
 - **Build:** tsup per package
 - **Linting:** Biome
 - **Testing:** Vitest
-- **Framework:** Next.js 15 App Router
+- **Framework:** Next.js 16 App Router
 - **WooCommerce API:** WC Store API v1 (cart + checkout) + WPGraphQL (catalog)
 - **PHP plugin:** Weave/WordPress — page config storage + REST API
 
 ## GSD workflow
 
-- GSD state lives in `.documentation/.planning/` (gitignored — not shipped to GitHub)
+- GSD state lives in **`.documentation/.planning/`** (gitignored — not shipped to GitHub)
 - Design docs live in `.documentation/Design-Docs/`
 - Public ADRs live in `Documentation/Architecture/`
+- **Do not commit** root `.planning/` — it was historically tracked by mistake and is now gitignored; use `.documentation/.planning/` only
 
 Use `/gsd:new-project` to initialize `.documentation/.planning/` before first phase.
+
+## Never commit (agents)
+
+Mirrors [`.gitignore`](./.gitignore) — see [AGENTS.md](./AGENTS.md) for full rules:
+
+- `.documentation/`, `.planning/`, `.claude/`, `.claude-flow/`, `.swarm/`, `.cursor/`, `.trigger/`
+- `.mcp.json`, `HANDOFF.html`, `.env*`, `Artifacts/`
 
 ## Design system
 
@@ -77,7 +87,7 @@ Switches to real npm references after Arc v0.1 is published.
 
 **Arc Platform**
 
-Arc is an **open-source headless WooCommerce framework** — the missing Shopify Hydrogen equivalent for WooCommerce. **Weave** is a visual sections editor SDK that runs on top of Arc — the missing Weaverse for WooCommerce. Together they let developers build fast, headless WooCommerce storefronts in Next.js 15 / React 19, with non-developers editing pages visually through a WordPress-hosted (or future SaaS) editor.
+Arc is an **open-source headless WooCommerce framework** — the missing Shopify Hydrogen equivalent for WooCommerce. **Weave** is a visual sections editor SDK that runs on top of Arc — the missing Weaverse for WooCommerce. Together they let developers build fast, headless WooCommerce storefronts in Next.js 16 / React 19, with non-developers editing pages visually through a WordPress-hosted (or future SaaS) editor.
 
 **Core Value:** A developer can ship a production headless WooCommerce storefront on `@arc/core` + `@arc/next` + `@weave/react` with the same productivity Shopify Hydrogen + Weaverse gives Shopify developers — and the page configuration lives inside the merchant's own WordPress, not a vendor SaaS.
 
@@ -89,7 +99,7 @@ Arc is an **open-source headless WooCommerce framework** — the missing Shopify
 - **Tech stack — Monorepo:** Turborepo for pipelines.
 - **Tech stack — Lint/format:** Biome (single tool, replaces ESLint + Prettier).
 - **Tech stack — Test:** Vitest workspace.
-- **Tech stack — Framework:** Next.js 15 App Router + React 19. Server Components for catalog/SEO, Client Components for cart/checkout.
+- **Tech stack — Framework:** Next.js 16 App Router + React 19. Server Components for catalog/SEO, Client Components for cart/checkout.
 - **Tech stack — WC cart/checkout:** WC Store API v1 only (`/wp-json/wc/store/v1`). Free, ships with WC, hands off to native WC payment gateways.
 - **Tech stack — WC catalog:** WPGraphQL + WPGraphQL for WooCommerce.
 - **Tech stack — WP plugin:** PHP 8.1+, custom post type for page configs, REST API surface, React-based WP Admin sidebar.

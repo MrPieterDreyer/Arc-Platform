@@ -28,6 +28,14 @@ pnpm install
 pnpm build
 ```
 
+## Contributing
+
+- [CONTRIBUTING.md](./CONTRIBUTING.md) — setup, PR workflow, changesets
+- [AGENTS.md](./AGENTS.md) — rules for AI agents and automation
+- [SECURITY.md](./SECURITY.md) — vulnerability reporting
+
+This repository is currently **private**. Packages are MIT-licensed and intended for public release at v0.1.
+
 ## License
 
-Arc and Weave are MIT licensed.
+Arc and Weave are [MIT licensed](./LICENSE).

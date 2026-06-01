@@ -12,6 +12,7 @@ Each ADR captures one architectural decision with its context and consequences.
 | [ADR-0006](./ADR-0006-cart-token-cookie.md) | Accepted | Cart-Token cookie name + scope |
 | [ADR-0007](./ADR-0007-webhook-auth-mechanism.md) | Accepted | WP → Next revalidation webhook auth |
 | [ADR-0008](./ADR-0008-npm-scope-decision.md) | Accepted | npm scope availability + final decision |
+| [ADR-0009](./ADR-0009.md) | Open | Customer authentication strategy (spike before Phase 2) |
 
 ## Authoring a new ADR
 
