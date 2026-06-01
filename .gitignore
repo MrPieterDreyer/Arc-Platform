@@ -1,15 +1,44 @@
+# =============================================================================
+# Arc Platform — .gitignore
+# Agent rules: see AGENTS.md. Never commit secrets, planning, or agent runtime.
+# =============================================================================
+
+# --- Dependencies ---
 node_modules/
-.documentation/
-.planning/
-Artifacts/
-.env
-.env.wp-test
-*.log
+
+# --- Build outputs & caches ---
 dist/
 .next/
 .turbo/
-**/__pycache__/
 *.tsbuildinfo
 
-# Next.js generated types
+# --- Test & coverage ---
+coverage/
+
+# --- Environment & secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Logs ---
+*.log
+
+# --- Python (Scripts / wp-env helpers) ---
+**/__pycache__/
+
+# --- Local-only project content (never ship to GitHub) ---
+.documentation/
+.planning/
+Artifacts/
+
+# --- Framework-generated (Next.js) ---
 next-env.d.ts
+
+# --- AI agent runtime (never commit) ---
+.claude/
+.claude-flow/
+.swarm/
+.cursor/
+.trigger/
+.mcp.json
+HANDOFF.html
