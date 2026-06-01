@@ -17,7 +17,7 @@ export function useOptimisticCart(cart: WooCart | null, addItemAction: AddItemAc
     cart,
     (state: WooCart | null, delta: number) => {
       if (!state) return state;
-      return { ...state, item_count: (state.item_count ?? 0) + delta };
+      return { ...state, items_count: (state.items_count ?? 0) + delta };
     },
   );
 

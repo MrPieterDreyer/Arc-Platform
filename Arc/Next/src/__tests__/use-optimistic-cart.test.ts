@@ -9,7 +9,7 @@ import { useOptimisticCart } from '../use-optimistic-cart.js';
 const baseCart: WooCart = {
   coupons: [],
   items: [],
-  item_count: 2,
+  items_count: 2,
   totals: {
     total_items: '0',
     total_items_tax: '0',
@@ -84,11 +84,11 @@ describe('ARC-NEXT-07 — useOptimisticCart', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.cart?.item_count).toBe(3);
+      expect(result.current.cart?.items_count).toBe(3);
     });
 
     await act(async () => {
-      resolveAction({ ...baseCart, item_count: 3 });
+      resolveAction({ ...baseCart, items_count: 3 });
     });
 
     expect(action).toHaveBeenCalledWith({ id: 99, quantity: 1 });
@@ -104,7 +104,7 @@ describe('ARC-NEXT-07 — useOptimisticCart', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.cart?.item_count).toBe(2);
+      expect(result.current.cart?.items_count).toBe(2);
     });
   });
 });

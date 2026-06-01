@@ -212,7 +212,7 @@ export interface WCCart {
   billing_address: WCAddress;
   items: WCCartItem[];
   /** Total number of individual items in the cart (not distinct SKUs). */
-  item_count: number;
+  items_count: number;
   /** Total weight of all cart items in grams. */
   items_weight: number;
   cross_sells: unknown[];

@@ -55,7 +55,7 @@ const LIST_COLLECTIONS = gql`
 `;
 
 const GET_COLLECTION_PRODUCTS = gql`
-  query GetCollectionProducts($slug: ID!, $first: Int = 24, $after: String) {
+  query GetCollectionProducts($slug: String!, $first: Int = 24, $after: String) {
     products(first: $first, after: $after, where: { categoryIn: [$slug] }) {
       pageInfo { hasNextPage endCursor }
       nodes {

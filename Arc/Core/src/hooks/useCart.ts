@@ -127,14 +127,14 @@ function optimisticReducer(current: WooCart | null, action: OptimisticAction): W
   const cart = { ...current, items: [...current.items] };
 
   if (action.type === 'add') {
-    cart.item_count = (cart.item_count ?? 0) + action.quantity;
+    cart.items_count = (cart.items_count ?? 0) + action.quantity;
     return cart;
   }
   if (action.type === 'remove') {
     const item = cart.items.find((i: WooCartItem) => i.key === action.key);
     const qty = item?.quantity ?? 1;
     cart.items = cart.items.filter((i: WooCartItem) => i.key !== action.key);
-    cart.item_count = Math.max(0, (cart.item_count ?? 0) - qty);
+    cart.items_count = Math.max(0, (cart.items_count ?? 0) - qty);
     return cart;
   }
   if (action.type === 'update') {

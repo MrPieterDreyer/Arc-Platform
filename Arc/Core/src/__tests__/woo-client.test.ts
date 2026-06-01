@@ -37,7 +37,7 @@ const STUB_CART: WooCart = {
     phone: '',
   },
   items: [],
-  item_count: 0,
+  items_count: 0,
   items_weight: 0,
   cross_sells: [],
   needs_payment: false,
@@ -193,7 +193,7 @@ describe('WooClient — nonce retry', () => {
     });
 
     const cart = await client.getCart();
-    expect(cart).toMatchObject({ item_count: 0 });
+    expect(cart).toMatchObject({ items_count: 0 });
     expect(fetchSpy).toHaveBeenCalledTimes(2);
     expect(onNonce).toHaveBeenCalledWith('fresh_nonce_xyz');
   });
@@ -268,7 +268,7 @@ describe('WooClient — 5xx backoff retry', () => {
     await vi.advanceTimersByTimeAsync(1000);
     await vi.advanceTimersByTimeAsync(2000);
     const cart = await promise;
-    expect(cart).toMatchObject({ item_count: 0 });
+    expect(cart).toMatchObject({ items_count: 0 });
     expect(fetchSpy).toHaveBeenCalledTimes(3);
   });
 

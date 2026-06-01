@@ -159,7 +159,7 @@ export interface WooCart {
     phone: string;
   };
   items: WooCartItem[];
-  item_count: number;
+  items_count: number;
   items_weight: number;
   cross_sells: unknown[];
   needs_payment: boolean;

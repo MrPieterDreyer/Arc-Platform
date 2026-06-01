@@ -25,7 +25,7 @@ vi.mock('@arc/core', async () => {
 });
 
 const mockCart = {
-  item_count: 1,
+  items_count: 1,
 } as WooCart;
 
 describe('ARC-NEXT-03 — cart Server Actions', () => {

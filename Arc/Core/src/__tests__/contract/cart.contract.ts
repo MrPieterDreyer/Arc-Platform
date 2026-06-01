@@ -53,13 +53,13 @@ describe('Cart API — ARC-API-04', () => {
   });
 
   test.skipIf(!process.env['CI_WP_ENV'])(
-    'getCart — returns cart with items array, totals object, and item_count number',
+    'getCart — returns cart with items array, totals object, and items_count number',
     async () => {
       const cart = await getCart(client);
 
       expect(Array.isArray(cart.items)).toBe(true);
       expect(cart.totals).toBeDefined();
-      expect(typeof cart.item_count).toBe('number');
+      expect(typeof cart.items_count).toBe('number');
     },
   );
 
@@ -69,7 +69,7 @@ describe('Cart API — ARC-API-04', () => {
       const productId = Number(process.env['TEST_PRODUCT_ID'] ?? '1');
       const cart = await addItem(client, { id: productId, quantity: 1 });
 
-      expect(cart.item_count).toBeGreaterThanOrEqual(1);
+      expect(cart.items_count).toBeGreaterThanOrEqual(1);
       const added = cart.items.find((item) => item.id === productId);
       expect(added).toBeDefined();
     },
@@ -90,16 +90,16 @@ describe('Cart API — ARC-API-04', () => {
   );
 
   test.skipIf(!process.env['CI_WP_ENV'])(
-    'removeItem — removes first cart item, decreasing item_count by 1',
+    'removeItem — removes first cart item, decreasing items_count by 1',
     async () => {
       const productId = Number(process.env['TEST_PRODUCT_ID'] ?? '1');
       const cartWithItem = await addItem(client, { id: productId, quantity: 1 });
-      const countBefore = cartWithItem.item_count;
+      const countBefore = cartWithItem.items_count;
       const firstItem = cartWithItem.items[0];
       expect(firstItem).toBeDefined();
 
       const updated = await removeItem(client, { key: firstItem.key });
-      expect(updated.item_count).toBe(countBefore - 1);
+      expect(updated.items_count).toBe(countBefore - 1);
     },
   );
 
@@ -156,7 +156,7 @@ describe('Cart API — ARC-API-04', () => {
 
       // Step 3: Both clients should see the same cart contents
       const cart2 = await getCart(client2);
-      expect(cart2.item_count).toBe(cart1.item_count);
+      expect(cart2.items_count).toBe(cart1.items_count);
       expect(cart2.totals.total_price).toBe(cart1.totals.total_price);
     },
   );

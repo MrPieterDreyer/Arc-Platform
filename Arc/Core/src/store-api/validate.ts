@@ -21,7 +21,7 @@ import type { WooCart } from '../types/woo.js';
 const CartShape = z
   .object({
     items: z.array(z.unknown()),
-    item_count: z.number(),
+    items_count: z.number(),
     totals: z
       .object({
         total_price: z.string(),

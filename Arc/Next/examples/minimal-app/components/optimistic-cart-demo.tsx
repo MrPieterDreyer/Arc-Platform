@@ -34,7 +34,7 @@ const stubCart: WooCart | null = {
     phone: '',
   },
   items: [],
-  item_count: 0,
+  items_count: 0,
   items_weight: 0,
   cross_sells: [],
   needs_payment: false,
@@ -76,7 +76,7 @@ export function OptimisticCartDemo() {
     },
   );
 
-  const count = cart?.item_count ?? 0;
+  const count = cart?.items_count ?? 0;
 
   return (
     <section aria-labelledby="cart-demo-title">

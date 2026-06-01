@@ -8,6 +8,9 @@ const STORE_API_PATH = '/wp-json/wc/store/v1';
 /** Header name WC uses to pass the session Cart-Token. */
 const CART_TOKEN_HEADER = 'Cart-Token';
 
+/** Header name WC uses to pass the session Store-API Nonce. */
+const NONCE_HEADER = 'Nonce';
+
 /** Default request timeout (10 seconds). */
 const DEFAULT_TIMEOUT_MS = 10_000;
 
@@ -59,6 +62,16 @@ export class WooClient {
     Pick<WooClientOptions, 'timeout'> &
       Pick<WooClientOptions, 'onCartToken' | 'getCartToken' | 'getNonce' | 'onNonce'>
   >;
+
+  /**
+   * Session captured from responses on THIS instance. The WC Store API issues a
+   * Cart-Token (and a Nonce) on each response; replaying them on subsequent
+   * requests makes a single client session-sticky — so a write (add-item, etc.)
+   * after an initial read is authenticated even without external persistence
+   * callbacks. `getCartToken`/`getNonce` (cookie-backed) still take precedence.
+   */
+  private _cartToken?: string;
+  private _nonce?: string;
 
   constructor(opts: WooClientOptions) {
     // Normalize trailing slash
@@ -113,12 +126,16 @@ export class WooClient {
       headers.set('Content-Type', 'application/json');
       headers.set('Accept', 'application/json');
 
-      const cartToken = this.options.getCartToken();
+      // Prefer the persistence callback (cookie-backed); fall back to the
+      // token captured from a prior response on this instance.
+      const cartToken = this.options.getCartToken() ?? this._cartToken ?? null;
       if (cartToken) {
         headers.set(CART_TOKEN_HEADER, cartToken);
       }
 
       if (currentNonce) {
+        // WC accepts the nonce under `Nonce`; keep the legacy header too.
+        headers.set(NONCE_HEADER, currentNonce);
         headers.set('X-WC-Store-API-Nonce', currentNonce);
       }
 
@@ -143,10 +160,24 @@ export class WooClient {
         clearTimeout(timeoutId);
       }
 
-      // Extract Cart-Token from response header
+      // Capture Cart-Token from the response: store on this instance for replay,
+      // and notify the persistence layer only when it actually changed.
       const receivedToken = response.headers.get(CART_TOKEN_HEADER);
-      if (receivedToken && receivedToken !== cartToken) {
-        await this.options.onCartToken(receivedToken);
+      if (receivedToken) {
+        this._cartToken = receivedToken;
+        if (receivedToken !== cartToken) {
+          await this.options.onCartToken(receivedToken);
+        }
+      }
+
+      // Capture the Nonce header the same way (WC requires it for some writes).
+      const receivedNonce = response.headers.get(NONCE_HEADER);
+      if (receivedNonce) {
+        const nonceChanged = receivedNonce !== this._nonce;
+        this._nonce = receivedNonce;
+        if (nonceChanged) {
+          this.options.onNonce(receivedNonce);
+        }
       }
 
       // Parse response body
@@ -182,7 +213,8 @@ export class WooClient {
 
     // Nonce-retry wrapper: on rest_cookie_invalid_nonce, refresh and retry once
     const withNonceRetry = async (): Promise<T> => {
-      const initialNonce = perRequestNonce ?? (await this.options.getNonce()) ?? undefined;
+      const initialNonce =
+        perRequestNonce ?? (await this.options.getNonce()) ?? this._nonce ?? undefined;
       try {
         return await makeRequest(initialNonce as string | undefined);
       } catch (err) {

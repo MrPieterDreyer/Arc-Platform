@@ -30,7 +30,7 @@ function makeMockClient(overrides: Record<string, unknown> = {}) {
 // Minimal WCCart fixture
 const emptyCart = {
   items: [],
-  item_count: 0,
+  items_count: 0,
   items_weight: 0,
   coupons: [],
   totals: {},
@@ -49,7 +49,7 @@ const emptyCart = {
 const cartWithItem = {
   ...emptyCart,
   items: [{ key: 'item-1', id: 42, quantity: 2, name: 'Test Shirt', prices: {} }],
-  item_count: 2,
+  items_count: 2,
 };
 
 // ---------------------------------------------------------------------------
@@ -91,7 +91,7 @@ describe('ARC-HOOK-01: useCart', () => {
       store.setCart(cartWithItem as never);
     });
     expect(notified).toBe(2);
-    expect(store.getSnapshot().cart?.item_count).toBe(2);
+    expect(store.getSnapshot().cart?.items_count).toBe(2);
   });
 
   it('useCart hook renders with null cart initially and loads from refresh', async () => {
@@ -113,7 +113,7 @@ describe('ARC-HOOK-01: useCart', () => {
     await act(async () => {
       await result.current.refresh();
     });
-    expect(result.current.cart?.item_count).toBe(2);
+    expect(result.current.cart?.items_count).toBe(2);
   });
 });
 

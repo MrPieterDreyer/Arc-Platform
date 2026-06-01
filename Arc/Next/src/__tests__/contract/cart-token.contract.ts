@@ -40,7 +40,7 @@ describe('ARC-NEXT-02 — Cart-Token round-trip contract', () => {
         getCartToken: () => issuedToken,
       });
       const cart = await getCart(reader);
-      expect(cart.item_count).toBeGreaterThanOrEqual(1);
+      expect(cart.items_count).toBeGreaterThanOrEqual(1);
     },
   );
 });
