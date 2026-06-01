@@ -1,2 +1,7 @@
-// Phase 0 stub. Real exports land in Phase 2.
-export const __ARC_NEXT_VERSION = '0.0.1';
+export { arcTag } from './cache-tags.js';
+export {
+  ARC_CART_TOKEN_COOKIE,
+  recommendedNextConfig,
+  WEAVE_WEBHOOK_SECRET_ENV,
+} from './constants.js';
+export { ARC_CACHE_PROFILE, type ArcCacheProfile } from './isr.js';

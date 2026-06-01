@@ -45,6 +45,17 @@ D:\00. Arc Platform\
 
 Use `/gsd:new-project` to initialize `.documentation/.planning/` before first phase.
 
+## Design system
+
+All storefront, Pilot, Template, and Weave section UI uses **`Design-Systems/Arc-Design/`**:
+
+- **Agents:** read `Design-Systems/Arc-Design/SKILL.md` before writing CSS or JSX
+- **Tokens:** import `Design-Systems/Arc-Design/tokens/arc-tokens.css` once at app root (do not duplicate hex values)
+- **Commerce patterns:** `Design-Systems/Arc-Design/references/COMMERCE.md`
+- **Weave sections:** `Design-Systems/Arc-Design/references/WEAVE-SECTIONS.md`
+
+Primary shop accent is **`#0369a1`** (CTAs, cart badge, focus, links). v0.1 is **light theme only**.
+
 ## Conventions
 
 - **Files under 500 lines.** Split before crossing.

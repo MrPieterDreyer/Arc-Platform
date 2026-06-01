@@ -1,0 +1,106 @@
+/**
+ * Arc Design System — canonical CSS tokens (light theme v0.1)
+ * @see Design-Systems/Arc-Design/DESIGN.md
+ */
+
+@font-face {
+  font-family: "Arc Aeonik Fono";
+  src: url("../fonts/__aeonikFono_b72e8b-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Arc Aeonik";
+  src: url("../fonts/__aeonik_5c0293-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  --color-background: #ffffff;
+  --color-surface: #f0f6fc;
+  --color-surface-raised: #e8f0f8;
+  --color-overlay: rgba(16, 24, 40, 0.45);
+
+  --color-text-primary: #1a2332;
+  --color-text-muted: #5a6b82;
+  --color-text-inverse: #ffffff;
+
+  --color-accent: #0369a1;
+  --color-accent-hover: #0284c4;
+  --color-accent-dim: rgba(3, 105, 161, 0.1);
+  --color-brand-magenta: #ff5ca8;
+  --color-brand-sky: #38bdf8;
+
+  --color-border: #d8e3ef;
+  --color-success: #1f9d57;
+  --color-warning: #b8860b;
+  --color-danger: #c61e6c;
+
+  --btn-primary-bg: var(--color-accent);
+  --btn-primary-fg: #ffffff;
+  --btn-primary-hover-bg: var(--color-accent-hover);
+  --btn-ghost-border: var(--color-border);
+
+  --font-display: "Arc Aeonik Fono", system-ui, sans-serif;
+  --font-sans: "Arc Aeonik", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --text-display-size: 2.25rem;
+  --text-heading-size: 1.25rem;
+  --text-body-size: 1rem;
+  --text-label-size: 0.875rem;
+  --text-price-size: 1.25rem;
+
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --leading-body: 1.5;
+  --leading-heading: 1.2;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+  --container-max: 72rem;
+
+  --shadow-card:
+    rgba(16, 24, 40, 0.06) 0 1px 2px, rgba(16, 24, 40, 0.1) 0 12px 28px,
+    rgb(255, 255, 255) 0 1px 0 inset;
+
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --z-dropdown: 40;
+  --z-modal: 50;
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+  }
+}
