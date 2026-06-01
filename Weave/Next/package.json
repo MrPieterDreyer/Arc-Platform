@@ -3,6 +3,13 @@
   "version": "0.0.1",
   "private": false,
   "description": "Weave — Next.js App Router integration for sections",
+  "license": "MIT",
+  "author": "Pieter Dreyer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrPieterDreyer/arc-platform.git",
+    "directory": "Weave/Next"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

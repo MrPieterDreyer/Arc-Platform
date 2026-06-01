@@ -3,6 +3,13 @@
   "version": "0.0.1",
   "private": false,
   "description": "Arc — WooCommerce Store API client, hooks, and TypeScript types",
+  "license": "MIT",
+  "author": "Pieter Dreyer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrPieterDreyer/arc-platform.git",
+    "directory": "Arc/Core"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
