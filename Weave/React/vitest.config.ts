@@ -6,8 +6,11 @@ export default mergeConfig(
   defineProject({
     test: {
       name: 'weave-react',
-      environment: 'jsdom',
+      environment: 'node',
       include: ['src/**/*.test.{ts,tsx}'],
+      environmentMatchGlobs: [['src/__tests__/boundary.test.tsx', 'jsdom']],
+      setupFiles: ['@testing-library/jest-dom/vitest'],
+      passWithNoTests: true,
     },
   }),
 );

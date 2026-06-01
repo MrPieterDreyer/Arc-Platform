@@ -6,8 +6,9 @@ describe('@weave/react smoke', () => {
     expect(__WEAVE_REACT_VERSION).toBe('0.0.1');
   });
 
-  it('has access to a DOM (jsdom env)', () => {
-    expect(typeof document).toBe('object');
-    expect(typeof window).toBe('object');
+  it('runs under the node default environment (no DOM)', () => {
+    // The package default env is `node` (mirrors @arc/core). jsdom is scoped
+    // to the boundary test glob only — see vitest.config.ts.
+    expect(typeof document).toBe('undefined');
   });
 });
