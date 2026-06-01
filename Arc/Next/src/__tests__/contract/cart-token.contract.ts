@@ -29,7 +29,9 @@ describe('ARC-NEXT-02 — Cart-Token round-trip contract', () => {
         },
       });
 
-      // First cart write issues a Cart-Token via the response header.
+      // Establish the session first: a GET issues the Cart-Token + Nonce, which
+      // the WooClient captures and replays so the subsequent write is authorized.
+      await getCart(writer);
       await addItem(writer, { id: TEST_PRODUCT_ID, quantity: 1 });
       expect(typeof issuedToken).toBe('string');
       expect(issuedToken).toBeTruthy();
