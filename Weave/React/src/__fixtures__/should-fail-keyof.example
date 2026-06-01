@@ -1,0 +1,30 @@
+// File extension is .example so TS / Biome ignore it. NOTE: tsconfig also excludes the whole
+// src/__fixtures__ dir, so a bare rename to .tsx in place is NOT typechecked.
+// SDK-01 compile-error gate:
+//   1. Copy this body into a temp file OUTSIDE src/__fixtures__ (e.g. src/_probe.tsx),
+//      fixing the relative import to '../schema/types' → './schema/types'.
+//   2. Run: pnpm --filter @weave/react typecheck
+//      → the line WITHOUT @ts-expect-error must error
+//        (TS2322: Type '"subheading"' is not assignable to type '"heading"').
+//      → removing the `subheading` input OR the @ts-expect-error directive flips the result.
+//   3. Delete the temp file.
+import type { WeaveComponentSchema } from '../schema/types';
+
+interface HeroProps {
+  heading: string;
+}
+
+export const ok: WeaveComponentSchema<HeroProps> = {
+  type: 'hero',
+  title: 'Hero',
+  inspector: [
+    {
+      group: 'Content',
+      inputs: [
+        { type: 'text', name: 'heading', label: 'Heading' }, // OK — heading is keyof HeroProps
+        // @ts-expect-error 'subheading' is not keyof HeroProps → SDK-01 compile error
+        { type: 'text', name: 'subheading', label: 'Sub' },
+      ],
+    },
+  ],
+};
