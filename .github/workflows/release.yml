@@ -1,6 +1,9 @@
 # Changesets-driven publish workflow
 # Source: .planning/phases/00-tooling-foundations/00-RESEARCH.md (Pattern 7)
 # NPM_TOKEN must be set as a GitHub repository secret (never committed — CLAUDE.md constraint).
+#
+# Release tags: merging the "Version Packages" PR runs changesets/action, which publishes
+# to npm and creates GitHub releases via @changesets/changelog-github (see .changeset/config.json).
 name: Release
 on:
   push:

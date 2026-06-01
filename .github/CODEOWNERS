@@ -1,0 +1,11 @@
+# Default owners for review routing
+* @MrPieterDreyer
+
+# Architecture decisions
+Documentation/Architecture/ @MrPieterDreyer
+
+# Release and versioning
+.changeset/ @MrPieterDreyer
+
+# CI and GitHub config
+.github/ @MrPieterDreyer

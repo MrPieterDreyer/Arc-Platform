@@ -15,6 +15,7 @@ const REQUIRED_JOBS = [
   'license-check:',
   'changesets-no-major:',
   'contract:',
+  'verify-governance:',
 ];
 
 const REQUIRED_CI_TOKENS = [
@@ -30,6 +31,8 @@ const REQUIRED_CI_TOKENS = [
   // Live-backend safety net must stay wired (no green-by-skip regression).
   'pnpm wp:start',
   'pnpm test:contract',
+  'pnpm verify-adrs',
+  'pnpm verify-dist',
 ];
 
 const REQUIRED_RELEASE_TOKENS = [
