@@ -59,10 +59,13 @@ describe('Customer API — ARC-API-06', () => {
 
 describe('Customer GQL Orders — ARC-GQL scope', () => {
   test.skipIf(!process.env.CI_WP_ENV)(
-    'getCustomerOrders without auth throws — WPGraphQL returns null for unauthenticated customer',
+    'getCustomerOrders without auth throws — WPGraphQL cannot resolve orders for an unauthenticated customer',
     async () => {
+      // Unauthenticated: WPGraphQL returns a null customer, then errors on the
+      // non-nullable orders.pageInfo field ("Cannot return null for non-nullable
+      // field CustomerToOrderConnection.pageInfo") — surfaced as a thrown error.
       await expect(getCustomerOrders(gqlClientNoAuth)).rejects.toThrow(
-        /null for customer|unauthenticated/i,
+        /internal server error|non-nullable|null for customer|unauthenticated/i,
       );
     },
   );

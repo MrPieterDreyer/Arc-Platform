@@ -106,6 +106,9 @@ describe('Cart API — ARC-API-04', () => {
   test.skipIf(!process.env['CI_WP_ENV'])(
     'applyCoupon — applies coupon, returns cart with coupons array length >= 1',
     async () => {
+      // A coupon cannot be applied to an empty cart — add an item first.
+      const productId = Number(process.env['TEST_PRODUCT_ID'] ?? '1');
+      await addItem(client, { id: productId, quantity: 1 });
       const couponCode = process.env['TEST_COUPON_CODE'] ?? 'TEST10';
       const cart = await applyCoupon(client, { code: couponCode });
 
@@ -116,6 +119,8 @@ describe('Cart API — ARC-API-04', () => {
   test.skipIf(!process.env['CI_WP_ENV'])(
     'removeCoupon — applies then removes coupon, returns cart with empty coupons array',
     async () => {
+      const productId = Number(process.env['TEST_PRODUCT_ID'] ?? '1');
+      await addItem(client, { id: productId, quantity: 1 });
       const couponCode = process.env['TEST_COUPON_CODE'] ?? 'TEST10';
       await applyCoupon(client, { code: couponCode });
       const cart = await removeCoupon(client, couponCode);

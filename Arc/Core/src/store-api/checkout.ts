@@ -59,7 +59,11 @@ export async function submitCheckout(
 /**
  * Lists available payment gateways enabled on the WooCommerce store.
  *
- * GET /payment-gateways — returns an array of enabled payment methods.
+ * ⚠️ WC Store API v1 has NO `/payment-gateways` route (calling this returns 404
+ * `rest_no_route`). Available gateways are surfaced through the checkout flow,
+ * not a dedicated list endpoint. This function is retained for API shape but is
+ * not functional against the Store API; a gateway-discovery strategy (e.g. via
+ * the checkout response or WC REST with admin auth) is a Phase 5 decision.
  */
 export async function getPaymentGateways(client: WooClient): Promise<WCPaymentGateway[]> {
   return client.request<WCPaymentGateway[]>('/payment-gateways');

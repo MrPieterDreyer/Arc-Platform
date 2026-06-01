@@ -93,6 +93,10 @@ function arc_seed_variable( $sku, $name, $slug, $cat_id ) {
 		$variation->save();
 	}
 
+	// Sync the parent so its variation data (price range, variation IDs) is
+	// populated — without this, WPGraphQL's `variations` connection is empty.
+	WC_Product_Variable::sync( $parent_id );
+
 	return $parent_id;
 }
 

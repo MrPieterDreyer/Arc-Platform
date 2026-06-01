@@ -25,7 +25,12 @@ export async function getOrder(client: WooClient, orderId: number): Promise<WCOr
   try {
     return await client.request<WCOrder>(`/order/${orderId}`);
   } catch (err) {
-    if (err instanceof WooClientError && err.status === 404) {
+    // 404 = not found; `woocommerce_rest_invalid_order` (401) = the order does
+    // not belong to this session / wrong key. Both mean "not retrievable here".
+    if (
+      err instanceof WooClientError &&
+      (err.status === 404 || err.code === 'woocommerce_rest_invalid_order')
+    ) {
       return null;
     }
     throw err;

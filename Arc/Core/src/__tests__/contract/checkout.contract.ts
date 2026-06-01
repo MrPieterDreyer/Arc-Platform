@@ -6,9 +6,10 @@
  *
  * Full submitCheckout testing (payment tokens) is gated to Phase 5 E2E.
  */
-import { describe, expect, test } from 'vitest';
+import { beforeAll, describe, expect, test } from 'vitest';
 import { WooClient } from '../../client/WooClient';
-import { getCheckoutSchema, getPaymentGateways } from '../../store-api/checkout';
+import { addItem, getCart } from '../../store-api/cart';
+import { getCheckoutSchema } from '../../store-api/checkout';
 
 // Use globalThis cast to avoid requiring @types/node in tsconfig lib
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,6 +19,14 @@ const client = new WooClient({
 });
 
 describe('Checkout API — ARC-API-05', () => {
+  // GET /checkout requires an authenticated session with a non-empty cart.
+  // Establish the session (getCart captures the Cart-Token) and add an item.
+  beforeAll(async () => {
+    if (!env.CI_WP_ENV) return;
+    await getCart(client);
+    await addItem(client, { id: Number(env.TEST_PRODUCT_ID ?? '1'), quantity: 1 });
+  });
+
   // -------------------------------------------------------------------------
   // getCheckoutSchema
   // -------------------------------------------------------------------------
@@ -34,20 +43,13 @@ describe('Checkout API — ARC-API-05', () => {
   );
 
   // -------------------------------------------------------------------------
-  // getPaymentGateways
+  // getPaymentGateways — WC Store API v1 has NO payment-gateways endpoint.
+  // Available gateways are surfaced through the checkout flow, not a list route,
+  // so this is not contract-testable against the Store API. See getPaymentGateways
+  // JSDoc; revisit when a gateway-discovery strategy is chosen (Phase 5).
   // -------------------------------------------------------------------------
 
-  test.skipIf(!env.CI_WP_ENV)(
-    'getPaymentGateways returns an array with id and enabled fields',
-    async () => {
-      const gateways = await getPaymentGateways(client);
-      expect(Array.isArray(gateways)).toBe(true);
-      if (gateways.length > 0) {
-        expect(typeof gateways[0].id).toBe('string');
-        expect(typeof gateways[0].enabled).toBe('boolean');
-      }
-    },
-  );
+  test.skip('getPaymentGateways — no Store API v1 list endpoint (Phase 5 decision)', () => {});
 
   // -------------------------------------------------------------------------
   // submitCheckout
