@@ -10,3 +10,6 @@ dist/
 .turbo/
 **/__pycache__/
 *.tsbuildinfo
+
+# Next.js generated types
+next-env.d.ts

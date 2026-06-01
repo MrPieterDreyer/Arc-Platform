@@ -10,6 +10,7 @@
       "!**/.next",
       "!**/.turbo",
       "!**/coverage",
+      "!**/next-env.d.ts",
       "!.claude",
       "!.claude-flow",
       "!.swarm",
