@@ -45,6 +45,14 @@ for (const [license, pkgs] of Object.entries(data)) {
     ) {
       continue;
     }
+    // Platform-specific native binaries pulled in transitively by Next.js's image
+    // optimizer (sharp → libvips). The LGPL covers the bundled libvips native
+    // binary, not Arc's MIT code, and Arc's PUBLISHED packages (@arc/core,
+    // @arc/next) do not depend on sharp — it arrives via the consumer's `next`
+    // install / the private example app. See ADR-0003.
+    if (p.name?.startsWith('@img/sharp')) {
+      continue;
+    }
     violations.push({ name: p.name, version: p.version, license });
   }
 }
