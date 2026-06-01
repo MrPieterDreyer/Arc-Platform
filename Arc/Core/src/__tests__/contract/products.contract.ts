@@ -108,23 +108,6 @@ describe('Products GQL — ARC-GQL-03 + ARC-GQL-04', () => {
   );
 });
 
-// ---------------------------------------------------------------------------
-// Placeholder: Collections GQL — ARC-GQL-05 (filled by Plan 01-05)
-// ---------------------------------------------------------------------------
-describe('Collections GQL — ARC-GQL-05', () => {
-  test.skipIf(!process.env.CI_WP_ENV)(
-    'placeholder — getCollection and listCollections (Plan 01-05)',
-    () => {
-      // Implementation added by Plan 01-05
-    },
-  );
-});
-
-// ---------------------------------------------------------------------------
-// Placeholder: Search GQL — ARC-GQL-06 (filled by Plan 01-05)
-// ---------------------------------------------------------------------------
-describe('Search GQL — ARC-GQL-06', () => {
-  test.skipIf(!process.env.CI_WP_ENV)('placeholder — searchProducts (Plan 01-05)', () => {
-    // Implementation added by Plan 01-05
-  });
-});
+// NOTE: Collections (ARC-GQL-05) and Search (ARC-GQL-06) contract tests live in
+// `collections-search.contract.ts`. The empty placeholders previously here were
+// removed — they asserted nothing and passed vacuously even with CI_WP_ENV set.

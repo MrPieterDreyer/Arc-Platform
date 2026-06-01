@@ -10,6 +10,7 @@
 
 import type { WooClient } from '../client/WooClient.js';
 import type { WooCart } from '../types/woo.js';
+import { safeValidateCart } from './validate.js';
 
 // ---------------------------------------------------------------------------
 // Payload types
@@ -35,7 +36,7 @@ export interface UpdateItemPayload {
  * On first call the WooClient captures the Cart-Token from the response header automatically.
  */
 export function getCart(client: WooClient): Promise<WooCart> {
-  return client.request<WooCart>('/cart');
+  return client.request<WooCart>('/cart').then(safeValidateCart);
 }
 
 /**
@@ -43,47 +44,57 @@ export function getCart(client: WooClient): Promise<WooCart> {
  * Supports simple products (id + quantity) and variable products (id + quantity + variation).
  */
 export function addItem(client: WooClient, payload: AddItemPayload): Promise<WooCart> {
-  return client.request<WooCart>('/cart/add-item', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+  return client
+    .request<WooCart>('/cart/add-item', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+    .then(safeValidateCart);
 }
 
 /**
  * Updates the quantity of a cart line item by key.
  */
 export function updateItem(client: WooClient, payload: UpdateItemPayload): Promise<WooCart> {
-  return client.request<WooCart>('/cart/update-item', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+  return client
+    .request<WooCart>('/cart/update-item', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+    .then(safeValidateCart);
 }
 
 /**
  * Removes a cart line item by key.
  */
 export function removeItem(client: WooClient, payload: { key: string }): Promise<WooCart> {
-  return client.request<WooCart>('/cart/remove-item', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+  return client
+    .request<WooCart>('/cart/remove-item', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+    .then(safeValidateCart);
 }
 
 /**
  * Applies a coupon code to the cart.
  */
 export function applyCoupon(client: WooClient, payload: { code: string }): Promise<WooCart> {
-  return client.request<WooCart>('/cart/coupons', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+  return client
+    .request<WooCart>('/cart/coupons', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+    .then(safeValidateCart);
 }
 
 /**
  * Removes a coupon code from the cart.
  */
 export function removeCoupon(client: WooClient, code: string): Promise<WooCart> {
-  return client.request<WooCart>(`/cart/coupons/${encodeURIComponent(code)}`, {
-    method: 'DELETE',
-  });
+  return client
+    .request<WooCart>(`/cart/coupons/${encodeURIComponent(code)}`, {
+      method: 'DELETE',
+    })
+    .then(safeValidateCart);
 }

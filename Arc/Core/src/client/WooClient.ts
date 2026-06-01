@@ -1,4 +1,5 @@
 import { isWooError, withRetry } from '../http';
+import { ArcClientError, ArcNetworkError, ArcParseError, type ArcError } from '../types/errors.js';
 import type { WooApiError, WooCart, WooClientOptions, WooRequestOptions } from '../types/woo';
 
 /** Base path for all WC Store API v1 endpoints. */
@@ -11,10 +12,11 @@ const CART_TOKEN_HEADER = 'Cart-Token';
 const DEFAULT_TIMEOUT_MS = 10_000;
 
 /**
- * A typed error thrown when the WC Store API returns an error response.
- * Carries the HTTP status code so `withRetry` can decide whether to retry.
+ * A typed error thrown when the WC Store API returns a structured error response.
+ * Carries the HTTP status code so `withRetry` can decide whether to retry, and
+ * exposes a normalized {@link ArcError} via `.arcError` (ARC-API-03).
  */
-export class WooClientError extends Error {
+export class WooClientError extends ArcClientError {
   readonly code: string;
   readonly status: number;
   readonly data: WooApiError['data'];
@@ -25,6 +27,17 @@ export class WooClientError extends Error {
     this.code = apiError.code;
     this.status = apiError.data.status;
     this.data = apiError.data;
+  }
+
+  /** Normalized error descriptor for exhaustive matching (ARC-API-03). */
+  get arcError(): Extract<ArcError, { type: 'api' }> {
+    return {
+      type: 'api',
+      status: this.status,
+      code: this.code,
+      message: this.message,
+      data: this.data,
+    };
   }
 }
 
@@ -116,6 +129,16 @@ export class WooClient {
           headers,
           signal: combinedSignal,
         });
+      } catch (err) {
+        // fetch rejects before any response: network failure, DNS, reset,
+        // timeout abort, or external-signal abort. Normalize to ArcNetworkError.
+        const reason =
+          combinedSignal.aborted && combinedSignal.reason instanceof Error
+            ? combinedSignal.reason.message
+            : err instanceof Error
+              ? err.message
+              : 'Network request failed';
+        throw new ArcNetworkError(reason, err);
       } finally {
         clearTimeout(timeoutId);
       }
@@ -130,7 +153,14 @@ export class WooClient {
       let body: unknown;
       const contentType = response.headers.get('content-type') ?? '';
       if (contentType.includes('application/json')) {
-        body = await response.json();
+        try {
+          body = await response.json();
+        } catch (err) {
+          throw new ArcParseError(
+            `Failed to parse JSON response body (HTTP ${response.status})`,
+            err,
+          );
+        }
       } else {
         body = await response.text();
       }
@@ -204,19 +234,18 @@ export class WooClient {
     });
   }
 
-  /** Apply a coupon code to the cart. */
+  /** Apply a coupon code to the cart. WC Store API v1: `POST /cart/coupons`. */
   applyCoupon(code: string): Promise<WooCart> {
-    return this.request<WooCart>('/cart/apply-coupon', {
+    return this.request<WooCart>('/cart/coupons', {
       method: 'POST',
       body: JSON.stringify({ code }),
     });
   }
 
-  /** Remove a coupon code from the cart. */
+  /** Remove a coupon code from the cart. WC Store API v1: `DELETE /cart/coupons/{code}`. */
   removeCoupon(code: string): Promise<WooCart> {
-    return this.request<WooCart>('/cart/remove-coupon', {
+    return this.request<WooCart>(`/cart/coupons/${encodeURIComponent(code)}`, {
       method: 'DELETE',
-      body: JSON.stringify({ code }),
     });
   }
 }

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { WooClient, WooClientError } from '../client/WooClient';
+import { ArcNetworkError, ArcParseError, isArcError } from '../types/errors';
 import type { WooCart } from '../types/woo';
 
 // ---------------------------------------------------------------------------
@@ -373,29 +374,37 @@ describe('WooClient — cart operations', () => {
     expect(capturedInit?.method).toBe('DELETE');
   });
 
-  it('applyCoupon posts to /cart/apply-coupon', async () => {
+  it('applyCoupon posts to the WC Store API /cart/coupons endpoint', async () => {
     let capturedUrl: string | URL | Request | undefined;
+    let capturedInit: RequestInit | undefined;
 
-    vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, init) => {
       capturedUrl = url;
+      capturedInit = init;
       return makeJsonResponse(STUB_CART, 200);
     });
 
     const client = new WooClient({ baseUrl: 'https://shop.example.com' });
     await client.applyCoupon('SAVE10');
-    expect(String(capturedUrl)).toContain('/cart/apply-coupon');
+    expect(String(capturedUrl)).toContain('/cart/coupons');
+    expect(String(capturedUrl)).not.toContain('/cart/apply-coupon');
+    expect(capturedInit?.method).toBe('POST');
+    expect(JSON.parse(capturedInit?.body as string)).toEqual({ code: 'SAVE10' });
   });
 
-  it('removeCoupon sends DELETE to /cart/remove-coupon', async () => {
+  it('removeCoupon sends DELETE to /cart/coupons/{code}', async () => {
+    let capturedUrl: string | URL | Request | undefined;
     let capturedInit: RequestInit | undefined;
 
-    vi.spyOn(globalThis, 'fetch').mockImplementation(async (_url, init) => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, init) => {
+      capturedUrl = url;
       capturedInit = init;
       return makeJsonResponse(STUB_CART, 200);
     });
 
     const client = new WooClient({ baseUrl: 'https://shop.example.com' });
     await client.removeCoupon('SAVE10');
+    expect(String(capturedUrl)).toContain('/cart/coupons/SAVE10');
     expect(capturedInit?.method).toBe('DELETE');
   });
 });
@@ -416,5 +425,58 @@ describe('WooClientError', () => {
     expect(err.message).toBe('Invalid product ID');
     expect(err).toBeInstanceOf(Error);
     expect(err.name).toBe('WooClientError');
+  });
+
+  it('exposes a normalized ArcError (type "api") via .arcError', () => {
+    const err = new WooClientError({
+      code: 'product_invalid_id',
+      message: 'Invalid product ID',
+      data: { status: 400, params: { id: 'bad' } },
+    });
+    expect(isArcError(err)).toBe(true);
+    expect(err.arcError).toEqual({
+      type: 'api',
+      status: 400,
+      code: 'product_invalid_id',
+      message: 'Invalid product ID',
+      data: { status: 400, params: { id: 'bad' } },
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ArcError normalization (ARC-API-03)
+// ---------------------------------------------------------------------------
+
+describe('WooClient — error normalization (ARC-API-03)', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('normalizes a fetch network failure into ArcNetworkError', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('Failed to fetch'));
+
+    const client = new WooClient({ baseUrl: 'https://shop.example.com' });
+
+    const err = await client.getCart().catch((e) => e);
+    expect(err).toBeInstanceOf(ArcNetworkError);
+    expect(isArcError(err)).toBe(true);
+    expect(err.arcError.type).toBe('network');
+    expect(err.arcError.cause).toBeInstanceOf(TypeError);
+  });
+
+  it('normalizes a malformed JSON body into ArcParseError', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response('{ not valid json', {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
+
+    const client = new WooClient({ baseUrl: 'https://shop.example.com' });
+
+    const err = await client.getCart().catch((e) => e);
+    expect(err).toBeInstanceOf(ArcParseError);
+    expect(err.arcError.type).toBe('parse');
   });
 });

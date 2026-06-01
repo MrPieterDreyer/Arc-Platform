@@ -11,12 +11,18 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.mjs",
+      "require": "./dist/hooks.js"
     }
   },
   "peerDependencies": {
     "react": ">=19"
   },
   "dependencies": {
+    "client-only": "^0.0.1",
     "graphql": "catalog:",
     "graphql-request": "catalog:",
     "zod": "catalog:"

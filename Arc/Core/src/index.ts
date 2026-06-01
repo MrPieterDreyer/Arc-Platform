@@ -21,17 +21,10 @@ export type { WCProductFilter } from './graphql/products';
 export { getProduct, getProducts, getProductVariations } from './graphql/products';
 export type { WCSearchFilter } from './graphql/search';
 export { searchProducts } from './graphql/search';
-export type { CartActions, CartSnapshot, CartState } from './hooks/useCart.js';
-// Phase 1 — Hooks (React 19 — Client Components only)
-export { getOrCreateCartStore, useCart } from './hooks/useCart.js';
-export type { CollectionState } from './hooks/useCollection.js';
-export { useCollection } from './hooks/useCollection.js';
-export type { CustomerState } from './hooks/useCustomer.js';
-export { useCustomer } from './hooks/useCustomer.js';
-export type { ProductState } from './hooks/useProduct.js';
-export { useProduct } from './hooks/useProduct.js';
-export type { SearchState } from './hooks/useSearch.js';
-export { useSearch } from './hooks/useSearch.js';
+// Phase 1 — Hooks (React 19, Client Components only) are exported from the
+// SEPARATE `@arc/core/hooks` entry to keep this barrel RSC-safe. Do NOT
+// re-export them here — doing so pulls useEffect/useOptimistic into Server
+// Components and breaks the Next.js build. See src/hooks/index.ts.
 export { isWooError, sleep, withRetry } from './http';
 export type { AddItemPayload, UpdateItemPayload } from './store-api/cart.js';
 // Phase 1 — Cart module (Store API)
@@ -43,6 +36,8 @@ export {
   removeItem,
   updateItem,
 } from './store-api/cart.js';
+// Phase 1 — defensive Store API response validation (zod)
+export { safeValidateCart } from './store-api/validate.js';
 export type { WCPaymentGateway } from './store-api/checkout';
 // Phase 1 — Checkout (ARC-API-05)
 export { getCheckoutSchema, getPaymentGateways, submitCheckout } from './store-api/checkout';
@@ -76,8 +71,14 @@ export type {
 } from './types/checkout';
 // Phase 1 — Customer types
 export type { WCCustomer, WCCustomerAddress } from './types/customer';
-// Phase 1 — ArcError discriminated union (ARC-API-03)
+// Phase 1 — ArcError discriminated union + normalized error model (ARC-API-03)
 export type { ArcError } from './types/errors.js';
+export {
+  ArcClientError,
+  ArcNetworkError,
+  ArcParseError,
+  isArcError,
+} from './types/errors.js';
 export type {
   WCAddress,
   WCOrder,
