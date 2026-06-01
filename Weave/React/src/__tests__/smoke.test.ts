@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { __WEAVE_REACT_VERSION } from '../index';
+import { SectionRenderer, defineSection, getSection } from '../index';
 
 describe('@weave/react smoke', () => {
-  it('exports a version sentinel', () => {
-    expect(__WEAVE_REACT_VERSION).toBe('0.0.1');
+  it('exports the public API surface', () => {
+    expect(typeof SectionRenderer).toBe('function');
+    expect(typeof defineSection).toBe('function');
+    expect(typeof getSection).toBe('function');
   });
 
   it('runs under the node default environment (no DOM)', () => {
