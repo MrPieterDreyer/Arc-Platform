@@ -194,13 +194,34 @@ importers:
 
   Weave/React:
     dependencies:
-      react:
+      client-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+      zod:
         specifier: 'catalog:'
-        version: 19.2.6
+        version: 4.4.3
     devDependencies:
+      '@testing-library/jest-dom':
+        specifier: ^6.9.1
+        version: 6.9.1
+      '@testing-library/react':
+        specifier: ^16.3.2
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@types/node':
+        specifier: 'catalog:'
+        version: 20.19.41
+      '@types/react':
+        specifier: ^19.2.15
+        version: 19.2.15
       jsdom:
         specifier: ^29.1.1
         version: 29.1.1
+      react:
+        specifier: 'catalog:'
+        version: 19.2.6
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.6(react@19.2.6)
 
 packages:
 

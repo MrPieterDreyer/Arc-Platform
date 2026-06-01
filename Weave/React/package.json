@@ -18,19 +18,35 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.js"
     }
+  },
+  "peerDependencies": {
+    "react": ">=19"
+  },
+  "dependencies": {
+    "client-only": "^0.0.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "catalog:",
+    "@types/react": "^19.2.15",
+    "jsdom": "^29.1.1",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "biome lint ./src",
     "format:check": "biome format ./src",
-    "test": "vitest --run"
-  },
-  "peerDependencies": {
-    "react": "catalog:"
-  },
-  "devDependencies": {
-    "jsdom": "^29.1.1"
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit"
   }
 }
