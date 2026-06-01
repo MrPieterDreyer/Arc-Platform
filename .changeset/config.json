@@ -5,9 +5,9 @@
   "fixed": [["@arc/*"], ["@weave/*"]],
   "linked": [],
   "access": "public",
-  "baseBranch": "main",
+  "baseBranch": "master",
   "updateInternalDependencies": "patch",
-  "ignore": [],
+  "ignore": ["@arc/next-example"],
   "snapshot": {
     "useCalculatedVersion": true,
     "prereleaseTemplate": "0.0.0-snapshot-{datetime}"
