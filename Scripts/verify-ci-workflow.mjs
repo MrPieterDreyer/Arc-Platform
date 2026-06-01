@@ -14,6 +14,7 @@ const REQUIRED_JOBS = [
   'test:',
   'license-check:',
   'changesets-no-major:',
+  'contract:',
 ];
 
 const REQUIRED_CI_TOKENS = [
@@ -24,7 +25,11 @@ const REQUIRED_CI_TOKENS = [
   'bash Scripts/check-no-next-in-core.sh',
   'node Scripts/verify-changesets-no-major.mjs',
   'matrix:',
-  'node: [20, 22]',
+  // pnpm@11 requires Node >=22.13 — Node 20 cannot run install.
+  'node: [22, 24]',
+  // Live-backend safety net must stay wired (no green-by-skip regression).
+  'pnpm wp:start',
+  'pnpm test:contract',
 ];
 
 const REQUIRED_RELEASE_TOKENS = [

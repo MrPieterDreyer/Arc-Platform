@@ -65,7 +65,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [20, 22]
+        # Node 20 dropped: pnpm@11 requires Node >=22.13 (engines.node).
+        node: [22, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -76,6 +77,33 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm test
+
+  # Live-backend contract + perf suites. Without this job the skipIf(!CI_WP_ENV)
+  # tests never run and report green-by-skip. Boots WP+WC+WPGraphQL via wp-env
+  # (Docker, preinstalled on ubuntu-latest), seeds fixtures, then runs the gated
+  # tests with CI_WP_ENV set so they actually execute.
+  contract:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Build first so @arc/next contract tests resolve @arc/core from dist.
+      - run: pnpm build
+      - name: Boot wp-env (WP + WC + WPGraphQL + WooGraphQL)
+        run: pnpm wp:start
+      - name: Seed WooCommerce fixtures (writes .env.wp-test with CI_WP_ENV=true)
+        run: pnpm wp:seed
+      - name: Run contract + perf suites against the live backend
+        run: pnpm test:contract
+      - name: Tear down wp-env
+        if: always()
+        run: pnpm wp:stop
 
   license-check:
     needs: install
