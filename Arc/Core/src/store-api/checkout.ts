@@ -6,7 +6,6 @@
  */
 import type { WooClient } from '../client/WooClient';
 import type { WCCheckoutPayload, WCCheckoutResponse } from '../types/checkout';
-import type { WooCart } from '../types/woo';
 
 // ---------------------------------------------------------------------------
 // Payment gateway type
@@ -28,13 +27,14 @@ export interface WCPaymentGateway {
 // ---------------------------------------------------------------------------
 
 /**
- * Retrieves the cart formatted for checkout display.
+ * Retrieves the checkout draft order for the current session.
  *
- * GET /checkout — returns cart-shaped data with addresses and shipping rates
- * pre-populated for the checkout form.
+ * GET /checkout — returns the draft ORDER (order_id, billing/shipping addresses,
+ * payment methods), NOT a cart. Requires an authenticated session with a
+ * non-empty cart.
  */
-export async function getCheckoutSchema(client: WooClient): Promise<WooCart> {
-  return client.request<WooCart>('/checkout');
+export async function getCheckoutSchema(client: WooClient): Promise<WCCheckoutResponse> {
+  return client.request<WCCheckoutResponse>('/checkout');
 }
 
 /**

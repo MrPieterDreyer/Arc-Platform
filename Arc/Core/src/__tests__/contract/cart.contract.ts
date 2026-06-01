@@ -41,6 +41,10 @@ async function clearCart(): Promise<void> {
   for (const item of cart.items) {
     await removeItem(client, { key: item.key });
   }
+  // Coupons persist across item removal — clear them too so coupon tests start clean.
+  for (const coupon of cart.coupons ?? []) {
+    await removeCoupon(client, coupon.code);
+  }
 }
 
 // ---------------------------------------------------------------------------

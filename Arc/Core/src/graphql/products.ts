@@ -159,7 +159,19 @@ export async function getProducts(
  * obtain full variation data (VariableProductDetailFields).
  */
 export function getProductVariations(product: WCProduct): WCProductVariation[] {
-  return product.variations?.nodes ?? [];
+  const nodes = product.variations?.nodes ?? [];
+  // WPGraphQL returns variation `attributes` as `{ nodes: [...] }`; flatten to
+  // the array shape WCProductVariation declares.
+  return nodes.map((v) => {
+    const attrs = v.attributes as unknown as
+      | Array<{ name: string; value: string }>
+      | { nodes?: Array<{ name: string; value: string }> }
+      | undefined;
+    return {
+      ...v,
+      attributes: Array.isArray(attrs) ? attrs : (attrs?.nodes ?? []),
+    };
+  });
 }
 
 // Re-export image type for consumers who need it

@@ -32,13 +32,13 @@ describe('Checkout API — ARC-API-05', () => {
   // -------------------------------------------------------------------------
 
   test.skipIf(!env.CI_WP_ENV)(
-    'getCheckoutSchema returns cart-shaped data with items array and totals object',
+    'getCheckoutSchema returns the checkout draft order (order_id + addresses)',
     async () => {
       const schema = await getCheckoutSchema(client);
-      expect(schema).toHaveProperty('items');
-      expect(Array.isArray(schema.items)).toBe(true);
-      expect(schema).toHaveProperty('totals');
-      expect(typeof schema.totals).toBe('object');
+      // GET /checkout returns the draft ORDER, not a cart — assert order fields.
+      expect(schema).toHaveProperty('order_id');
+      expect(schema).toHaveProperty('billing_address');
+      expect(schema).toHaveProperty('shipping_address');
     },
   );
 

@@ -79,22 +79,17 @@ export function removeItem(client: WooClient, payload: { key: string }): Promise
 /**
  * Applies a coupon code to the cart.
  */
-export function applyCoupon(client: WooClient, payload: { code: string }): Promise<WooCart> {
-  return client
-    .request<WooCart>('/cart/coupons', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    })
-    .then(safeValidateCart);
+export async function applyCoupon(client: WooClient, payload: { code: string }): Promise<WooCart> {
+  // POST /cart/coupons returns the added coupon resource, NOT the full cart —
+  // re-fetch so callers get the updated cart (with the coupon + recalculated totals).
+  await client.request('/cart/coupons', { method: 'POST', body: JSON.stringify(payload) });
+  return getCart(client);
 }
 
 /**
  * Removes a coupon code from the cart.
  */
-export function removeCoupon(client: WooClient, code: string): Promise<WooCart> {
-  return client
-    .request<WooCart>(`/cart/coupons/${encodeURIComponent(code)}`, {
-      method: 'DELETE',
-    })
-    .then(safeValidateCart);
+export async function removeCoupon(client: WooClient, code: string): Promise<WooCart> {
+  await client.request(`/cart/coupons/${encodeURIComponent(code)}`, { method: 'DELETE' });
+  return getCart(client);
 }
