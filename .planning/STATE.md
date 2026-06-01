@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-last_updated: "2026-05-29T10:43:11.952Z"
+status: executing
+last_updated: "2026-06-01T11:00:00.000Z"
 progress:
   total_phases: 8
-  completed_phases: 2
-  total_plans: 18
-  completed_plans: 18
-  percent: 100
+  completed_phases: 3
+  total_plans: 26
+  completed_plans: 26
+  percent: 38
 ---
 
 # Arc + Weave Platform — STATE
@@ -22,21 +22,35 @@ progress:
 
 **Core value:** A developer can ship a production headless WooCommerce storefront on `@arc/core` + `@arc/next` + `@weave/react` with the same productivity Shopify Hydrogen + Weaverse gives Shopify developers — and the page configuration lives inside the merchant's own WordPress, not a vendor SaaS.
 
-**Current focus:** Phase 01 — arc-core
+**Current focus:** Phase 03 — `@weave/react` (next up). Phases 0–2 complete.
 
 ---
 
 ## Current Position
 
-Phase: 00 (tooling-foundations) — COMPLETE
-Phase: 01 (arc-core) — IN PROGRESS
-Plan: 1 of TBD (Plan 01-01 complete — WooClient HTTP foundation)
+Phase: 00 (tooling) — COMPLETE
+Phase: 01 (arc-core) — COMPLETE (audited + hardened 2026-06-01)
+Phase: 02 (arc-next) — COMPLETE (audited + hardened 2026-06-01)
+Next: Phase 03 (`@weave/react`)
 
 - **Milestone:** v0.1 (Arc + Weave Platform v1 — Phases 0 through 6)
-- **Phase:** 2
-- **Plan:** Not started
-- **Status:** Ready to plan
-- **Progress:** [██████████] 100%
+- **Phase:** 3 of 8 phases complete
+- **Status:** Phases 0–2 done; ready to plan Phase 3
+- **Progress:** [████░░░░░░] 38% (3/8 phases)
+
+### Phase 0–2 audit (2026-06-01)
+
+Full implementation review + fixes. `@arc/core` and `@arc/next` build, typecheck,
+lint, and test green; example minimal-app builds (Next 16 cacheComponents) and its
+home UI passed a 7/7 Playwright run. Key fixes:
+- `ArcError` union now produced at runtime (ARC-API-03 was dead code).
+- `WooClient` coupon endpoints corrected to `/cart/coupons` (were `/cart/apply-coupon`).
+- Zod wired as defensive cart validation (was a declared-but-unused dep).
+- `@arc/core` split into RSC-safe main barrel + `@arc/core/hooks` (client-only) — main entry no longer pulls React hooks into Server Components.
+- `@arc/next` loaders build the GraphQL client INSIDE each `'use cache'` fn (closing over a client instance is illegal in Next 16).
+- CI now boots wp-env + runs the contract/perf suites (were skipped → green-by-skip).
+- engines.node `>=22.13` (pnpm 11 floor); CI matrix `[22,24]`.
+- Empty placeholder contract tests given real bodies or removed.
 
 ### Phase 0 Plan Map
 

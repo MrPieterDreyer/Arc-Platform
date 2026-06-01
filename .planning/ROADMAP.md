@@ -10,8 +10,8 @@
 ## Phases
 
 - [x] **Phase 0: Tooling & Foundations** — pnpm/Turbo/Biome/Vitest/tsup/Changesets/CI + 8 locked ADRs (completed 2026-05-28)
-- [ ] **Phase 1: `@arc/core`** — `WooClient` (Cart-Token + Nonce), Store API + WPGraphQL clients, framework-agnostic React 19 hooks
-- [ ] **Phase 2: `@arc/next`** — App Router loaders, Server Actions, cart-token cookie bridge, `'use cache'` + cacheTag helpers, revalidate webhook
+- [x] **Phase 1: `@arc/core`** — `WooClient` (Cart-Token + Nonce), Store API + WPGraphQL clients, framework-agnostic React 19 hooks (completed; audited + hardened 2026-06-01)
+- [x] **Phase 2: `@arc/next`** — App Router loaders, Server Actions, cart-token cookie bridge, `'use cache'` + cacheTag helpers, revalidate webhook (completed; audited + hardened 2026-06-01)
 - [ ] **Phase 3: `@weave/react`** — `WeaveComponentSchema<TProps>` generic, `defineSection`, registry, `<SectionRenderer>`, 15 input types, Zod validation
 - [ ] **Phase 4a: Weave WordPress Plugin (storage + REST)** — `weave_page` CPT, REST routes with explicit `permission_callback`, outbound revalidation webhook, PHP × WP × WC CI matrix [parallel: phase-1]
 - [ ] **Phase 4b: `@weave/next` + WP Admin Editor** — page-config loader, draft mode, revalidate handler, WP Admin React sidebar with media picker
@@ -56,7 +56,17 @@
   3. Posting a WP webhook payload to the revalidate route handler triggers `revalidateTag` for the matching tag, and the next page load returns fresh data without TTL wait.
   4. A `useOptimisticCart` example component shows the cart count updating before the Server Action round-trip completes, with rollback on error.
   5. ISR config exports for product, collection, and page-config routes are documented and consumed by Pilot without additional configuration.
-**Plans**: TBD
+**Plans**: 8 plans
+
+Plans:
+- [x] 02-01-PLAN.md — Wave 0: Vitest mocks, test stubs, contract scaffolds (nyquist)
+- [x] 02-02-PLAN.md — Wave 1: arcTag + ISR constants, server-only deps, subpath exports/tsup
+- [x] 02-03-PLAN.md — Wave 1: Cookie bridge + createArcClient factory
+- [x] 02-04-PLAN.md — Wave 2: 'use cache' catalog loaders + cacheTag
+- [x] 02-05-PLAN.md — Wave 2: Cart Server Actions (throw on error)
+- [x] 02-06-PLAN.md — Wave 2: createRevalidateHandler HMAC + revalidateTag(tag,'max')
+- [x] 02-07-PLAN.md — Wave 3: useOptimisticCart client hook
+- [x] 02-08-PLAN.md — Wave 4: minimal-app example + contract tests + human verify
 **UI hint**: yes
 
 ### Phase 3: `@weave/react`
@@ -130,8 +140,8 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 0. Tooling & Foundations | 9/9 | Complete   | 2026-05-28 |
-| 1. `@arc/core` | 8/9 | In Progress|  |
-| 2. `@arc/next` | 0/0 | Not started | - |
+| 1. `@arc/core` | 9/9 | Complete | 2026-06-01 |
+| 2. `@arc/next` | 8/8 | Complete | 2026-06-01 |
 | 3. `@weave/react` | 0/0 | Not started | - |
 | 4a. Weave WP Plugin (storage + REST) | 0/0 | Not started | - |
 | 4b. `@weave/next` + WP Admin Editor | 0/0 | Not started | - |

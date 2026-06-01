@@ -19,7 +19,7 @@ Each requirement is testable and maps to a roadmap phase. Categories follow the 
 - [x] **TOOL-06**: GitHub Actions CI runs lint + test + build + license-check on every PR
 - [x] **TOOL-07**: Changesets gate enforces `0.x.y` versioning until publish flag flipped
 - [x] **TOOL-08**: CI grep check fails if `@arc/core` or `@weave/react` imports anything from `next/*`
-- [ ] **TOOL-09**: ADR-0001 through ADR-0008 committed to `Documentation/Architecture/` (versioning, Next 16 + Gutenberg independence, license policy, cache tag taxonomy, page-config JSON shape, cart-token cookie, webhook auth, npm scope)
+- [x] **TOOL-09**: ADR-0001 through ADR-0008 committed to `Documentation/Architecture/` (versioning, Next 16 + Gutenberg independence, license policy, cache tag taxonomy, page-config JSON shape, cart-token cookie, webhook auth, npm scope)
 - [x] **TOOL-10**: License-allowlist CI gate via `pnpm licenses list` (MIT, Apache-2.0, ISC, BSD only)
 
 ### Arc Core — WC Store API Client (ARC-API)
@@ -53,13 +53,13 @@ Each requirement is testable and maps to a roadmap phase. Categories follow the 
 
 ### Arc Next — Next.js 16 Adapter (ARC-NEXT)
 
-- [ ] **ARC-NEXT-01**: Hydrogen-style loader factory consumable from App Router pages
-- [ ] **ARC-NEXT-02**: `arc_cart_token` cookie bridge (HttpOnly, SameSite=None+Secure) ties Cart-Token to Next session
-- [ ] **ARC-NEXT-03**: Server Actions for every cart mutation (`addItem`, `updateItem`, `removeItem`)
-- [ ] **ARC-NEXT-04**: `'use cache'` + `cacheTag` helpers emit tags from the ADR-0004 taxonomy
-- [ ] **ARC-NEXT-05**: Revalidate route handler factory consumes WP webhook payloads and calls `revalidateTag`
-- [ ] **ARC-NEXT-06**: ISR config exports for product, collection, and page-config routes
-- [ ] **ARC-NEXT-07**: `useOptimistic` cart pattern documented and exported as helper
+- [x] **ARC-NEXT-01**: Hydrogen-style loader factory consumable from App Router pages
+- [x] **ARC-NEXT-02**: `arc_cart_token` cookie bridge (HttpOnly, SameSite=None+Secure) ties Cart-Token to Next session
+- [x] **ARC-NEXT-03**: Server Actions for every cart mutation (`addItem`, `updateItem`, `removeItem`)
+- [x] **ARC-NEXT-04**: `'use cache'` + `cacheTag` helpers emit tags from the ADR-0004 taxonomy
+- [x] **ARC-NEXT-05**: Revalidate route handler factory consumes WP webhook payloads and calls `revalidateTag`
+- [x] **ARC-NEXT-06**: ISR config exports for product, collection, and page-config routes
+- [x] **ARC-NEXT-07**: `useOptimistic` cart pattern documented and exported as helper
 
 ### Weave React — Section Schema SDK (WEAVE-SDK)
 
@@ -192,35 +192,35 @@ Every v1 requirement maps to exactly one phase.
 | TOOL-06 | Phase 0 | Complete |
 | TOOL-07 | Phase 0 | Complete |
 | TOOL-08 | Phase 0 | Complete |
-| TOOL-09 | Phase 0 | Pending |
+| TOOL-09 | Phase 0 | Complete |
 | TOOL-10 | Phase 0 | Complete |
 | ARC-API-01 | Phase 1 | Complete — 01-01 |
 | ARC-API-02 | Phase 1 | Complete — 01-01 |
-| ARC-API-03 | Phase 1 | Pending |
-| ARC-API-04 | Phase 1 | Pending |
-| ARC-API-05 | Phase 1 | Pending |
-| ARC-API-06 | Phase 1 | Pending |
-| ARC-API-07 | Phase 1 | Pending |
-| ARC-API-08 | Phase 1 | Pending |
+| ARC-API-03 | Phase 1 | Complete |
+| ARC-API-04 | Phase 1 | Complete |
+| ARC-API-05 | Phase 1 | Complete |
+| ARC-API-06 | Phase 1 | Complete |
+| ARC-API-07 | Phase 1 | Complete |
+| ARC-API-08 | Phase 1 | Complete |
 | ARC-GQL-01 | Phase 1 | Complete |
-| ARC-GQL-02 | Phase 1 | Pending |
+| ARC-GQL-02 | Phase 1 | Complete |
 | ARC-GQL-03 | Phase 1 | Complete |
 | ARC-GQL-04 | Phase 1 | Complete |
-| ARC-GQL-05 | Phase 1 | Pending |
-| ARC-GQL-06 | Phase 1 | Pending |
-| ARC-GQL-07 | Phase 1 | Pending |
+| ARC-GQL-05 | Phase 1 | Complete |
+| ARC-GQL-06 | Phase 1 | Complete |
+| ARC-GQL-07 | Phase 1 | Complete |
 | ARC-HOOK-01 | Phase 1 | Complete |
 | ARC-HOOK-02 | Phase 1 | Complete |
 | ARC-HOOK-03 | Phase 1 | Complete |
 | ARC-HOOK-04 | Phase 1 | Complete |
 | ARC-HOOK-05 | Phase 1 | Complete |
-| ARC-NEXT-01 | Phase 2 | Pending |
-| ARC-NEXT-02 | Phase 2 | Pending |
-| ARC-NEXT-03 | Phase 2 | Pending |
-| ARC-NEXT-04 | Phase 2 | Pending |
-| ARC-NEXT-05 | Phase 2 | Pending |
-| ARC-NEXT-06 | Phase 2 | Pending |
-| ARC-NEXT-07 | Phase 2 | Pending |
+| ARC-NEXT-01 | Phase 2 | Complete |
+| ARC-NEXT-02 | Phase 2 | Complete |
+| ARC-NEXT-03 | Phase 2 | Complete |
+| ARC-NEXT-04 | Phase 2 | Complete |
+| ARC-NEXT-05 | Phase 2 | Complete |
+| ARC-NEXT-06 | Phase 2 | Complete |
+| ARC-NEXT-07 | Phase 2 | Complete |
 | WEAVE-SDK-01 | Phase 3 | Pending |
 | WEAVE-SDK-02 | Phase 3 | Pending |
 | WEAVE-SDK-03 | Phase 3 | Pending |
