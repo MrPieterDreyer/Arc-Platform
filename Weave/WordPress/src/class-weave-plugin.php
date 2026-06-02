@@ -48,6 +48,16 @@ final class Weave_Plugin {
 	private ?Weave_REST_Controller $controller = null;
 
 	/**
+	 * The outbound revalidation webhook instance.
+	 *
+	 * Held on the singleton so the `save_post_weave_page` and `admin_init`
+	 * callbacks share one instance (Plan 04).
+	 *
+	 * @var Weave_Webhook|null
+	 */
+	private ?Weave_Webhook $webhook = null;
+
+	/**
 	 * Retrieve (and lazily create) the singleton instance.
 	 *
 	 * @return self
@@ -68,9 +78,7 @@ final class Weave_Plugin {
 	 *
 	 * Single insertion point for later plans. Each plan adds exactly one wiring
 	 * block; classes must exist before being referenced (autoloaded via the
-	 * Composer classmap over src/). Remaining plans:
-	 *
-	 *   - Plan 04: $webhook = new Weave_Webhook(); add_action( 'save_post_weave_page', [ $webhook, 'on_save' ], 10, 3 );
+	 * Composer classmap over src/).
 	 *
 	 * @return void
 	 */
@@ -82,5 +90,11 @@ final class Weave_Plugin {
 		// Plan 03: register the weave/v1 REST routes on rest_api_init.
 		$this->controller = new Weave_REST_Controller();
 		add_action( 'rest_api_init', array( $this->controller, 'register_routes' ) );
+
+		// Plan 04: fire the HMAC-signed revalidation webhook on save_post_weave_page,
+		// and register the revalidate-URL settings option on admin_init (D-13).
+		$this->webhook = new Weave_Webhook();
+		add_action( 'save_post_weave_page', array( $this->webhook, 'on_save' ), 10, 3 );
+		add_action( 'admin_init', array( $this->webhook, 'register_settings' ) );
 	}
 }
