@@ -28,6 +28,16 @@ final class Weave_Plugin {
 	private static ?self $instance = null;
 
 	/**
+	 * The CPT registrar instance.
+	 *
+	 * Held on the singleton so Plans 03/04 can share it (the REST controller
+	 * and webhook both target the `weave_page` post type).
+	 *
+	 * @var Weave_CPT|null
+	 */
+	private ?Weave_CPT $cpt = null;
+
+	/**
 	 * Retrieve (and lazily create) the singleton instance.
 	 *
 	 * @return self
@@ -46,17 +56,18 @@ final class Weave_Plugin {
 	/**
 	 * Register all WordPress hooks for the plugin.
 	 *
-	 * Single insertion point for later plans. Currently empty — the collaborating
-	 * classes do not exist yet, so referencing them here would be a fatal load
-	 * error. Each plan adds exactly one wiring block:
+	 * Single insertion point for later plans. Each plan adds exactly one wiring
+	 * block; classes must exist before being referenced (autoloaded via the
+	 * Composer classmap over src/). Remaining plans:
 	 *
-	 *   - Plan 02: $cpt = new Weave_CPT(); add_action( 'init', [ $cpt, 'register' ] );
 	 *   - Plan 03: $controller = new Weave_REST_Controller(); add_action( 'rest_api_init', [ $controller, 'register_routes' ] );
 	 *   - Plan 04: $webhook = new Weave_Webhook(); add_action( 'save_post_weave_page', [ $webhook, 'on_save' ], 10, 3 );
 	 *
 	 * @return void
 	 */
 	private function register_hooks(): void {
-		// wired in Plan 02/03/04.
+		// Plan 02: register the weave_page CPT on init.
+		$this->cpt = new Weave_CPT();
+		add_action( 'init', array( $this->cpt, 'register' ) );
 	}
 }
