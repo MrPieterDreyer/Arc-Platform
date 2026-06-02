@@ -27,11 +27,42 @@ class Test_Weave_REST_Auth extends WP_UnitTestCase {
 	private const SAMPLE_UUID = '550e8400-e29b-41d4-a716-446655440000';
 
 	/**
-	 * Ensure the weave/v1 routes are registered for this request lifecycle.
+	 * A subscriber user id (has `read`, lacks `edit_posts`) for the uncapable
+	 * 403-on-writes cases (D-10).
+	 *
+	 * @var int
+	 */
+	private int $subscriber_id;
+
+	/**
+	 * Register the weave/v1 routes, pre-seed a published `home` weave_page so the
+	 * PUT route resolves a real post, and create a subscriber for the uncapable
+	 * cases.
 	 */
 	public function set_up(): void {
 		parent::set_up();
 		do_action( 'rest_api_init' );
+
+		// Pre-seed a published weave_page so PUT /pages/home resolves a real post
+		// (a capable PUT would succeed — here we only assert the uncapable 403).
+		wp_insert_post(
+			array(
+				'post_type'    => Weave_CPT::POST_TYPE,
+				'post_name'    => 'home',
+				'post_title'   => 'home',
+				'post_status'  => 'publish',
+				'post_content' => wp_json_encode(
+					array(
+						'schemaVersion' => 1,
+						'slug'          => 'home',
+						'sections'      => array(),
+						'updatedAt'     => '2000-01-01T00:00:00+00:00',
+					)
+				),
+			)
+		);
+
+		$this->subscriber_id = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 	}
 
 	/* --------------------- enumeration: anonymous never 200 -------------------- */
@@ -108,5 +139,58 @@ class Test_Weave_REST_Auth extends WP_UnitTestCase {
 		}
 
 		$this->assertTrue( $found, 'No weave/v1 routes were registered' );
+	}
+
+	/* ---------------------- concrete: anonymous gets 401 ----------------------- */
+
+	/**
+	 * Anonymous callers get a deterministic 401 on every route (real params so
+	 * routes resolve, not 404) — the explicit require_cap logged-out branch.
+	 *
+	 * @return void
+	 */
+	public function test_anonymous_gets_401(): void {
+		wp_set_current_user( 0 );
+
+		$cases = array(
+			array( 'GET', '/weave/v1/pages' ),
+			array( 'GET', '/weave/v1/pages/home' ),
+			array( 'PUT', '/weave/v1/pages/home' ),
+			array( 'POST', '/weave/v1/sections' ),
+			array( 'DELETE', '/weave/v1/sections/' . self::SAMPLE_UUID ),
+		);
+
+		foreach ( $cases as $case ) {
+			list( $method, $route ) = $case;
+			$req  = new WP_REST_Request( $method, $route );
+			$resp = rest_do_request( $req );
+			$this->assertSame( 401, $resp->get_status(), "Route $method $route did not return 401 to an anonymous caller (got {$resp->get_status()})" );
+		}
+	}
+
+	/* ------------- concrete: authenticated-uncapable gets 403 on writes -------- */
+
+	/**
+	 * An authenticated subscriber (no `edit_posts`) gets 403 on every write
+	 * route (D-10). Reads require only `read`, which a subscriber has, so reads
+	 * are intentionally NOT asserted 403 here.
+	 *
+	 * @return void
+	 */
+	public function test_authenticated_uncapable_gets_403_on_writes(): void {
+		wp_set_current_user( $this->subscriber_id );
+
+		$writes = array(
+			array( 'PUT', '/weave/v1/pages/home' ),
+			array( 'POST', '/weave/v1/sections' ),
+			array( 'DELETE', '/weave/v1/sections/' . self::SAMPLE_UUID ),
+		);
+
+		foreach ( $writes as $case ) {
+			list( $method, $route ) = $case;
+			$req  = new WP_REST_Request( $method, $route );
+			$resp = rest_do_request( $req );
+			$this->assertSame( 403, $resp->get_status(), "Write route $method $route did not return 403 to an uncapable subscriber (got {$resp->get_status()})" );
+		}
 	}
 }
