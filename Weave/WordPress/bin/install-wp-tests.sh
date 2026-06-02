@@ -37,8 +37,10 @@ WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
 WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress}
 
 download() {
+	# -f makes curl fail (non-zero) on HTTP errors so a 404 doesn't silently
+	# write an error page into the target (which then breaks unzip).
 	if [ "$(which curl)" ]; then
-		curl -s "$1" >"$2"
+		curl -fsSL "$1" -o "$2"
 	elif [ "$(which wget)" ]; then
 		wget -nv -O "$2" "$1"
 	else
@@ -96,7 +98,11 @@ install_wp() {
 		fi
 		download https://wordpress.org/"${ARCHIVE_NAME}".zip "$TMPDIR/wordpress.zip"
 		unzip -q "$TMPDIR/wordpress.zip" -d "$TMPDIR/"
-		mv "$TMPDIR/wordpress"/* "$WP_CORE_DIR"
+		# The zip extracts to $TMPDIR/wordpress. Only relocate if WP_CORE_DIR is a
+		# DIFFERENT path — otherwise `mv dir/* dir` errors ("are the same file").
+		if [ "$TMPDIR/wordpress" != "${WP_CORE_DIR%/}" ]; then
+			mv "$TMPDIR/wordpress"/* "$WP_CORE_DIR"
+		fi
 	fi
 
 	download https://raw.githubusercontent.com/markoheijnen/wp-mysqli/master/db.php "$WP_CORE_DIR/wp-content/db.php"
