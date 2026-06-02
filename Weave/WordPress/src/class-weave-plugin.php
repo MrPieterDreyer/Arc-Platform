@@ -38,6 +38,16 @@ final class Weave_Plugin {
 	private ?Weave_CPT $cpt = null;
 
 	/**
+	 * The REST controller instance (weave/v1 routes).
+	 *
+	 * Held on the singleton for parity with the CPT and so future plans can
+	 * reference the same instance.
+	 *
+	 * @var Weave_REST_Controller|null
+	 */
+	private ?Weave_REST_Controller $controller = null;
+
+	/**
 	 * Retrieve (and lazily create) the singleton instance.
 	 *
 	 * @return self
@@ -60,7 +70,6 @@ final class Weave_Plugin {
 	 * block; classes must exist before being referenced (autoloaded via the
 	 * Composer classmap over src/). Remaining plans:
 	 *
-	 *   - Plan 03: $controller = new Weave_REST_Controller(); add_action( 'rest_api_init', [ $controller, 'register_routes' ] );
 	 *   - Plan 04: $webhook = new Weave_Webhook(); add_action( 'save_post_weave_page', [ $webhook, 'on_save' ], 10, 3 );
 	 *
 	 * @return void
@@ -69,5 +78,9 @@ final class Weave_Plugin {
 		// Plan 02: register the weave_page CPT on init.
 		$this->cpt = new Weave_CPT();
 		add_action( 'init', array( $this->cpt, 'register' ) );
+
+		// Plan 03: register the weave/v1 REST routes on rest_api_init.
+		$this->controller = new Weave_REST_Controller();
+		add_action( 'rest_api_init', array( $this->controller, 'register_routes' ) );
 	}
 }
