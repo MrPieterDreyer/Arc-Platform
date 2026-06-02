@@ -28,7 +28,8 @@ type Reg = Map<string, WeaveComponentEntry>;
 const g = globalThis as unknown as { [KEY]?: Reg };
 
 /** The one shared registry Map. `??=` keeps the first instance across re-imports. */
-export const registry: Reg = (g[KEY] ??= new Map());
+g[KEY] ??= new Map();
+export const registry: Reg = g[KEY] as Reg;
 
 /** Register (or replace) the entry for a section `type`. Called inside `defineSection`. */
 export function registerSection(type: string, entry: WeaveComponentEntry): void {
