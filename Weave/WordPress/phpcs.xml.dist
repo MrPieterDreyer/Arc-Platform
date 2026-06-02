@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="Weave">
+    <description>PHP_CodeSniffer ruleset for the Weave WordPress plugin (WPCS 3).</description>
+
+    <!-- Scan only plugin source and tests; never vendored code. -->
+    <file>src</file>
+    <file>tests</file>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <!-- WordPress Coding Standards (WPCS 3 meta-ruleset). -->
+    <rule ref="WordPress"/>
+
+    <!-- PHP / WP compatibility targets (D-02, RESEARCH §Project Constraints). -->
+    <config name="testVersion" value="8.1-"/>
+    <config name="minimum_wp_version" value="6.4"/>
+
+    <!-- Run against PHP files only. -->
+    <arg name="extensions" value="php"/>
+    <arg value="sp"/>
+</ruleset>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    PHPUnit configuration for the Weave WordPress plugin.
+
+    Pinned to the PHPUnit <=9 schema (no `xsi:` cacheDirectory attributes) because
+    the WordPress core test framework (WP_UnitTestCase) caps at PHPUnit <=9.6 via
+    yoast/phpunit-polyfills. This supersedes CONTEXT D-14's "PHPUnit 10" label
+    (see 04A-RESEARCH.md Pitfall 6 / Open Question 2).
+-->
+<phpunit
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    beStrictAboutTestsThatDoNotTestAnything="false"
+    convertErrorsToExceptions="true"
+    convertWarningsToExceptions="true"
+    convertNoticesToExceptions="true"
+>
+    <testsuites>
+        <testsuite name="weave">
+            <directory suffix=".php">tests</directory>
+            <exclude>tests/bootstrap.php</exclude>
+        </testsuite>
+    </testsuites>
+</phpunit>
