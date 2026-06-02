@@ -59,7 +59,12 @@ const CASES: TypeCase[] = [
   { type: 'collection-picker', validValue: 'drivers', fallback: '', declared: 'putters' },
   { type: 'repeater', validValue: [{ a: 1 }], fallback: [], declared: [{ b: 2 }] },
   { type: 'range', validValue: 5, configs: { min: 2, max: 10 }, fallback: 2, declared: 8 },
-  { type: 'datetime', validValue: '2026-06-01T00:00:00Z', fallback: '', declared: '2026-01-01T00:00:00Z' },
+  {
+    type: 'datetime',
+    validValue: '2026-06-01T00:00:00Z',
+    fallback: '',
+    declared: '2026-01-01T00:00:00Z',
+  },
   { type: 'code', validValue: 'const x = 1', fallback: '', declared: 'let y = 2' },
   { type: 'markdown', validValue: '# H', fallback: '', declared: '## H2' },
 ];
@@ -100,7 +105,10 @@ describe('inputRegistry — type fallback defaults (no declared defaultValue)', 
 describe('inputRegistry — declared defaultValue wins over fallback', () => {
   for (const c of CASES) {
     it(`${c.type}.default({ defaultValue }) returns the declared value`, () => {
-      const result = inputRegistry[c.type].default({ defaultValue: c.declared, configs: c.configs });
+      const result = inputRegistry[c.type].default({
+        defaultValue: c.declared,
+        configs: c.configs,
+      });
       expect(result).toEqual(c.declared);
     });
   }

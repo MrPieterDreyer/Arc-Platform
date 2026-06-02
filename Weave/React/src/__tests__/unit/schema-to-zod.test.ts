@@ -47,7 +47,12 @@ describe('schemaToZod', () => {
               type: 'select',
               name: 'variant',
               label: 'Variant',
-              configs: { options: [{ label: 'A', value: 'a' }, { label: 'B', value: 'b' }] },
+              configs: {
+                options: [
+                  { label: 'A', value: 'a' },
+                  { label: 'B', value: 'b' },
+                ],
+              },
             },
           ],
         },

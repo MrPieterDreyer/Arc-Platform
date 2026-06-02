@@ -10,6 +10,26 @@
     <!-- WordPress Coding Standards (WPCS 3 meta-ruleset). -->
     <rule ref="WordPress"/>
 
+    <!-- Test files are self-describing — don't require full doc blocks on test methods. -->
+    <rule ref="Squiz.Commenting.FunctionComment">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Squiz.Commenting.FileComment">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Generic.Commenting.DocComment">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Cosmetic equals-sign alignment is noisy; not enforced. -->
+    <rule ref="Generic.Formatting.MultipleStatementAlignment">
+        <severity>0</severity>
+    </rule>
+    <!-- WP hook callbacks legitimately keep unused trailing params (e.g. $update on save_post). -->
+    <rule ref="WordPress.CodeAnalysis.UnusedFunctionParameter">
+        <severity>0</severity>
+    </rule>
+
     <!-- PHP / WP compatibility targets (D-02, RESEARCH §Project Constraints). -->
     <config name="testVersion" value="8.1-"/>
     <config name="minimum_wp_version" value="6.4"/>

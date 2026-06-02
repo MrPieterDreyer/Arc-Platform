@@ -147,7 +147,12 @@ describe('SectionRenderer — server (node) render', () => {
   it('does not crash on a malformed-data section; sibling markers remain', () => {
     const sections = fiveValidSections();
     // sr-count expects a number; give it a string → Zod validation failure routes to the boundary.
-    sections.splice(3, 0, { id: 'sbad', type: 'sr-count', data: { count: 'not-a-number' }, version: 1 });
+    sections.splice(3, 0, {
+      id: 'sbad',
+      type: 'sr-count',
+      data: { count: 'not-a-number' },
+      version: 1,
+    });
 
     const html = renderToStaticMarkup(<SectionRenderer config={pageOf(sections)} />);
 

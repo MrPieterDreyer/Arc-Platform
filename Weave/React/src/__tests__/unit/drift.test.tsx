@@ -1,11 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ComponentType } from 'react';
 import { getSection } from '../../registry/registry';
-import {
-  __resetDriftWarnings,
-  defineSection,
-  warnOnDrift,
-} from '../../schema/define-section';
+import { __resetDriftWarnings, defineSection, warnOnDrift } from '../../schema/define-section';
 import type { WeaveComponentSchema } from '../../schema/types';
 
 /**

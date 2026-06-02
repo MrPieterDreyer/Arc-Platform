@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  type ConditionOp,
-  evaluateCondition,
-  parseCondition,
-} from '../../render/condition';
+import { type ConditionOp, evaluateCondition, parseCondition } from '../../render/condition';
 
 /**
  * SDK-06 / D-12: conditional visibility is a declarative string predicate `'field.op.value'`

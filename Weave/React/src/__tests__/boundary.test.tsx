@@ -81,12 +81,7 @@ describe('SectionErrorBoundary', () => {
 
   it('renders the dev unknown-type card with no path row', () => {
     render(
-      <SectionErrorBoundary
-        mode="dev"
-        kind="unknown-type"
-        sectionType="mystery"
-        sectionId="x"
-      />,
+      <SectionErrorBoundary mode="dev" kind="unknown-type" sectionType="mystery" sectionId="x" />,
     );
 
     expect(screen.getByText('Unknown section type: mystery')).toBeInTheDocument();

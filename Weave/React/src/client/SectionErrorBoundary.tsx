@@ -100,8 +100,7 @@ const footerStyle: CSSProperties = {
   fontSize: 12,
 };
 
-const FOOTER_HINT =
-  'This card renders in development only. In production this section is skipped.';
+const FOOTER_HINT = 'This card renders in development only. In production this section is skipped.';
 
 export class SectionErrorBoundary extends Component<SectionErrorBoundaryProps, State> {
   state: State = { caughtMessage: null };
