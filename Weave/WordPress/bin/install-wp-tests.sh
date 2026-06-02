@@ -116,15 +116,22 @@ install_test_suite() {
 		local ioption='-i'
 	fi
 
-	if [ ! -d "$WP_TESTS_DIR" ]; then
-		mkdir -p "$WP_TESTS_DIR"
-		rm -rf "$WP_TESTS_DIR/{includes,data}"
-		svn export --quiet --ignore-externals https://develop.svn.wordpress.org/"${WP_TESTS_TAG}"/tests/phpunit/includes/ "$WP_TESTS_DIR/includes"
-		svn export --quiet --ignore-externals https://develop.svn.wordpress.org/"${WP_TESTS_TAG}"/tests/phpunit/data/ "$WP_TESTS_DIR/data"
+	# Map the svn tag (branches/X, tags/X, trunk) to a GitHub ref on the
+	# wordpress-develop mirror — ubuntu-24.04 runners no longer ship `svn`,
+	# so we download a tarball instead of `svn export`.
+	local GH_REF="${WP_TESTS_TAG#branches/}"
+	GH_REF="${GH_REF#tags/}"
+
+	if [ ! -d "$WP_TESTS_DIR/includes" ]; then
+		mkdir -p "$WP_TESTS_DIR" "$TMPDIR/wp-develop"
+		download "https://github.com/WordPress/wordpress-develop/archive/${GH_REF}.tar.gz" "$TMPDIR/wp-develop.tar.gz"
+		tar --strip-components=1 -xzf "$TMPDIR/wp-develop.tar.gz" -C "$TMPDIR/wp-develop"
+		cp -r "$TMPDIR/wp-develop/tests/phpunit/includes" "$WP_TESTS_DIR/includes"
+		cp -r "$TMPDIR/wp-develop/tests/phpunit/data" "$WP_TESTS_DIR/data"
 	fi
 
 	if [ ! -f wp-tests-config.php ]; then
-		download https://develop.svn.wordpress.org/"${WP_TESTS_TAG}"/wp-tests-config-sample.php "$WP_TESTS_DIR"/wp-tests-config.php
+		download "https://raw.githubusercontent.com/WordPress/wordpress-develop/${GH_REF}/wp-tests-config-sample.php" "$WP_TESTS_DIR"/wp-tests-config.php
 		WP_CORE_DIR=$(echo "$WP_CORE_DIR" | sed "s:/\+$::")
 		sed $ioption "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR/':" "$WP_TESTS_DIR"/wp-tests-config.php
 		sed $ioption "s/youremptytestdbnamehere/$DB_NAME/" "$WP_TESTS_DIR"/wp-tests-config.php
