@@ -141,3 +141,72 @@ jobs:
       - run: pnpm verify-adrs
       - run: pnpm build
       - run: pnpm verify-dist
+
+  # ---------------------------------------------------------------------------
+  # Weave WordPress plugin (PHP) — extends this workflow per D-15 (do NOT fork).
+  # These jobs have no pnpm dependency, so they intentionally omit `needs: install`.
+  # ---------------------------------------------------------------------------
+
+  # PHPCS is version-invariant: lint results do not change across PHP/WP/WC.
+  # Run it ONCE in a single cell rather than 16x inside the wp-plugin matrix.
+  php-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer
+          coverage: none
+      - name: Install plugin dev deps
+        run: composer install --no-interaction --prefer-dist
+        working-directory: Weave/WordPress
+      - name: PHPCS
+        run: composer lint
+        working-directory: Weave/WordPress
+
+  # WEAVE-WP-09 gate: run the plugin PHPUnit suite across the supported
+  # PHP x WP x WC compatibility surface. Built on shivammathur/setup-php +
+  # a MySQL service + install-wp-tests.sh — NOT wp-env per cell (RESEARCH Pitfall 4:
+  # wp-env's bundled PHPUnit is fragile across a PHP-version matrix).
+  wp-plugin:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # full compatibility picture, not first-failure
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+        wp: ['latest', '6.9'] # latest (resolved at run time) + one previous major
+        wc: ['latest', '10.7.1'] # latest (resolved at run time) + WC-1 (pinned)
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer
+          extensions: mysqli, mbstring
+          coverage: none
+      - name: Install plugin dev deps
+        run: composer install --no-interaction --prefer-dist
+        working-directory: Weave/WordPress
+      - name: Install WP test suite (version-matched)
+        run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 ${{ matrix.wp }}
+        working-directory: Weave/WordPress
+      - name: Install WooCommerce ${{ matrix.wc }}
+        run: bash bin/install-woocommerce.sh ${{ matrix.wc }}
+        working-directory: Weave/WordPress
+      - name: PHPUnit
+        run: composer test
+        working-directory: Weave/WordPress
