@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createMockDraftMode, type MockDraftMode } from './__mocks__/next-headers.js';
 
 // Controllable draftMode double, hoisted so the `vi.mock('next/headers')` factory can close over it
-// (vi.mock is hoisted above plain top-level consts; vi.hoisted is the supported escape hatch).
-const draft = vi.hoisted(() => ({ current: undefined as unknown as MockDraftMode }));
+// (vi.mock is hoisted above plain top-level consts; vi.hoisted is the supported escape hatch — the
+// same pattern load-page-config.test.ts uses). `enable` is a spy so the valid-token path is observable.
+const draft = vi.hoisted(() => ({ isEnabled: false, enable: vi.fn(), disable: vi.fn() }));
 
 vi.mock('next/headers', () => ({
-  draftMode: vi.fn(async () => draft.current),
+  draftMode: vi.fn(async () => draft),
 }));
 
 // `redirect` works by THROWING NEXT_REDIRECT — mirror that so the throw is observable in tests.
@@ -27,7 +27,7 @@ function requestFor(params: Record<string, string>): Request {
 describe('WEAVE-NEXT-03 — createPreviewHandler', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    draft.current = createMockDraftMode(false);
+    draft.isEnabled = false;
   });
 
   it('returns 401 and does NOT enable draft mode for a bad token', async () => {
@@ -38,7 +38,7 @@ describe('WEAVE-NEXT-03 — createPreviewHandler', () => {
 
     expect(res.status).toBe(401);
     await expect(res.json()).resolves.toEqual({ error: 'Invalid preview token' });
-    expect(draft.current.enable).not.toHaveBeenCalled();
+    expect(draft.enable).not.toHaveBeenCalled();
   });
 
   it('returns 401 when no token is supplied (length mismatch, no throw)', async () => {
@@ -48,7 +48,7 @@ describe('WEAVE-NEXT-03 — createPreviewHandler', () => {
     const res = await handler(requestFor({ slug: 'home' }));
 
     expect(res.status).toBe(401);
-    expect(draft.current.enable).not.toHaveBeenCalled();
+    expect(draft.enable).not.toHaveBeenCalled();
   });
 
   it('enables draft mode then redirects to /{slug} for a valid token', async () => {
@@ -61,7 +61,7 @@ describe('WEAVE-NEXT-03 — createPreviewHandler', () => {
       'NEXT_REDIRECT:/home',
     );
 
-    expect(draft.current.enable).toHaveBeenCalledTimes(1);
+    expect(draft.enable).toHaveBeenCalledTimes(1);
     expect(redirect).toHaveBeenCalledWith('/home');
   });
 });
