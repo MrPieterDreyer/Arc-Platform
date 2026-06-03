@@ -1,13 +1,15 @@
 /**
  * `@weave/next` barrel export-surface contract (WEAVE-NEXT-01..04, Pitfall 5).
  *
- * The package exposes exactly two entry points — `.` (RSC-safe) and `./server` (server-only) — so
- * a symbol that exists in a module but is re-exported from NEITHER barrel is unreachable by
- * consumers. This suite locks both surfaces:
- *   - `./server` MUST export all five server APIs (a regression here once left `WeavePage`
- *     defined but unreachable — see the fix in server.ts).
- *   - `./index` MUST stay RSC-safe: it re-exports the pure `weaveTag` only and NONE of the
- *     server-only APIs (re-exporting one would drag `server-only` into a client graph).
+ * The package exposes exactly two entry points — `.` (RSC-safe) and `./server` (server-only).
+ * This suite locks both surfaces:
+ *   - `./server` exports the four server APIs that do NOT pull a client-only module: `weaveTag`,
+ *     `loadPageConfig`, `createPreviewHandler`, `createWeaveRevalidateHandler`.
+ *   - `./server` must NOT re-export `WeavePage`: it imports the `@weave/react` barrel (`import
+ *     'client-only'`), so re-exporting it here would drag `client-only` into the RSC graph of any
+ *     consumer importing `@weave/next/server` from a Server Component and break their build. This
+ *     assertion guards that exact regression (see the comment in server.ts + examples/minimal-app).
+ *   - `./index` MUST stay RSC-safe: pure `weaveTag` only, NONE of the server-only APIs.
  *
  * The Next runtime modules the server graph imports are stubbed so the barrel import is hermetic —
  * we assert the export SURFACE, not behavior (behavior lives in each module's own test).
@@ -29,23 +31,24 @@ vi.mock('next/navigation', () => ({
 }));
 
 describe('@weave/next/server — export surface', () => {
-  it('exports all five server APIs', async () => {
+  it('exports the four server APIs that are safe for the RSC server graph', async () => {
     const mod = await import('../server.js');
 
-    // weaveTag is the cache-tag helper object; the other four are factory/component functions.
+    // weaveTag is the cache-tag helper object; the other three are factory functions.
     expect(typeof mod.weaveTag).toBe('object');
     expect(typeof mod.weaveTag.page).toBe('function');
     expect(typeof mod.weaveTag.pageList).toBe('function');
     expect(typeof mod.loadPageConfig).toBe('function');
-    expect(typeof mod.WeavePage).toBe('function');
     expect(typeof mod.createPreviewHandler).toBe('function');
     expect(typeof mod.createWeaveRevalidateHandler).toBe('function');
   });
 
-  it('exposes WeavePage so storefront routes can import it (WEAVE-NEXT-02 reachability)', async () => {
-    const mod = await import('../server.js');
-    expect('WeavePage' in mod).toBe(true);
-    expect(mod.WeavePage.name).toBe('WeavePage');
+  it('does NOT re-export WeavePage (it pulls @weave/react client-only into the server graph)', async () => {
+    // Re-exporting WeavePage here breaks any consumer that imports `@weave/next/server` from a
+    // Server Component ("'client-only' cannot be imported from a Server Component module").
+    // Consumers use loadPageConfig + a Client Component <SectionRenderer> wrapper instead.
+    const mod = (await import('../server.js')) as Record<string, unknown>;
+    expect('WeavePage' in mod).toBe(false);
   });
 });
 
