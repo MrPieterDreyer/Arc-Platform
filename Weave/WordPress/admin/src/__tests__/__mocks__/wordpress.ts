@@ -122,9 +122,21 @@ export function ColorPalette({ value, onChange }: ControlProps) {
 }
 
 export function Button({ children, onClick, ...rest }: ControlProps) {
+  // WP `<Button>` uses `label` as the accessible name for icon-only buttons (no text children).
+  // Mirror that: surface `label` as `aria-label` and reflect `disabled` so reorder buttons are
+  // queryable + their end-of-list disabled state is assertable.
+  const ariaLabel = typeof rest.label === 'string' ? rest.label : undefined;
+  const disabled = Boolean(rest.disabled);
   return createElement(
     'button',
-    { type: 'button', 'data-wp-control': 'Button', onClick, ...filterDomProps(rest) },
+    {
+      type: 'button',
+      'data-wp-control': 'Button',
+      'aria-label': ariaLabel,
+      disabled,
+      onClick,
+      ...filterDomProps(rest),
+    },
     children,
   );
 }
