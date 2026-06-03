@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 export type MockCookieOptions = {
@@ -35,12 +36,19 @@ export type MockCookieJar = ReturnType<typeof createMockCookieJar>;
 /**
  * Controllable `draftMode()` double. `isEnabled` is a static boolean (set at
  * creation); `enable`/`disable` are spies so callers can assert toggling.
+ *
+ * The return type is annotated explicitly: without it `tsc` cannot name the inferred
+ * `vi.fn()` type without referencing `@vitest/spy`'s internal path (TS2742, non-portable).
  */
-export function createMockDraftMode(initial = false) {
-  return { isEnabled: initial, enable: vi.fn(), disable: vi.fn() };
+export interface MockDraftMode {
+  isEnabled: boolean;
+  enable: Mock;
+  disable: Mock;
 }
 
-export type MockDraftMode = ReturnType<typeof createMockDraftMode>;
+export function createMockDraftMode(initial = false): MockDraftMode {
+  return { isEnabled: initial, enable: vi.fn(), disable: vi.fn() };
+}
 
 /**
  * Registers a `next/headers` mock exposing `cookies` (backed by `jar`) and an

@@ -1,2 +1,10 @@
-// Phase 0 stub. Real exports land in Phase 4b.
-export const __WEAVE_NEXT_VERSION = '0.0.1';
+/**
+ * `@weave/next` — RSC-safe main barrel (Pitfall 5).
+ *
+ * Exports ONLY pure values + types. Nothing here imports a server-restricted module, so this entry
+ * is safe inside a Client Component graph. The cached loader, page component, and draft-mode
+ * factory (plus the forthcoming revalidate handler) live behind the `@weave/next/server` subpath.
+ */
+
+export { weaveTag } from './cache-tags.js';
+export type { WeavePageConfig, WeaveSection } from '@weave/react';
