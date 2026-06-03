@@ -76,34 +76,42 @@ else
 fi
 
 install_wp() {
-	if [ -d "$WP_CORE_DIR" ]; then
+	if [ -d "$WP_CORE_DIR/wp-includes" ]; then
 		return
 	fi
 
 	mkdir -p "$WP_CORE_DIR"
 
+	local ARCHIVE_NAME
 	if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
-		mkdir -p "$TMPDIR/wordpress-nightly"
-		download https://wordpress.org/nightly-builds/wordpress-latest.zip "$TMPDIR/wordpress-nightly/wordpress-nightly.zip"
-		unzip -q "$TMPDIR/wordpress-nightly/wordpress-nightly.zip" -d "$TMPDIR/wordpress-nightly/"
-		mv "$TMPDIR/wordpress-nightly/wordpress"/* "$WP_CORE_DIR"
+		ARCHIVE_NAME='nightly'
+		download https://wordpress.org/nightly-builds/wordpress-latest.zip "$TMPDIR/wordpress.zip"
+	elif [ "$WP_VERSION" == 'latest' ]; then
+		ARCHIVE_NAME='latest'
+		download "https://wordpress.org/${ARCHIVE_NAME}.zip" "$TMPDIR/wordpress.zip"
+	elif [[ $WP_VERSION =~ [0-9]+\.[0-9]+ ]]; then
+		ARCHIVE_NAME="wordpress-$WP_VERSION"
+		download "https://wordpress.org/${ARCHIVE_NAME}.zip" "$TMPDIR/wordpress.zip"
 	else
-		if [ "$WP_VERSION" == 'latest' ]; then
-			local ARCHIVE_NAME='latest'
-		elif [[ $WP_VERSION =~ [0-9]+\.[0-9]+ ]]; then
-			download https://wordpress.org/wordpress-"$WP_VERSION".zip "$TMPDIR/wordpress.zip"
-			local ARCHIVE_NAME="wordpress-$WP_VERSION"
-		else
-			local ARCHIVE_NAME="wordpress-$WP_VERSION"
-		fi
-		download https://wordpress.org/"${ARCHIVE_NAME}".zip "$TMPDIR/wordpress.zip"
-		unzip -q "$TMPDIR/wordpress.zip" -d "$TMPDIR/"
-		# The zip extracts to $TMPDIR/wordpress. Only relocate if WP_CORE_DIR is a
-		# DIFFERENT path — otherwise `mv dir/* dir` errors ("are the same file").
-		if [ "$TMPDIR/wordpress" != "${WP_CORE_DIR%/}" ]; then
-			mv "$TMPDIR/wordpress"/* "$WP_CORE_DIR"
-		fi
+		ARCHIVE_NAME="wordpress-$WP_VERSION"
+		download "https://wordpress.org/${ARCHIVE_NAME}.zip" "$TMPDIR/wordpress.zip"
 	fi
+
+	# Stage outside WP_CORE_DIR — default $TMPDIR/wordpress matches the zip's
+	# top-level folder name, so `mv dir/* dir` fails with "are the same file".
+	local WP_EXTRACT_DIR="$TMPDIR/wp-archive-extract"
+	rm -rf "$WP_EXTRACT_DIR"
+	mkdir -p "$WP_EXTRACT_DIR"
+	unzip -q "$TMPDIR/wordpress.zip" -d "$WP_EXTRACT_DIR"
+
+	local WP_SRC="$WP_EXTRACT_DIR"
+	if [ -d "$WP_EXTRACT_DIR/wordpress" ]; then
+		WP_SRC="$WP_EXTRACT_DIR/wordpress"
+	fi
+
+	rm -rf "${WP_CORE_DIR:?}"/*
+	mv "$WP_SRC"/* "$WP_CORE_DIR"/
+	rm -rf "$WP_EXTRACT_DIR"
 
 	download https://raw.githubusercontent.com/markoheijnen/wp-mysqli/master/db.php "$WP_CORE_DIR/wp-content/db.php"
 }
@@ -164,7 +172,13 @@ install_db() {
 	fi
 
 	# shellcheck disable=SC2086
-	mysqladmin create "$DB_NAME" --user="$DB_USER" --password="$DB_PASS"$EXTRA
+	if ! mysqladmin create "$DB_NAME" --user="$DB_USER" --password="$DB_PASS"$EXTRA 2>/dev/null; then
+		echo "Database $DB_NAME already exists — dropping and recreating"
+		# --force skips the interactive "drop database?" confirmation, which would
+		# otherwise abort under CI (no tty) and leave the DB in place.
+		mysqladmin --force drop "$DB_NAME" --user="$DB_USER" --password="$DB_PASS"$EXTRA 2>/dev/null || true
+		mysqladmin create "$DB_NAME" --user="$DB_USER" --password="$DB_PASS"$EXTRA
+	fi
 }
 
 install_wp

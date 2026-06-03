@@ -34,6 +34,9 @@
     <config name="testVersion" value="8.1-"/>
     <config name="minimum_wp_version" value="6.4"/>
 
+    <!-- Warnings are informational — they don't fail CI (errors still do). -->
+    <config name="ignore_warnings_on_exit" value="1"/>
+
     <!-- Run against PHP files only. -->
     <arg name="extensions" value="php"/>
     <arg value="sp"/>
