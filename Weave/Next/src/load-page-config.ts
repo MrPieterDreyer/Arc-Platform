@@ -2,7 +2,7 @@ import 'server-only';
 
 // next@16.2.x — stable cache APIs only (FORBIDDEN: unstable_cache, per D-04 / Pitfall 2).
 import { ARC_CACHE_PROFILE } from '@arc/next';
-import { type WeavePageConfig, WeavePageConfigSchema } from '@weave/react';
+import { type WeavePageConfig, WeavePageConfigSchema } from '@weave/react/schemas';
 import { cacheLife, cacheTag } from 'next/cache';
 import { draftMode } from 'next/headers';
 import { weaveTag } from './cache-tags.js';
@@ -31,7 +31,9 @@ function readEnv(): WpAuthEnv {
   const user = process.env.WEAVE_WP_APP_USER;
   const password = process.env.WEAVE_WP_APP_PASSWORD;
   if (!baseUrl || !user || !password) {
-    throw new Error('Missing WEAVE_WP_* env (WEAVE_WP_BASE_URL / WEAVE_WP_APP_USER / WEAVE_WP_APP_PASSWORD)');
+    throw new Error(
+      'Missing WEAVE_WP_* env (WEAVE_WP_BASE_URL / WEAVE_WP_APP_USER / WEAVE_WP_APP_PASSWORD)',
+    );
   }
   return { baseUrl, user, password };
 }

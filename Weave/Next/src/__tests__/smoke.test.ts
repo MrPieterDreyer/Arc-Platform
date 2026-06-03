@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { __WEAVE_NEXT_VERSION } from '../index';
+import { weaveTag } from '../index';
 
 describe('@weave/next smoke', () => {
-  it('exports a version sentinel', () => {
-    expect(__WEAVE_NEXT_VERSION).toBe('0.0.1');
+  it('exports weave cache tags', () => {
+    expect(weaveTag.page('about')).toBe('weave:page:about');
   });
 });
