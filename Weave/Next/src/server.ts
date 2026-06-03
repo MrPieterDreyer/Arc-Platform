@@ -12,7 +12,9 @@ import 'server-only';
 
 export { weaveTag } from './cache-tags.js';
 export { loadPageConfig } from './load-page-config.js';
-export { WeavePage } from './weave-page.js';
 export { createPreviewHandler, type PreviewHandlerOptions } from './preview.js';
+export { createWeaveRevalidateHandler } from './revalidate.js';
 
-// Plan 04 appends: export { createWeaveRevalidateHandler } from './revalidate.js';
+// WeavePage (SectionRenderer + loadPageConfig) is not exported here — it pulls
+// @weave/react into the server barrel graph. Import from ./weave-page.js in
+// client-wrapped storefront routes, or use loadPageConfig + a client SectionRenderer.
