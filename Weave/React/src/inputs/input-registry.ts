@@ -46,11 +46,20 @@ function stringEntry(): InputTypeEntry {
 }
 
 export const inputRegistry: Record<WeaveInputType, InputTypeEntry> = {
-  // String family: text/HTML/URL/attachment/ISO/code/markdown/picker IDs all validate as strings.
+  // String family: text/HTML/URL/color/ISO/code/markdown/picker IDs all validate as strings.
   text: stringEntry(),
   richtext: stringEntry(),
   color: stringEntry(),
-  image: stringEntry(),
+
+  // OQ2 (Phase 4b D-11): image stores { id, url } from the WP Media Library, not a bare URL
+  // string. `id` is the attachment ID (nullable when cleared); `url` is the full media URL.
+  // The WP Admin image control (WEAVE-WP-08) persists exactly this object; it round-trips
+  // through schemaToZod because WeaveSectionSchema.data is z.record(z.string(), z.unknown()).
+  image: {
+    zod: () => z.object({ id: z.number().nullable(), url: z.string() }),
+    default: (input) => input.defaultValue ?? { id: null, url: '' },
+  },
+
   url: stringEntry(),
   datetime: stringEntry(),
   code: stringEntry(),

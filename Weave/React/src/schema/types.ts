@@ -103,10 +103,13 @@ export interface ColorInput<TProps> extends WeaveInputBase<TProps> {
   defaultValue?: string;
 }
 
-/** `type='image'` — image URL/reference string. */
+/**
+ * `type='image'` — WP Media Library value: attachment `{ id, url }` (OQ2, D-11).
+ * `id` is the attachment ID (null when cleared); `url` is the full media URL.
+ */
 export interface ImageInput<TProps> extends WeaveInputBase<TProps> {
   type: 'image';
-  defaultValue?: string;
+  defaultValue?: { id: number | null; url: string };
 }
 
 /** `type='url'` — link string. */

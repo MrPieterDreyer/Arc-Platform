@@ -53,7 +53,13 @@ const CASES: TypeCase[] = [
     declared: 'a',
   },
   { type: 'color', validValue: '#0369a1', fallback: '', declared: '#fff' },
-  { type: 'image', validValue: 'https://x/y.png', fallback: '', declared: 'a.png' },
+  // OQ2: image is a { id, url } object, not a bare string (D-11).
+  {
+    type: 'image',
+    validValue: { id: 7, url: 'https://x/y.png' },
+    fallback: { id: null, url: '' },
+    declared: { id: 9, url: 'a.png' },
+  },
   { type: 'url', validValue: 'https://x', fallback: '', declared: 'https://y' },
   { type: 'product-picker', validValue: 'driver-1', fallback: '', declared: 'putter-2' },
   { type: 'collection-picker', validValue: 'drivers', fallback: '', declared: 'putters' },
