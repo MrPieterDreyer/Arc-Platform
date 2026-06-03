@@ -46,7 +46,7 @@ final class Weave_CPT {
 				'show_ui'         => true,         // Visible in wp-admin for debugging.
 				'show_in_rest'    => true,         // REST-enabled (ADR-0005).
 				'rest_base'       => 'weave_pages', // weave/v1 controller is authoritative regardless.
-				'supports'        => array( 'title', 'custom-fields' ), // Gutenberg editor deliberately omitted (ADR-0002 / D-03).
+				'supports'        => array( 'title', 'custom-fields', 'revisions' ), // Gutenberg editor deliberately omitted (ADR-0002 / D-03); revisions enabled so the save_post webhook can skip revision saves (WEAVE-WP-06).
 				'capability_type' => 'post',       // Maps to edit_posts etc. (D-10).
 				'map_meta_cap'    => true,
 			)
