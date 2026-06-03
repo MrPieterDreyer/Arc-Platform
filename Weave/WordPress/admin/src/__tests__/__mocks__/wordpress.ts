@@ -74,9 +74,7 @@ export function SelectControl({ label, value, options, onChange }: ControlProps)
       value: (value as string) ?? '',
       onChange: (e: ChangeEvent<HTMLSelectElement>) => onChange?.(e.target.value),
     },
-    (options ?? []).map((o) =>
-      createElement('option', { key: o.value, value: o.value }, o.label),
-    ),
+    (options ?? []).map((o) => createElement('option', { key: o.value, value: o.value }, o.label)),
   );
 }
 
@@ -169,10 +167,7 @@ export function Spinner() {
   return createElement('span', { 'data-wp-control': 'Spinner', role: 'progressbar' });
 }
 
-export function Notice({
-  children,
-  status,
-}: ControlProps & { status?: string }) {
+export function Notice({ children, status }: ControlProps & { status?: string }) {
   return createElement(
     'div',
     { 'data-wp-control': 'Notice', 'data-status': status ?? '', role: 'status' },

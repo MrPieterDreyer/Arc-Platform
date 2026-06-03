@@ -8,11 +8,7 @@
  * fails soft to null; and onChange threads the new value up to the caller.
  */
 
-import {
-  type WeaveInput,
-  type WeaveInputType,
-  evaluateCondition,
-} from '@weave/react';
+import { type WeaveInput, type WeaveInputType, evaluateCondition } from '@weave/react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { FieldControl } from '../form/field-control';
@@ -29,12 +25,27 @@ function inputOf(type: WeaveInputType): WeaveInput {
         type: 'select',
         name: 'choice',
         label: 'Choice',
-        configs: { options: [{ label: 'A', value: 'a' }, { label: 'B', value: 'b' }] },
+        configs: {
+          options: [
+            { label: 'A', value: 'a' },
+            { label: 'B', value: 'b' },
+          ],
+        },
       } as WeaveInput;
     case 'range':
-      return { type: 'range', name: 'size', label: 'Size', configs: { min: 0, max: 10, step: 2 } } as WeaveInput;
+      return {
+        type: 'range',
+        name: 'size',
+        label: 'Size',
+        configs: { min: 0, max: 10, step: 2 },
+      } as WeaveInput;
     case 'repeater':
-      return { type: 'repeater', name: 'items', label: 'Items', configs: { inputs: [] } } as WeaveInput;
+      return {
+        type: 'repeater',
+        name: 'items',
+        label: 'Items',
+        configs: { inputs: [] },
+      } as WeaveInput;
     default:
       return { type, name: 'field', label: 'Field' } as WeaveInput;
   }
@@ -82,7 +93,12 @@ describe('FieldControl — 15-type mapping', () => {
 
 describe('FieldControl — condition gating', () => {
   it('renders nothing when condition evaluates false', () => {
-    const input = { type: 'text', name: 'field', label: 'Field', condition: 'show.eq.true' } as WeaveInput;
+    const input = {
+      type: 'text',
+      name: 'field',
+      label: 'Field',
+      condition: 'show.eq.true',
+    } as WeaveInput;
     // sanity: 'show.eq.true' against { show: false } is false (String(false) !== 'true')
     expect(evaluateCondition('show.eq.true', { show: false })).toBe(false);
     const { container } = render(
@@ -92,7 +108,12 @@ describe('FieldControl — condition gating', () => {
   });
 
   it('renders the control when condition evaluates true', () => {
-    const input = { type: 'text', name: 'field', label: 'Field', condition: 'show.eq.true' } as WeaveInput;
+    const input = {
+      type: 'text',
+      name: 'field',
+      label: 'Field',
+      condition: 'show.eq.true',
+    } as WeaveInput;
     const { container } = render(
       <FieldControl input={input} value="x" onChange={noop} data={{ show: true }} />,
     );

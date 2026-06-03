@@ -8,11 +8,7 @@
  */
 
 import { createElement } from 'react';
-import {
-  type WeaveComponentSchema,
-  type WeaveSection,
-  defineSection,
-} from '@weave/react';
+import { type WeaveComponentSchema, type WeaveSection, defineSection } from '@weave/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { useEditorStore } from '../store/editor-store';
 
@@ -27,7 +23,10 @@ const heroSchema: WeaveComponentSchema<HeroProps> = {
   type: 'hero',
   title: 'Hero',
   inspector: [
-    { group: 'Content', inputs: [{ type: 'text', name: 'title', label: 'Title', defaultValue: 'Hello' }] },
+    {
+      group: 'Content',
+      inputs: [{ type: 'text', name: 'title', label: 'Title', defaultValue: 'Hello' }],
+    },
   ],
 };
 
@@ -85,7 +84,9 @@ describe('WeaveEditorStore', () => {
 
   it('updateField leaves other sections untouched', () => {
     reset();
-    useEditorStore.getState().setSections([section('a', 'hero', { title: 'a' }), section('b', 'hero', { title: 'b' })]);
+    useEditorStore
+      .getState()
+      .setSections([section('a', 'hero', { title: 'a' }), section('b', 'hero', { title: 'b' })]);
     useEditorStore.getState().updateField('b', 'title', 'B!');
     const s = useEditorStore.getState();
     expect(s.sections[0].data.title).toBe('a');

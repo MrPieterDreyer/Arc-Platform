@@ -43,9 +43,7 @@ function wrap(node: ReactNode) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  return render(
-    createElement(QueryClientProvider, { client }, node),
-  );
+  return render(createElement(QueryClientProvider, { client }, node));
 }
 
 beforeEach(() => {
@@ -174,7 +172,9 @@ describe('SectionList — populated list + interactions', () => {
   it('Add via the picker appends a new section', () => {
     resetStore();
     const { container } = render(createElement(SectionList));
-    const select = container.querySelector('[data-wp-control="SelectControl"]') as HTMLSelectElement;
+    const select = container.querySelector(
+      '[data-wp-control="SelectControl"]',
+    ) as HTMLSelectElement;
     fireEvent.change(select, { target: { value: 'hero' } });
     fireEvent.click(screen.getByText('Add Section'));
     expect(useEditorStore.getState().sections).toHaveLength(1);
