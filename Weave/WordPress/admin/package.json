@@ -1,0 +1,36 @@
+{
+  "name": "weave-admin",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Weave WP Admin sidebar editor — React app (wp-scripts build, Vitest+jsdom harness)",
+  "license": "MIT",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "lint": "biome lint ./src",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.101.0",
+    "@weave/react": "workspace:^",
+    "@wordpress/api-fetch": "^7.47.0",
+    "@wordpress/components": "^34.0.0",
+    "@wordpress/element": "^7.0.0",
+    "@wordpress/i18n": "^6.20.0",
+    "@wordpress/icons": "^13.2.0",
+    "@wordpress/media-utils": "^5.47.0",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.0",
+    "@wordpress/scripts": "^32.3.0",
+    "jsdom": "^29.1.1",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "vitest": "4.1.7"
+  }
+}

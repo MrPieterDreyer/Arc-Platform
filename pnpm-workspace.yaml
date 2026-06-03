@@ -5,9 +5,13 @@ packages:
   - 'Templates/**'
 
 allowBuilds:
+  '@parcel/watcher': true
+  core-js: true
+  core-js-pure: true
   esbuild: true
   fs-ext-extra-prebuilt: true
   sharp: true
+  unrs-resolver: true
 
 catalog:
   react: ^19.2.0
@@ -20,3 +24,7 @@ catalog:
   zod: ^4.4.3
   '@graphql-codegen/cli': ^6.0.0
   '@graphql-codegen/client-preset': ^4.5.1
+
+minimumReleaseAgeExclude:
+  - '@tanstack/query-core@5.101.0'
+  - '@tanstack/react-query@5.101.0'
