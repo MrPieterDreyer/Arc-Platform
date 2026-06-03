@@ -18,6 +18,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.js"
     }
   },
   "scripts": {
@@ -25,13 +30,24 @@
     "dev": "tsup --watch",
     "lint": "biome lint ./src",
     "format:check": "biome format ./src",
-    "test": "vitest --run"
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
     "next": "catalog:",
     "react": "catalog:"
   },
   "dependencies": {
-    "@weave/react": "workspace:^"
+    "@arc/next": "workspace:^",
+    "@weave/react": "workspace:^",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "^19.2.15",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:"
   }
 }
