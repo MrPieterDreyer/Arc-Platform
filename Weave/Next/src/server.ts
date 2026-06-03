@@ -12,9 +12,11 @@ import 'server-only';
 
 export { weaveTag } from './cache-tags.js';
 export { loadPageConfig } from './load-page-config.js';
+export { WeavePage } from './weave-page.js';
 export { createPreviewHandler, type PreviewHandlerOptions } from './preview.js';
 export { createWeaveRevalidateHandler } from './revalidate.js';
 
-// WeavePage (SectionRenderer + loadPageConfig) is not exported here — it pulls
-// @weave/react into the server barrel graph. Import from ./weave-page.js in
-// client-wrapped storefront routes, or use loadPageConfig + a client SectionRenderer.
+// WeavePage is an async Server Component (it awaits the `server-only` loadPageConfig), so the
+// `./server` subpath is its correct home. It pulls `@weave/react` + `react/jsx-runtime` into the
+// server graph, but both are externalized by the build (see Scripts/verify-weave-next-externals.cjs),
+// so no second React is bundled. The RSC-safe `./index` barrel still must not re-export it.
