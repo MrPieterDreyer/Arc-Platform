@@ -58,6 +58,15 @@ final class Weave_Plugin {
 	private ?Weave_Webhook $webhook = null;
 
 	/**
+	 * The WP Admin editor screen + asset enqueue (Plan 08, WEAVE-WP-07).
+	 *
+	 * Held on the singleton for parity with the other wiring blocks.
+	 *
+	 * @var Weave_Admin|null
+	 */
+	private ?Weave_Admin $admin = null;
+
+	/**
 	 * Retrieve (and lazily create) the singleton instance.
 	 *
 	 * @return self
@@ -96,5 +105,9 @@ final class Weave_Plugin {
 		$this->webhook = new Weave_Webhook();
 		add_action( 'save_post_weave_page', array( $this->webhook, 'on_save' ), 10, 3 );
 		add_action( 'admin_init', array( $this->webhook, 'register_settings' ) );
+
+		// Plan 08: register the WP Admin editor screen + enqueue the built bundle (WEAVE-WP-07).
+		$this->admin = new Weave_Admin();
+		$this->admin->register_hooks();
 	}
 }

@@ -16,12 +16,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Composer classmap autoload. Guarded so the plugin still loads when run directly
-// from the classmap under test (vendor/ may be absent in some bootstrap paths);
-// the explicit require below guarantees Weave_Plugin is defined either way.
+// Absolute path to this main plugin file — the base for plugins_url() asset URLs
+// (e.g. the WP Admin editor bundle enqueued by Weave_Admin).
+if ( ! defined( 'WEAVE_PLUGIN_FILE' ) ) {
+	define( 'WEAVE_PLUGIN_FILE', __FILE__ );
+}
+
+// Composer classmap autoload when present; otherwise load src/ explicitly for wp-env
+// mappings where `composer install` has not been run in the plugin directory.
 $weave_autoload = __DIR__ . '/vendor/autoload.php';
 if ( is_readable( $weave_autoload ) ) {
 	require_once $weave_autoload;
+} else {
+	require_once __DIR__ . '/src/class-weave-cpt.php';
+	require_once __DIR__ . '/src/class-weave-validator.php';
+	require_once __DIR__ . '/src/class-weave-rest-controller.php';
+	require_once __DIR__ . '/src/class-weave-webhook.php';
+	require_once __DIR__ . '/src/class-weave-admin.php';
 }
 
 require_once __DIR__ . '/src/class-weave-plugin.php';
