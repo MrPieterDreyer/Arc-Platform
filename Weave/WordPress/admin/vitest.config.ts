@@ -9,9 +9,7 @@ import { baseConfig } from '../../../vitest.base';
  * components render in jsdom without the real WP runtime. Tests run in jsdom with
  * Vitest globals + the jest-dom matchers (mirrors the Weave/React boundary harness).
  */
-const wpStub = fileURLToPath(
-  new URL('./src/__tests__/__mocks__/wordpress.ts', import.meta.url),
-);
+const wpStub = fileURLToPath(new URL('./src/__tests__/__mocks__/wordpress.ts', import.meta.url));
 
 export default mergeConfig(
   baseConfig,

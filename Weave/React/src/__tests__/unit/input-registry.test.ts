@@ -50,9 +50,9 @@ describe('inputRegistry.image — OQ2 { id, url } object value', () => {
       ],
     };
     const validator = schemaToZod(schema);
-    expect(
-      validator.safeParse({ background: { id: 1, url: 'https://x/bg.jpg' } }).success,
-    ).toBe(true);
+    expect(validator.safeParse({ background: { id: 1, url: 'https://x/bg.jpg' } }).success).toBe(
+      true,
+    );
     // The old bare-string value no longer round-trips.
     expect(validator.safeParse({ background: 'https://x/bg.jpg' }).success).toBe(false);
   });

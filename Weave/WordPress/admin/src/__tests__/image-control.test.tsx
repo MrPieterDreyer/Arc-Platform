@@ -49,9 +49,7 @@ describe('ImageControl — populated value', () => {
   const value = { id: 7, url: 'https://x/a.jpg' };
 
   it("renders a preview img, 'Replace Image', and 'Remove'", () => {
-    const { container } = render(
-      <ImageControl input={imageInput} value={value} onChange={noop} />,
-    );
+    const { container } = render(<ImageControl input={imageInput} value={value} onChange={noop} />);
     const img = container.querySelector('img');
     expect(img).not.toBeNull();
     expect(img).toHaveAttribute('src', 'https://x/a.jpg');
