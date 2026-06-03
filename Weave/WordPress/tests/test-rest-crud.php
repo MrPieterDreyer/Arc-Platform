@@ -184,6 +184,12 @@ class Test_Weave_REST_CRUD extends WP_UnitTestCase {
 			if ( 0 !== strpos( $route, '/weave/v1' ) ) {
 				continue;
 			}
+			// Skip WordPress's auto-registered namespace-index route (/weave/v1):
+			// it is public route-discovery metadata, exposes no data, and carries
+			// no permission_callback — it is not a Weave data route.
+			if ( '/weave/v1' === $route ) {
+				continue;
+			}
 			$found = true;
 			foreach ( $handlers as $handler ) {
 				$this->assertArrayHasKey( 'permission_callback', $handler );

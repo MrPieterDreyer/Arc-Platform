@@ -86,6 +86,12 @@ class Test_Weave_REST_Auth extends WP_UnitTestCase {
 			if ( 0 !== strpos( $route, '/weave/v1' ) ) {
 				continue;
 			}
+			// The bare namespace index (/weave/v1) is WordPress's auto-registered
+			// route-discovery endpoint — public by design, returns no data and has
+			// no permission_callback. It is not a Weave data route, so exempt it.
+			if ( '/weave/v1' === $route ) {
+				continue;
+			}
 			$found = true;
 			foreach ( $handlers as $handler ) {
 				foreach ( array_keys( $handler['methods'] ) as $method ) {
@@ -117,6 +123,12 @@ class Test_Weave_REST_Auth extends WP_UnitTestCase {
 		$found  = false;
 		foreach ( $server->get_routes() as $route => $handlers ) {
 			if ( 0 !== strpos( $route, '/weave/v1' ) ) {
+				continue;
+			}
+			// The bare namespace index (/weave/v1) is WordPress's auto-registered
+			// route-discovery endpoint — public by design, returns no data and has
+			// no permission_callback. It is not a Weave data route, so exempt it.
+			if ( '/weave/v1' === $route ) {
 				continue;
 			}
 			$found = true;

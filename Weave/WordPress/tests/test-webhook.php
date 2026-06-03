@@ -150,16 +150,20 @@ class Test_Weave_Webhook extends WP_UnitTestCase {
 		$post_id = $this->create_weave_page( 'home' );
 		$this->captured = null;
 
-		wp_update_post(
-			array(
-				'ID'         => $post_id,
-				'post_title' => 'Home Updated',
-			)
-		);
-		$revisions = wp_get_post_revisions( $post_id );
-		$this->assertNotEmpty( $revisions, 'Expected at least one revision' );
+		// Force-create a real revision deterministically. We cannot rely on
+		// wp_update_post() here: test_webhook_skips_on_autosave() defines the
+		// process-global DOING_AUTOSAVE constant, which makes
+		// wp_save_post_revision() short-circuit for the remainder of the run —
+		// so a normal update stores no revision when these tests share a PHP
+		// process. _wp_put_post_revision() snapshots the post directly, bypassing
+		// that guard, giving us exactly what this test needs: a revision proving
+		// the webhook handler short-circuits on wp_is_post_revision().
+		$revision_id = _wp_put_post_revision( get_post( $post_id, ARRAY_A ) );
+		$this->assertNotInstanceOf( WP_Error::class, $revision_id );
+		$this->assertGreaterThan( 0, (int) $revision_id, 'Expected a real revision to be created' );
 
-		$revision = array_values( $revisions )[0];
+		$revision = get_post( (int) $revision_id );
+		$this->assertNotFalse( wp_is_post_revision( $revision->ID ), 'Expected a WP revision post' );
 		$this->captured = null;
 
 		$webhook = new Weave_Webhook();
