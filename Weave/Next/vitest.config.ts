@@ -7,7 +7,8 @@ export default mergeConfig(
     test: {
       name: 'weave-next',
       environment: 'node',
-      include: ['src/**/*.test.ts'],
+      include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+      setupFiles: ['./vitest.setup.ts'],
     },
   }),
 );
