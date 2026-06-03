@@ -14,17 +14,8 @@
  * code touches. Extend here (not in individual tests) when a new `@wordpress/*` export is used.
  */
 
-import {
-  type ChangeEvent,
-  createElement,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { vi } from 'vitest';
+import { type ChangeEvent, createElement, type ReactNode } from 'react';
+import { type Mock, vi } from 'vitest';
 
 // ---------------------------------------------------------------------------
 // @wordpress/element — WP re-exports React. Mirror the surface the editor uses.
@@ -197,15 +188,32 @@ function filterDomProps(props: Record<string, unknown>): Record<string, unknown>
 
 // ---------------------------------------------------------------------------
 // @wordpress/media-utils — MediaUpload calls render({ open }); open is a vi.fn.
+// To let tests simulate a Media Library selection without the real WP modal, the
+// stub ALSO renders a hidden trigger button (data-testid="media-select") that fires
+// the consumer's `onSelect` with a deterministic fake media object. Tests click it
+// to assert the onSelect → onChange({ id, url }) contract.
 // ---------------------------------------------------------------------------
 interface MediaUploadProps {
   render: (args: { open: () => void }) => ReactNode;
   onSelect?: (media: { id: number; url: string }) => void;
 }
 
-export function MediaUpload({ render }: MediaUploadProps) {
+/** Deterministic media object the stub's hidden trigger feeds to onSelect. */
+export const MEDIA_UPLOAD_FAKE_MEDIA = { id: 9, url: 'https://x/b.jpg' } as const;
+
+export function MediaUpload({ render, onSelect }: MediaUploadProps) {
   const open = vi.fn();
-  return createElement('div', { 'data-wp-control': 'MediaUpload' }, render({ open }));
+  return createElement(
+    'div',
+    { 'data-wp-control': 'MediaUpload' },
+    render({ open }),
+    createElement('button', {
+      type: 'button',
+      'data-testid': 'media-select',
+      hidden: true,
+      onClick: () => onSelect?.({ ...MEDIA_UPLOAD_FAKE_MEDIA }),
+    }),
+  );
 }
 
 export function MediaUploadCheck({ children }: { children?: ReactNode }) {
@@ -231,5 +239,5 @@ export const sprintf = (fmt: string, ...args: unknown[]) =>
 // @wordpress/api-fetch — default-exported function. Stubbed as a vi.fn so the
 // editor's load/save calls can be asserted/mocked per test.
 // ---------------------------------------------------------------------------
-const apiFetch = vi.fn();
+const apiFetch: Mock = vi.fn();
 export default apiFetch;

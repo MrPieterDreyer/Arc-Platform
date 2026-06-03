@@ -18,7 +18,7 @@ describe('weave-admin harness', () => {
   });
 
   it('renders a stubbed Notice carrying its status', () => {
-    render(createElement(Notice, { status: 'success' }, 'Page saved.'));
+    render(createElement(Notice, { status: 'success', children: 'Page saved.' }));
     const notice = screen.getByText('Page saved.');
     expect(notice).toHaveAttribute('data-status', 'success');
   });
