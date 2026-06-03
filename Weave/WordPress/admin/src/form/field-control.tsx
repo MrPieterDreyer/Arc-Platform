@@ -10,14 +10,12 @@
  * `evaluateCondition(condition, data)` is false, the control is NOT mounted (returns `null`).
  * `evaluateCondition` fails OPEN on a malformed predicate, so a typo never silently hides a field.
  *
- * `image` renders a placeholder `<BaseControl>` here to keep the 15-case switch exhaustive and
- * unit-testable without a cross-plan dependency. Plan 07 (WEAVE-WP-08) swaps in the real
- * `<ImageControl>` (MediaUpload picker) and owns its test.
+ * `image` delegates to `<ImageControl>` (WEAVE-WP-08) — the WP Media Library picker that persists
+ * the `{ id, url }` attachment shape.
  */
 
 import { type WeaveInput, evaluateCondition } from '@weave/react';
 import {
-  BaseControl,
   ColorPalette,
   __experimentalNumberControl as NumberControl,
   RangeControl,
@@ -26,6 +24,7 @@ import {
   TextControl,
   ToggleControl,
 } from '@wordpress/components';
+import { ImageControl } from './image-control';
 
 /** Props: one input declaration + its value + change handler + the section's full data record. */
 export interface FieldControlProps {
@@ -122,10 +121,15 @@ export function FieldControl({ input, value, onChange, data }: FieldControlProps
         />
       );
 
-    // Plan 07 (WEAVE-WP-08) swaps in <ImageControl> (MediaUpload picker). Placeholder keeps the
-    // switch exhaustive + testable here without a cross-plan import.
+    // WP Media Library picker — persists the { id, url } attachment shape (WEAVE-WP-08, D-11).
     case 'image':
-      return <BaseControl label={input.label}>{null}</BaseControl>;
+      return (
+        <ImageControl
+          input={input}
+          value={value as { id: number | null; url: string }}
+          onChange={onChange}
+        />
+      );
 
     // Raw JSON editing in v0.1 (UI-SPEC: structured repeater UI is v0.2).
     case 'repeater':
