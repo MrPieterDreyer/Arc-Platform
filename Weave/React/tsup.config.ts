@@ -10,5 +10,6 @@ export default arcTsup({
   entry: {
     index: 'src/index.ts',
     client: 'src/client/index.ts',
+    schemas: 'src/schemas-entry.ts',
   },
 });
