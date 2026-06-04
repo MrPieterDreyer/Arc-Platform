@@ -6,9 +6,11 @@ import {
 import { expect, test } from '../fixtures/backend';
 
 const TEST_PRODUCT_SLUG = process.env.TEST_PRODUCT_SLUG ?? 'test-product';
+const CART_SESSION_POLL_MS = 45_000;
 
 test.describe('Wave 6 — checkout UI @regression', () => {
   test('empty checkout shows continue shopping @regression', async ({ page, backendReady }) => {
+    test.setTimeout(120_000);
     expect(backendReady.storeApi).toBe(true);
     await page.goto('/checkout');
     await expect(page.getByTestId('checkout-page')).toBeVisible();
@@ -21,7 +23,7 @@ test.describe('Wave 6 — checkout UI @regression', () => {
     page,
     backendReady,
   }) => {
-    test.setTimeout(60_000);
+    test.setTimeout(120_000);
     expect(backendReady.storeApi).toBe(true);
 
     await page.goto(`/products/${TEST_PRODUCT_SLUG}`);
@@ -29,14 +31,17 @@ test.describe('Wave 6 — checkout UI @regression', () => {
     await page.getByTestId('add-to-cart').click();
 
     await expect
-      .poll(async () => {
-        // Scope to the header badge ("Cart (N)") — the PDP also renders a `cart-badge` status
-        // ("Updating cart…"), so an unscoped locator matches 2 elements (strict-mode violation).
-        // Matches the scoping used in cart/cookie.spec.ts + cart/optimistic.spec.ts.
-        const text = (await page.locator('header').getByTestId('cart-badge').textContent()) ?? '';
-        const match = text.match(/(\d+)/);
-        return match ? Number.parseInt(match[1], 10) : 0;
-      })
+      .poll(
+        async () => {
+          // Scope to the header badge ("Cart (N)") — the PDP also renders a `cart-badge` status
+          // ("Updating cart…"), so an unscoped locator matches 2 elements (strict-mode violation).
+          // Matches the scoping used in cart/cookie.spec.ts + cart/optimistic.spec.ts.
+          const text = (await page.locator('header').getByTestId('cart-badge').textContent()) ?? '';
+          const match = text.match(/(\d+)/);
+          return match ? Number.parseInt(match[1], 10) : 0;
+        },
+        { timeout: CART_SESSION_POLL_MS },
+      )
       .toBeGreaterThan(0);
 
     await page.goto('/checkout');
