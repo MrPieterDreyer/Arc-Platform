@@ -14,9 +14,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createElement, createRoot } from '@wordpress/element';
 import { Editor } from './editor/Editor';
 
-/** Resolve the target slug from `?slug=`, defaulting to `home` (OQ3). */
+/** Resolve the target slug from `?slug=`, defaulting to `home` (OQ3). A missing OR empty `?slug=`
+ * both fall back to `home` — an empty slug is never a valid page target. */
 export function resolveSlug(): string {
-  return new URLSearchParams(window.location.search).get('slug') ?? 'home';
+  const slug = new URLSearchParams(window.location.search).get('slug');
+  return slug && slug.length > 0 ? slug : 'home';
 }
 
 /** Mount the editor into `#weave-editor-root` if present (no-op otherwise — import-safe). */

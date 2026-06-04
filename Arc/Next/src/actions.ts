@@ -2,13 +2,15 @@ import 'server-only';
 
 import {
   addItem,
+  getCart,
   removeItem,
   updateItem,
   type AddItemPayload,
   type UpdateItemPayload,
   type WooCart,
+  type WooClient,
 } from '@arc/core';
-import { createCartClient, refreshCartTokenCookie } from './cookies.js';
+import { createCartClient, readCartTokenValue, refreshCartTokenCookie } from './cookies.js';
 
 /**
  * Cart mutation helpers (`server-only`).
@@ -39,11 +41,28 @@ function resolveWcBaseUrl(baseUrl?: string): string {
 }
 
 /**
+ * Ensure a Cart-Token session exists before a write.
+ *
+ * The WC Store API rejects a cold write (`POST /cart/add-item` with no Cart-Token and no Nonce)
+ * with HTTP 401. A token can only be persisted from a Server Action or Route Handler — never during
+ * RSC render (see cookies.ts) — so the FIRST mutation of a fresh visitor always starts cold. When
+ * there is no `arc_cart_token` cookie yet, an initial `GET /cart` makes WC issue a Cart-Token; the
+ * `WooClient` caches it (instance + `onCartToken` cookie write) and replays it on the write that
+ * follows. A no-op once a token already exists, so existing sessions pay no extra round-trip.
+ */
+async function ensureCartSession(client: WooClient): Promise<void> {
+  if (!(await readCartTokenValue())) {
+    await getCart(client);
+  }
+}
+
+/**
  * Add a line item via WC Store API, then refresh the Cart-Token cookie Max-Age.
  * Throws on failure (propagated from `@arc/core`) so `useOptimisticCart` can roll back.
  */
 export async function addItemAction(payload: AddItemPayload, wcBaseUrl?: string): Promise<WooCart> {
   const client = await createCartClient(resolveWcBaseUrl(wcBaseUrl));
+  await ensureCartSession(client);
   const cart = await addItem(client, payload);
   await refreshCartTokenCookie();
   return cart;
@@ -54,6 +73,7 @@ export async function updateItemAction(
   wcBaseUrl?: string,
 ): Promise<WooCart> {
   const client = await createCartClient(resolveWcBaseUrl(wcBaseUrl));
+  await ensureCartSession(client);
   const cart = await updateItem(client, payload);
   await refreshCartTokenCookie();
   return cart;
@@ -64,6 +84,7 @@ export async function removeItemAction(
   wcBaseUrl?: string,
 ): Promise<WooCart> {
   const client = await createCartClient(resolveWcBaseUrl(wcBaseUrl));
+  await ensureCartSession(client);
   const cart = await removeItem(client, payload);
   await refreshCartTokenCookie();
   return cart;

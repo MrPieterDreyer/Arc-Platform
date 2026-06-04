@@ -15,6 +15,9 @@ Weave/WordPress/admin/build/
 
 # --- Test & coverage ---
 coverage/
+test-results/
+playwright-report/
+blob-report/
 
 # --- Environment & secrets ---
 .env

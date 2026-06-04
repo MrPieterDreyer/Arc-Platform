@@ -60,4 +60,29 @@ describe('WeavePageConfigSchema', () => {
     const result = WeavePageConfigSchema.safeParse(unknownType);
     expect(result.success).toBe(true);
   });
+
+  it('rejects unknown top-level keys (parity with PHP Weave_Validator D-07)', () => {
+    const withExtra = { ...validConfig, extraField: 'nope' };
+    const result = WeavePageConfigSchema.safeParse(withExtra);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(
+        result.error.issues.some(
+          (issue) =>
+            issue.code === 'unrecognized_keys' &&
+            'keys' in issue &&
+            (issue.keys as string[]).includes('extraField'),
+        ),
+      ).toBe(true);
+    }
+  });
+
+  it('rejects unknown keys inside a section object', () => {
+    const withExtraSection = {
+      ...validConfig,
+      sections: [{ ...validConfig.sections[0], rogue: true }],
+    };
+    const result = WeavePageConfigSchema.safeParse(withExtraSection);
+    expect(result.success).toBe(false);
+  });
 });

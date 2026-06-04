@@ -7,6 +7,7 @@ export default mergeConfig(
     test: {
       name: 'arc-next',
       environment: 'node',
+      testTimeout: 20_000,
       include: ['src/**/*.test.ts', 'src/**/*.contract.ts'],
       environmentMatchGlobs: [['src/**/use-optimistic-cart.test.ts', 'jsdom']],
       setupFiles: ['./vitest.setup.ts', '@testing-library/jest-dom/vitest'],

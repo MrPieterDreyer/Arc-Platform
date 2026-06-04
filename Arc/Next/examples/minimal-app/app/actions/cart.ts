@@ -9,3 +9,8 @@ import { addItemAction as addItem } from '@arc/next/server';
 export async function addItemAction(payload: AddItemPayload) {
   return addItem(payload);
 }
+
+/** E2E-only: forces optimistic rollback (ARC-NEXT-07). */
+export async function addItemActionFail(_payload: AddItemPayload): Promise<never> {
+  throw new Error('E2E forced cart failure');
+}

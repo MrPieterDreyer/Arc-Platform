@@ -18,6 +18,7 @@ export { createArcClient, createCatalogClient, type ArcClientConfig } from './cl
 export {
   CART_COOKIE_OPTIONS,
   createCartClient,
+  createReadOnlyCartClient,
   readCartTokenValue,
   refreshCartTokenCookie,
 } from './cookies.js';

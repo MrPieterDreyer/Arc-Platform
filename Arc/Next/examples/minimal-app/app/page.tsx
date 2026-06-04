@@ -11,8 +11,10 @@ export default function HomePage() {
         <p style={{ color: 'var(--color-text-muted)' }}>
           Demonstrates loaders, cart actions, optimistic UI, and revalidate webhook wiring.
         </p>
-        <p>
+        <p style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+          <Link href="/products">Browse products →</Link>
           <Link href={`/products/${slug}`}>View sample PDP →</Link>
+          <Link href="/weave/e2e-weave-render">Weave CMS page (E2E) →</Link>
         </p>
       </section>
       <OptimisticCartDemo />

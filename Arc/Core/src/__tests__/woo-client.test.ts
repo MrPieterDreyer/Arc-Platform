@@ -157,6 +157,32 @@ describe('WooClient — Cart-Token handling', () => {
     await client.getCart();
     expect(capturedHeaders?.has('Cart-Token')).toBe(false);
   });
+
+  it('bootstraps with GET /cart before a mutating request when session is missing', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementationOnce(async (url, init) => {
+        expect(String(url)).toContain('/cart');
+        expect((init?.method ?? 'GET').toUpperCase()).toBe('GET');
+        return makeJsonResponse(STUB_CART, 200, {
+          'Cart-Token': 'tok_bootstrap',
+          Nonce: 'nonce_bootstrap',
+        });
+      })
+      .mockImplementationOnce(async (url, init) => {
+        expect(String(url)).toContain('/cart/add-item');
+        expect(init?.method).toBe('POST');
+        const headers = new Headers(init?.headers);
+        expect(headers.get('Cart-Token')).toBe('tok_bootstrap');
+        expect(headers.get('Nonce')).toBe('nonce_bootstrap');
+        return makeJsonResponse({ ...STUB_CART, items_count: 1 }, 200);
+      });
+
+    const client = new WooClient({ baseUrl: 'https://shop.example.com' });
+    const cart = await client.addToCart(42, 1);
+    expect(cart.items_count).toBe(1);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
 });
 
 // ---------------------------------------------------------------------------

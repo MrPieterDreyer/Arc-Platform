@@ -69,8 +69,9 @@ API and WPGraphQL):
 | `TEST_VARIABLE_PRODUCT_SLUG` | variable product |
 | `TEST_COUPON_CODE` | `TEST10` |
 | `TEST_COLLECTION_SLUG` | `test-collection` |
-| `TEST_ORDER_ID` | seeded order |
-| `TEST_JWT_TOKEN` | *unset* — authenticated customer GraphQL tests skip without it (see customer-auth spike) |
+| `TEST_ORDER_ID` | seeded order (linked to seeded customer) |
+| `TEST_CUSTOMER_EMAIL` | `arc-customer@example.com` |
+| `TEST_JWT_TOKEN` | *unset* — authenticated customer GraphQL + Wave 7 orders E2E skip without it (see ADR-0009) |
 
 ## Troubleshooting
 

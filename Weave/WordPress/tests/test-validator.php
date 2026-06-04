@@ -3,8 +3,8 @@
  * Parity + invalid-fixture tests for Weave_Validator::validate_page_config().
  *
  * The validator must accept exactly what the Phase-3 Zod WeavePageConfigSchema
- * accepts (Weave/React/src/schemas/page-config.ts), and additionally reject
- * unknown top-level keys (D-07 — STRICTER than Zod).
+ * accepts (Weave/React/src/schemas/page-config.ts), including unknown-key
+ * rejection (D-07 — Zod `.strict()` parity).
  *
  * Inputs mirror `json_decode( $raw, true )` output: JSON objects become assoc
  * arrays, JSON arrays become list arrays. The canonical valid fixture is the

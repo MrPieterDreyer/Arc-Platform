@@ -28,6 +28,192 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "test:e2e:smoke": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
+    },
+    "test:e2e:integration": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "TEST_COLLECTION_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
+    },
+    "test:e2e:catalog": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "TEST_COLLECTION_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
+    },
+    "test:e2e:cart": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "TEST_COLLECTION_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*",
+        "NEXT_PUBLIC_*"
+      ]
+    },
+    "test:e2e:weave": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": ["CI_WP_ENV", "E2E_*", "WP_*", "ARC_*", "WEAVE_*"]
+    },
+    "test:e2e:checkout": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*",
+        "STRIPE_*",
+        "PAYPAL_*"
+      ]
+    },
+    "test:e2e:account": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "TEST_ORDER_ID",
+        "TEST_CUSTOMER_EMAIL",
+        "TEST_JWT_TOKEN",
+        "E2E_CUSTOMER_JWT_TOKEN",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
+    },
+    "test:e2e:payment": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "STRIPE_*",
+        "E2E_STRIPE_*",
+        "PAYPAL_*"
+      ]
+    },
+    "test:e2e": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "TEST_COLLECTION_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
+    },
+    "test:e2e:nightly": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "TEST_JWT_TOKEN",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
+    },
+    "test:e2e:visual": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
+    },
+    "test:e2e:a11y": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
+    },
+    "test:e2e:perf": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
+    },
+    "test:e2e:update-snapshots": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "passThroughEnv": [
+        "CI_WP_ENV",
+        "TEST_PRODUCT_ID",
+        "TEST_PRODUCT_SLUG",
+        "E2E_*",
+        "WP_*",
+        "ARC_*",
+        "WEAVE_*"
+      ]
     }
   },
   "globalDependencies": ["pnpm-workspace.yaml", "tsconfig.base.json"],

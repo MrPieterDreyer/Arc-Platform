@@ -100,6 +100,11 @@ export class WooClient {
   async request<T>(path: string, init: RequestInit & WooRequestOptions = {}): Promise<T> {
     const url = `${this.baseUrl}${STORE_API_PATH}${path}`;
     const { signal: externalSignal, nonce: perRequestNonce, ...fetchInit } = init;
+    const method = (fetchInit.method ?? 'GET').toUpperCase();
+
+    if (method !== 'GET' && method !== 'HEAD') {
+      await this.ensureCartSessionBeforeMutation(perRequestNonce);
+    }
 
     const makeRequest = async (currentNonce?: string): Promise<T> => {
       // Build AbortSignal: combine external signal with timeout
@@ -236,6 +241,19 @@ export class WooClient {
   // ---------------------------------------------------------------------------
   // Cart operations
   // ---------------------------------------------------------------------------
+
+  /**
+   * WC Store API writes require a session (Cart-Token + Nonce). Fresh client
+   * instances — e.g. a new Server Action — may have a persisted token but no
+   * in-memory nonce. Bootstrap with GET /cart before the first mutation.
+   */
+  private async ensureCartSessionBeforeMutation(explicitNonce?: string): Promise<void> {
+    const token = this.options.getCartToken() ?? this._cartToken ?? null;
+    const nonce = explicitNonce ?? this._nonce ?? (await this.options.getNonce()) ?? null;
+    if (token && nonce) return;
+
+    await this.getCart();
+  }
 
   /** Fetch the current cart. First call returns a Cart-Token via `onCartToken`. */
   getCart(): Promise<WooCart> {

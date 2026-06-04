@@ -17,7 +17,8 @@ import type { WCOrder } from '../types/orders.js';
  * Retrieve a single order by ID for the current Cart-Token session.
  *
  * Returns `null` when the order is not found or does not belong to the current
- * session (the Store API returns 404 in both cases). All other errors are re-thrown.
+ * session (the Store API returns 404, `woocommerce_rest_invalid_order`, or a 403
+ * `woocommerce_rest_invalid_user` for a different customer). All other errors are re-thrown.
  *
  * Use this on the order confirmation page after checkout.
  */
@@ -25,11 +26,16 @@ export async function getOrder(client: WooClient, orderId: number): Promise<WCOr
   try {
     return await client.request<WCOrder>(`/order/${orderId}`);
   } catch (err) {
-    // 404 = not found; `woocommerce_rest_invalid_order` (401) = the order does
-    // not belong to this session / wrong key. Both mean "not retrievable here".
+    // The Store API rejects a non-retrievable order three ways, all of which
+    // mean "not available to this session":
+    //   - 404                              → order does not exist
+    //   - woocommerce_rest_invalid_order   → wrong/missing order key for the session
+    //   - woocommerce_rest_invalid_user    → order belongs to a different customer (403)
     if (
       err instanceof WooClientError &&
-      (err.status === 404 || err.code === 'woocommerce_rest_invalid_order')
+      (err.status === 404 ||
+        err.code === 'woocommerce_rest_invalid_order' ||
+        err.code === 'woocommerce_rest_invalid_user')
     ) {
       return null;
     }

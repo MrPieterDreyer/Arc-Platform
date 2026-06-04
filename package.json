@@ -32,6 +32,7 @@
     "test:e2e:weave-wp": "dotenv -e .env.wp-test -- pnpm --filter @arc/next-example exec playwright test --config ../../../../Weave/WordPress/playwright.config.cjs",
     "test:e2e": "dotenv -e .env.wp-test -- turbo run test:e2e --filter @arc/next-example",
     "test:e2e:nightly": "dotenv -e .env.wp-test -- turbo run test:e2e:nightly --filter @arc/next-example",
+    "test:e2e:update-snapshots": "dotenv -e .env.wp-test -- turbo run test:e2e:update-snapshots --filter @arc/next-example",
     "typecheck": "turbo run typecheck",
     "wp:start": "wp-env start",
     "wp:stop": "wp-env stop",

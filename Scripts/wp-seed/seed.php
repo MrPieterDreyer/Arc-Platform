@@ -130,7 +130,7 @@ function arc_seed_customer( $email ) {
 /**
  * Create (or reuse, by option) a completed order containing the simple product.
  */
-function arc_seed_order( $product_id ) {
+function arc_seed_order( $product_id, $customer_id = 0 ) {
 	$existing = (int) get_option( 'arc_seed_order_id', 0 );
 	if ( $existing && wc_get_order( $existing ) ) {
 		return $existing;
@@ -139,6 +139,9 @@ function arc_seed_order( $product_id ) {
 	$product = wc_get_product( $product_id );
 	if ( $product ) {
 		$order->add_product( $product, 1 );
+	}
+	if ( $customer_id > 0 ) {
+		$order->set_customer_id( $customer_id );
 	}
 	$order->set_status( 'completed' );
 	$order->calculate_totals();
@@ -166,7 +169,7 @@ $simple_id     = arc_seed_simple( 'ARC-SIMPLE', 'Arc Test Simple Product', 'test
 $variable_id   = arc_seed_variable( 'ARC-VARIABLE', 'Arc Test Variable Product', 'test-variable', $cat_id );
 $coupon_id     = arc_seed_coupon( 'TEST10', 10 );
 $customer_id   = arc_seed_customer( 'arc-customer@example.com' );
-$order_id      = arc_seed_order( $simple_id );
+$order_id      = arc_seed_order( $simple_id, $customer_id );
 
 echo 'ARC_SEED_RESULT=' . wp_json_encode(
 	array(
