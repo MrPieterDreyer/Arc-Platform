@@ -105,6 +105,40 @@ jobs:
         if: always()
         run: pnpm wp:stop
 
+  e2e-smoke:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Boot wp-env and seed fixtures
+        run: pnpm wp:setup
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium --with-deps
+        working-directory: Arc/Next/examples/minimal-app
+      - name: Build minimal-app
+        run: pnpm --filter @arc/next-example build
+      - name: E2E smoke (@smoke)
+        run: pnpm test:e2e:smoke
+      - name: E2E integration (@integration)
+        run: pnpm test:e2e:integration
+      - name: Upload agent report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-agent-report
+          path: Artifacts/e2e-reports/latest.json
+          if-no-files-found: ignore
+      - name: Tear down wp-env
+        if: always()
+        run: pnpm wp:stop
+
   license-check:
     needs: install
     runs-on: ubuntu-latest

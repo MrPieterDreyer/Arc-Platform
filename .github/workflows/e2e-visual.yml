@@ -1,0 +1,53 @@
+# Visual regression — Playwright snapshots on minimal-app key routes.
+# Blocks merge when snapshots differ (intentional design changes: update baselines in PR).
+name: E2E Visual
+
+on:
+  pull_request:
+    paths:
+      - 'Design-Systems/**'
+      - '**/e2e/**'
+      - 'Arc/Next/examples/minimal-app/**'
+      - 'Scripts/e2e-shared/**'
+      - '.github/workflows/e2e-visual.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-visual-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+  CI: true
+
+jobs:
+  e2e-visual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Boot wp-env and seed fixtures
+        run: pnpm wp:setup
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium --with-deps
+        working-directory: Arc/Next/examples/minimal-app
+      - name: Build minimal-app
+        run: pnpm --filter @arc/next-example build
+      - name: Visual regression (@visual)
+        run: pnpm test:e2e:visual
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-visual-playwright-report
+          path: Artifacts/e2e-reports/playwright-report
+          if-no-files-found: ignore
+      - name: Tear down wp-env
+        if: always()
+        run: pnpm wp:stop

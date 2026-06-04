@@ -1,0 +1,56 @@
+# Generate Linux visual baselines (Wave 9)
+#
+# Manual only — does NOT block PR merge. Run after intentional design changes or
+# when bootstrapping `e2e/snapshots/linux/` for CI (ubuntu-latest).
+#
+# After the job completes: download the `linux-visual-snapshots` artifact and
+# commit PNGs under Arc/Next/examples/minimal-app/e2e/snapshots/linux/
+name: E2E Update Linux Snapshots
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-update-linux-snapshots
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+  CI: true
+
+jobs:
+  update-linux-snapshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Boot wp-env and seed fixtures
+        run: pnpm wp:setup
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium --with-deps
+        working-directory: Arc/Next/examples/minimal-app
+      - name: Build minimal-app
+        run: pnpm --filter @arc/next-example build
+      - name: Update visual baselines (@visual, linux platform)
+        run: pnpm --filter @arc/next-example test:e2e:update-snapshots
+      - name: Upload linux snapshot PNGs
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-visual-snapshots
+          path: Arc/Next/examples/minimal-app/e2e/snapshots/linux/
+          if-no-files-found: error
+      - name: Job summary
+        run: |
+          echo "## Linux visual baselines generated" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Download the **linux-visual-snapshots** artifact and commit PNGs to:" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`Arc/Next/examples/minimal-app/e2e/snapshots/linux/\`" >> "$GITHUB_STEP_SUMMARY"
+      - name: Tear down wp-env
+        if: always()
+        run: pnpm wp:stop

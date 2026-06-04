@@ -1,0 +1,48 @@
+# Nightly E2E — regression catalog + full Playwright suite (non-quarantine).
+# Does not block PR merge; alerts on failure via GitHub Actions notifications.
+name: E2E Nightly
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # 06:00 UTC daily
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-nightly
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+  CI: true
+
+jobs:
+  e2e-nightly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Boot wp-env and seed fixtures
+        run: pnpm wp:setup
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium --with-deps
+        working-directory: Arc/Next/examples/minimal-app
+      - name: Build minimal-app
+        run: pnpm --filter @arc/next-example build
+      - name: E2E nightly (all non-quarantine, incl. @regression catalog)
+        run: pnpm test:e2e:nightly
+      - name: Upload agent report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-nightly-agent-report
+          path: Artifacts/e2e-reports/latest.json
+          if-no-files-found: ignore
+      - name: Tear down wp-env
+        if: always()
+        run: pnpm wp:stop
