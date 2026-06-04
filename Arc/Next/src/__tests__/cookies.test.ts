@@ -50,6 +50,28 @@ describe('ARC-NEXT-02 — cart token cookie bridge', () => {
     expect(jar.get).toHaveBeenCalledWith(ARC_CART_TOKEN_COOKIE);
   });
 
+  it('createReadOnlyCartClient reads token without persisting', async () => {
+    jar.store.set(ARC_CART_TOKEN_COOKIE, {
+      name: ARC_CART_TOKEN_COOKIE,
+      value: 'tok_ro',
+    });
+
+    const { createReadOnlyCartClient } = await import('../cookies.js');
+    const client = await createReadOnlyCartClient('https://shop.test');
+    expect(client).toBeDefined();
+    expect(jar.set).not.toHaveBeenCalled();
+  });
+
+  it('createCartClient swallows cookie set failures during RSC', async () => {
+    jar.set.mockImplementation(() => {
+      throw new Error('Cookies can only be modified in a Server Action or Route Handler');
+    });
+
+    const { createCartClient } = await import('../cookies.js');
+    const client = await createCartClient('https://shop.test');
+    expect(client).toBeDefined();
+  });
+
   it('CART_COOKIE_OPTIONS match ADR-0006', () => {
     expect(CART_COOKIE_OPTIONS).toEqual({
       httpOnly: true,

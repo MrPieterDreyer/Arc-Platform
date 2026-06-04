@@ -28,10 +28,13 @@ describe('Products GQL — ARC-GQL-03 + ARC-GQL-04', () => {
       const product = await getProduct(gqlClient, TEST_PRODUCT_SLUG);
 
       expect(product).not.toBeNull();
-      expect(typeof product!.databaseId).toBe('number');
-      expect(typeof product!.name).toBe('string');
-      expect(typeof product!.price).toBe('string');
-      expect(typeof product!.slug).toBe('string');
+      if (product === null) {
+        return;
+      }
+      expect(typeof product.databaseId).toBe('number');
+      expect(typeof product.name).toBe('string');
+      expect(typeof product.price).toBe('string');
+      expect(typeof product.slug).toBe('string');
     },
   );
 
@@ -96,8 +99,11 @@ describe('Products GQL — ARC-GQL-03 + ARC-GQL-04', () => {
     async () => {
       const product = await getProduct(gqlClient, TEST_VARIABLE_PRODUCT_SLUG);
       expect(product).not.toBeNull();
+      if (product === null) {
+        return;
+      }
 
-      const variations = getProductVariations(product!);
+      const variations = getProductVariations(product);
       expect(Array.isArray(variations)).toBe(true);
       expect(variations.length).toBeGreaterThan(0);
 

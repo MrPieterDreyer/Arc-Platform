@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export interface RevalidateWebhookBody {
   event: string;
@@ -12,6 +12,8 @@ export interface RevalidateWebhookBody {
 export interface CreateRevalidateHandlerOptions {
   secret: string;
   allowedTagPrefixes?: string[];
+  /** Optional App Router path to purge when a tag is revalidated (e.g. PDP HTML shell). */
+  revalidatePathForTag?: (tag: string) => string | undefined;
 }
 
 const SIGNATURE_HEADER = 'x-weave-signature';
@@ -89,6 +91,10 @@ export function createRevalidateHandler(options: CreateRevalidateHandlerOptions)
     }
 
     revalidateTag(body.tag, 'max');
+    const path = options.revalidatePathForTag?.(body.tag);
+    if (path) {
+      revalidatePath(path);
+    }
     return Response.json({ revalidated: true });
   };
 }
