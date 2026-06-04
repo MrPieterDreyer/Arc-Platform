@@ -28,9 +28,9 @@ export function useFocusTrap(
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key !== 'Tab') return;
 
-      const focusable = Array.from(container?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []).filter(
-        (el) => !el.closest('[inert]'),
-      );
+      const focusable = Array.from(
+        container?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [],
+      ).filter((el) => !el.closest('[inert]'));
       if (focusable.length === 0) return;
 
       const first = focusable[0];

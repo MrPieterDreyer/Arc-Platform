@@ -263,9 +263,7 @@ export function CartDrawer({ cart, isOpen, onClose, onCartUpdate }: CartDrawerPr
               <span style={{ fontSize: '2.5rem', lineHeight: 1 }} aria-hidden="true">
                 🛒
               </span>
-              <p style={{ margin: 0, fontSize: 'var(--text-body-size)' }}>
-                Your cart is empty
-              </p>
+              <p style={{ margin: 0, fontSize: 'var(--text-body-size)' }}>Your cart is empty</p>
               <Link
                 href="/products"
                 data-testid="cart-drawer-continue-shopping"
