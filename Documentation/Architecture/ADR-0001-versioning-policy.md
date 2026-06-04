@@ -62,7 +62,7 @@ Changesets `fixed` groups keep `@arc/*` and `@weave/*` in lockstep so the two SD
 - `Scripts/verify-changesets-no-major.mjs` (plan 07) reads `.changeset/*.md` files, checks the `bump` field, and exits non-zero if any changeset contains `major` without `ARC_ALLOW_V1_PUBLISH=true` in the environment.
 - `.changeset/config.json` (plan 05) sets `fixed: [["@arc/core", "@arc/next"], ["@weave/react", "@weave/next"]]` to maintain lockstep versioning.
 - Every `package.json` in `Arc/` and `Weave/` starts at version `0.1.0` at Phase 1 initial publish.
-- Publication runs via `.github/workflows/release.yml` (plan 06); the workflow sets `ARC_ALLOW_V1_PUBLISH` from a GitHub Actions secret to enable future 1.0 promotion.
+- Publication runs via `.github/workflows/release.yml` (plan 06); a dedicated step runs `node Scripts/verify-changesets-no-major.mjs` with `ARC_ALLOW_V1_PUBLISH` injected from the `ARC_ALLOW_V1_PUBLISH` GitHub Actions secret — the job fails before `changesets/action` fires unless the flag is set or no major bumps are present.
 - JSDoc `@status` tags are added to every exported symbol as part of the Phase 1-6 package authoring convention; no runtime enforcement.
 
 ## References

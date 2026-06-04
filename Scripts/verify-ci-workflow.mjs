@@ -40,6 +40,9 @@ const REQUIRED_RELEASE_TOKENS = [
   'id-token: write',
   'NPM_TOKEN',
   'pnpm build',
+  // P1-4: v1-publish guard must run before changesets/action in release.yml
+  'node Scripts/verify-changesets-no-major.mjs',
+  'ARC_ALLOW_V1_PUBLISH',
 ];
 
 let failed = 0;
