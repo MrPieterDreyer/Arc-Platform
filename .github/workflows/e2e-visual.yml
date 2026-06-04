@@ -48,6 +48,16 @@ jobs:
           name: e2e-visual-playwright-report
           path: Artifacts/e2e-reports/playwright-report
           if-no-files-found: ignore
+      # On a missing baseline Playwright writes the freshly-rendered PNG to the
+      # snapshot path before failing. Upload it so Linux baselines can be
+      # bootstrapped from the exact CI environment (download + commit to the PR).
+      - name: Upload generated Linux baselines
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-visual-snapshots
+          path: Arc/Next/examples/minimal-app/e2e/snapshots/linux/
+          if-no-files-found: ignore
       - name: Tear down wp-env
         if: always()
         run: pnpm wp:stop
