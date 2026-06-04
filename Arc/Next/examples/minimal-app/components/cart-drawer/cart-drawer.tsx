@@ -229,8 +229,7 @@ export function CartDrawer({ cart, isOpen, onClose, onCartUpdate }: CartDrawerPr
         {/* Pending indicator */}
         {isPending && (
           <div
-            aria-live="polite"
-            aria-label="Updating cart"
+            aria-hidden="true"
             style={{
               height: 3,
               background: 'var(--color-accent)',

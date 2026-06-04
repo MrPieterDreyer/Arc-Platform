@@ -43,11 +43,7 @@ function QtyStepper({ quantity, min, max, isPending, onDecrement, onIncrement }:
   };
 
   return (
-    <div
-      style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}
-      role="group"
-      aria-label="Quantity"
-    >
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
       <button
         type="button"
         aria-label="Decrease quantity"
