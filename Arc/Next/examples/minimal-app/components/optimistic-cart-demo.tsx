@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import type { WooCart } from '@arc/core';
 import { useOptimisticCart } from '@arc/next/client';
-import { addItemAction } from '../app/actions/cart';
+import Link from 'next/link';
+import { useRef, useState } from 'react';
+import { addItemAction, addItemActionFail } from '../app/actions/cart';
+import { emitCartCount } from '../lib/cart-sync';
 
-const stubCart: WooCart | null = {
+const emptyCart: WooCart = {
   coupons: [],
   shipping_rates: [],
   shipping_address: {
@@ -66,13 +68,29 @@ const stubCart: WooCart | null = {
   extensions: {},
 };
 
+function testProductId(): number {
+  const raw = process.env.NEXT_PUBLIC_TEST_PRODUCT_ID ?? process.env.TEST_PRODUCT_ID ?? '1';
+  const id = Number(raw);
+  return Number.isFinite(id) && id > 0 ? id : 1;
+}
+
 export function OptimisticCartDemo() {
   const [error, setError] = useState<string | null>(null);
+  const [baseCart, setBaseCart] = useState<WooCart | null>(emptyCart);
+  const forceFailRef = useRef(false);
+  const productId = testProductId();
+
   const { cart, add, isPending, pendingLabel, errorLabel } = useOptimisticCart(
-    stubCart,
+    baseCart,
     async (payload) => {
-      setError(null);
-      return addItemAction(payload);
+      if (forceFailRef.current) {
+        forceFailRef.current = false;
+        return addItemActionFail(payload);
+      }
+      const next = await addItemAction(payload);
+      setBaseCart(next);
+      emitCartCount(next.items_count ?? 0);
+      return next;
     },
   );
 
@@ -82,6 +100,7 @@ export function OptimisticCartDemo() {
     <section aria-labelledby="cart-demo-title">
       <h2 id="cart-demo-title">Optimistic cart</h2>
       <p
+        data-testid="cart-badge"
         aria-live="polite"
         style={{
           color: count > 0 ? 'var(--color-accent)' : 'var(--color-text-muted)',
@@ -90,12 +109,17 @@ export function OptimisticCartDemo() {
       >
         {isPending ? pendingLabel : `Cart items: ${count}`}
       </p>
-      {error ? <p role="alert">{error}</p> : null}
+      {error ? (
+        <p role="alert" data-testid="cart-error">
+          {error}
+        </p>
+      ) : null}
       <div
         style={{
           display: 'flex',
           gap: 'var(--space-4)',
           alignItems: 'center',
+          flexWrap: 'wrap',
           padding: 'var(--space-4)',
           border: '1px solid var(--color-border)',
           borderRadius: 'var(--radius-md)',
@@ -104,6 +128,7 @@ export function OptimisticCartDemo() {
         <span>Stub product</span>
         <button
           type="button"
+          data-testid="add-to-cart"
           style={{
             background: 'var(--color-accent)',
             color: 'var(--color-on-accent, #fff)',
@@ -114,12 +139,65 @@ export function OptimisticCartDemo() {
           }}
           disabled={isPending}
           onClick={() => {
-            void add(1, 1).catch(() => setError(errorLabel));
+            setError(null);
+            void add(productId, 1).catch(() => setError(errorLabel));
           }}
         >
           Add to cart
         </button>
+        <button
+          type="button"
+          data-testid="add-to-cart-fail"
+          disabled={isPending}
+          style={{
+            background: 'transparent',
+            color: 'var(--color-text-muted)',
+            border: '1px solid var(--color-border)',
+            padding: 'var(--space-2) var(--space-4)',
+            borderRadius: 'var(--radius-sm)',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            setError(null);
+            forceFailRef.current = true;
+            void add(productId, 1).catch(() => setError(errorLabel));
+          }}
+        >
+          Add (fail)
+        </button>
       </div>
+      {(cart?.items?.length ?? 0) > 0 ? (
+        <>
+          <ul
+            data-testid="cart-line-items"
+            style={{ marginTop: 'var(--space-4)', padding: 0, listStyle: 'none' }}
+          >
+            {cart?.items.map((item) => (
+              <li key={item.key} data-testid="cart-line-item">
+                {item.name} × {item.quantity}
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/checkout"
+            data-testid="proceed-to-checkout"
+            style={{
+              display: 'inline-block',
+              marginTop: 'var(--space-4)',
+              minHeight: '44px',
+              lineHeight: '44px',
+              padding: '0 var(--space-4)',
+              background: 'var(--btn-primary-bg)',
+              color: 'var(--btn-primary-fg)',
+              borderRadius: 'var(--radius-sm)',
+              fontWeight: 600,
+              textDecoration: 'none',
+            }}
+          >
+            Proceed to checkout
+          </Link>
+        </>
+      ) : null}
     </section>
   );
 }
