@@ -1,0 +1,46 @@
+---
+description: E2E testing — run smoke before claiming UI complete; read agent reports; follow Arc Design UX rules
+globs:
+  - "**/e2e/**"
+  - "**/playwright.config.ts"
+  - "Documentation/Testing/**"
+  - "Arc/Next/examples/**"
+  - "Weave/WordPress/**"
+  - "Weave/Next/**"
+alwaysApply: false
+---
+
+# Arc E2E testing (Cursor)
+
+Copy this file to `.cursor/rules/e2e-testing.mdc` (`.cursor/` is gitignored).
+
+## When this applies
+
+- Changing storefront UI, Weave sections, WP plugin REST/editor, cart/checkout, or cache/webhooks
+- User asks to verify, test, or ship a UI feature
+
+## Required reading
+
+- `Documentation/Testing/TESTING.md`
+- `Documentation/Testing/UX-RULES.md`
+- `Design-Systems/Arc-Design/SKILL.md` before CSS/JSX changes
+
+## Before marking UI work complete
+
+1. Run `pnpm test` and `pnpm test:contract` if touching `@arc/*` or `@weave/*`
+2. Run `pnpm test:e2e:smoke` if touching user-visible flows
+3. If E2E failed: read `Artifacts/e2e-reports/latest.json` and fix **all P0/P1 tickets** before claiming done
+
+## Writing tests
+
+- **Per-app** Playwright projects only — no monolithic root suite
+- Tag: `@smoke` for PR gate; `@quarantine` only with linked issue
+- Assert Arc design tokens and COMMERCE.md UX states (see UX-RULES.md)
+- Visual regression required for layout changes (`toHaveScreenshot`)
+- Use `@axe-core/playwright` on every route in smoke set
+
+## Agent fixes from failures
+
+Implement `tickets[].suggestedFix` in order: P0 → P1 → P2. Cite `requirementIds` in commit messages.
+
+Do not weaken assertions to green tests without product approval.

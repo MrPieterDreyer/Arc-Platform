@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arc-platform.dev/schemas/e2e-agent-report.json",
+  "title": "Arc Platform E2E Agent Report",
+  "description": "Machine-readable output for Cursor/Claude agents to implement fixes from test failures.",
+  "type": "object",
+  "required": [
+    "reportVersion",
+    "runId",
+    "startedAt",
+    "finishedAt",
+    "status",
+    "environment",
+    "summary",
+    "tickets"
+  ],
+  "properties": {
+    "reportVersion": { "type": "string", "const": "1.0.0" },
+    "runId": { "type": "string", "description": "UUID or CI run id" },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "finishedAt": { "type": "string", "format": "date-time" },
+    "status": { "type": "string", "enum": ["passed", "failed", "partial"] },
+    "environment": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["local-wp-env", "staging", "ci-pr-smoke", "ci-nightly"]
+        },
+        "wpUrl": { "type": "string", "format": "uri" },
+        "storefrontUrl": { "type": "string", "format": "uri" },
+        "gitSha": { "type": "string" },
+        "branch": { "type": "string" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed", "skipped", "flaky", "durationMs"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "skipped": { "type": "integer", "minimum": 0 },
+        "flaky": { "type": "integer", "minimum": 0 },
+        "durationMs": { "type": "integer", "minimum": 0 },
+        "apps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "app": { "type": "string" },
+              "passed": { "type": "integer" },
+              "failed": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+    "tickets": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ticket" }
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "htmlReport": { "type": "string" },
+        "playwrightReport": { "type": "string" },
+        "traceDir": { "type": "string" },
+        "visualDiffDir": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "ticket": {
+      "type": "object",
+      "required": [
+        "id",
+        "severity",
+        "category",
+        "title",
+        "description",
+        "reproduction",
+        "suggestedFix",
+        "requirementIds"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^E2E-[0-9]{4,}$" },
+        "severity": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
+        "category": {
+          "type": "string",
+          "enum": [
+            "functional",
+            "integration",
+            "visual-regression",
+            "accessibility",
+            "ux-copy",
+            "design-token",
+            "performance",
+            "payment",
+            "security",
+            "flake"
+          ]
+        },
+        "title": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string" },
+        "requirementIds": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z]+-[A-Z0-9]+-[0-9]{2}$" }
+        },
+        "uxRuleIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "reproduction": {
+          "type": "object",
+          "required": ["testFile", "testTitle"],
+          "properties": {
+            "testFile": { "type": "string" },
+            "testTitle": { "type": "string" },
+            "grep": { "type": "string", "description": "playwright --grep value" },
+            "steps": { "type": "array", "items": { "type": "string" } },
+            "route": { "type": "string" },
+            "browser": { "type": "string" }
+          }
+        },
+        "evidence": {
+          "type": "object",
+          "properties": {
+            "screenshot": { "type": "string" },
+            "screenshotDiff": { "type": "string" },
+            "trace": { "type": "string" },
+            "video": { "type": "string" },
+            "consoleErrors": { "type": "array", "items": { "type": "string" } },
+            "networkFailures": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": { "type": "string" },
+                  "status": { "type": "integer" },
+                  "method": { "type": "string" }
+                }
+              }
+            },
+            "axeViolations": { "type": "array", "items": { "type": "object" } },
+            "domSnapshot": {
+              "type": "string",
+              "description": "Accessibility tree or key DOM excerpt"
+            },
+            "computedStyles": { "type": "object", "additionalProperties": { "type": "string" } },
+            "expected": { "type": "string" },
+            "actual": { "type": "string" }
+          }
+        },
+        "suggestedFix": {
+          "type": "object",
+          "required": ["summary"],
+          "properties": {
+            "summary": { "type": "string" },
+            "likelyFiles": { "type": "array", "items": { "type": "string" } },
+            "adrRefs": { "type": "array", "items": { "type": "string" } },
+            "designRefs": { "type": "array", "items": { "type": "string" } },
+            "implementationHints": { "type": "array", "items": { "type": "string" } },
+            "llmReview": {
+              "type": "object",
+              "properties": {
+                "uxNotes": { "type": "array", "items": { "type": "string" } },
+                "workflowNotes": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "ownerPackage": {
+          "type": "string",
+          "enum": [
+            "@arc/core",
+            "@arc/next",
+            "@weave/react",
+            "@weave/next",
+            "weave-wordpress",
+            "minimal-app",
+            "pilot",
+            "design-system",
+            "ci-infra"
+          ]
+        },
+        "quarantine": { "type": "boolean", "default": false }
+      }
+    }
+  }
+}

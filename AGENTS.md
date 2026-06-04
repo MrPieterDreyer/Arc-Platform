@@ -71,3 +71,13 @@ Bypass GSD workflow only when the user **explicitly** asks to skip it.
 ## UI work
 
 All storefront, Pilot, Template, and Weave section UI uses **`Design-Systems/Arc-Design/`**. Import tokens once at app root; do not duplicate hex values.
+
+## E2E testing
+
+Before claiming storefront, Weave, or WP plugin UI work is complete:
+
+1. Read **`Documentation/Testing/TESTING.md`** and **`Documentation/Testing/UX-RULES.md`**
+2. Run **`pnpm test:e2e:smoke`** (PR gate) and relevant suites — **`pnpm test:e2e:integration`**, **`pnpm test:e2e:catalog`**, **`pnpm test:e2e:cart`**, **`pnpm test:e2e:weave`**, **`pnpm test:e2e:checkout`**, **`pnpm test:e2e:account`** — after **`pnpm wp:setup`**. Nightly-only: **`pnpm test:e2e:visual`**, **`pnpm test:e2e:a11y`**, **`pnpm test:e2e:perf`**, or **`pnpm test:e2e:nightly`**. Use **`pnpm test:e2e:payment`** only on staging with sandbox keys (never PR gate).
+3. On failure, read **`Artifacts/e2e-reports/latest.json`** and fix P0/P1 tickets before sign-off
+
+Copy **`Documentation/Testing/cursor-rule-e2e.mdc`** to `.cursor/rules/e2e-testing.mdc` for Cursor-specific enforcement.

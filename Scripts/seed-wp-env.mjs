@@ -20,8 +20,20 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 
 const require = createRequire(import.meta.url);
-const WP_URL = process.env.WP_URL ?? 'http://localhost:8888';
-const WP_GRAPHQL_ENDPOINT = process.env.WP_GRAPHQL_ENDPOINT ?? `${WP_URL}/graphql`;
+
+/** Strip accidental `WP_URL=` prefixes from corrupted dotenv values. */
+function sanitizeWpBaseUrl(value) {
+  let url = (value ?? 'http://localhost:8888').trim();
+  while (url.startsWith('WP_URL=')) {
+    url = url.slice('WP_URL='.length).trim();
+  }
+  return url.replace(/\/+$/, '');
+}
+
+const WP_URL = sanitizeWpBaseUrl(process.env.WP_URL ?? 'http://localhost:8888');
+const WP_GRAPHQL_ENDPOINT = sanitizeWpBaseUrl(
+  process.env.WP_GRAPHQL_ENDPOINT ?? `${WP_URL}/graphql`,
+);
 
 // Resolve wp-env's JS entry so we can run it via `node` directly. Spawning the
 // `.cmd`/`.bin` shim with shell:false throws EINVAL on Windows (post-CVE Node),
@@ -55,12 +67,46 @@ function wp(args) {
 console.log('→ Setting pretty permalinks…');
 wp(['rewrite', 'structure', '/%postname%/', '--hard']);
 
+console.log('→ Activating Weave plugin (Wave 4 E2E / weave/v1)…');
+wp(['plugin', 'activate', 'weave']);
+
 console.log('→ Seeding WooCommerce fixtures…');
 const out = wp(['eval-file', 'wp-content/arc-seed/seed.php']);
 process.stdout.write(out);
 
 console.log('→ Flushing rewrite rules (exposes /graphql)…');
 wp(['rewrite', 'flush', '--hard']);
+
+console.log('→ Creating WP application password for weave/v1 REST…');
+// Revoke prior e2e password so re-seed stays idempotent (ignore if missing).
+spawnSync(
+  process.execPath,
+  [
+    wpEnvBin,
+    'run',
+    'cli',
+    'wp',
+    'user',
+    'application-password',
+    'delete',
+    'admin',
+    'arc-e2e-weave',
+  ],
+  {
+    encoding: 'utf8',
+  },
+);
+const appPassword = wp([
+  'user',
+  'application-password',
+  'create',
+  'admin',
+  'arc-e2e-weave',
+  '--porcelain',
+]).trim();
+if (!appPassword) {
+  throw new Error('Failed to create WP application password for admin');
+}
 
 const match = out.match(/ARC_SEED_RESULT=(\{.*\})/);
 if (!match) {
@@ -80,8 +126,17 @@ const lines = [
   `TEST_COUPON_CODE=${seed.coupon_code}`,
   `TEST_COLLECTION_SLUG=${seed.collection_slug}`,
   `TEST_ORDER_ID=${seed.order_id}`,
+  `TEST_CUSTOMER_EMAIL=${seed.customer_email}`,
+  `WEAVE_WP_BASE_URL=${WP_URL}`,
+  'WEAVE_WP_APP_USER=admin',
+  `WEAVE_WP_APP_PASSWORD=${appPassword}`,
+  'WEAVE_WP_USER=admin',
+  'WEAVE_WP_PASSWORD=password',
+  'E2E_WP_ADMIN_USER=admin',
+  `E2E_WP_ADMIN_PASSWORD=${appPassword}`,
   // TEST_JWT_TOKEN is intentionally unset — authenticated customer GraphQL tests
-  // skip without it (requires a JWT auth plugin; see customer-auth spike).
+  // skip without it. wp-graphql-jwt-authentication is not bundled in .wp-env.json
+  // (ADR-0009 spike); obtain a token manually or add the plugin to wp-env mappings.
   '',
 ];
 writeFileSync('.env.wp-test', lines.join('\n'));
@@ -92,4 +147,5 @@ console.log(`   TEST_VARIABLE_PRODUCT_SLUG=${seed.variable_product_slug}`);
 console.log(`   TEST_COUPON_CODE=${seed.coupon_code}`);
 console.log(`   TEST_COLLECTION_SLUG=${seed.collection_slug}`);
 console.log(`   TEST_ORDER_ID=${seed.order_id}`);
+console.log(`   TEST_CUSTOMER_EMAIL=${seed.customer_email}`);
 console.log('\nNext:  pnpm test:contract');

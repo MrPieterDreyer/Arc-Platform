@@ -1,0 +1,86 @@
+{
+  "reportVersion": "1.0.0",
+  "runId": "ci-20260602-arc-e2e-smoke-42",
+  "startedAt": "2026-06-02T18:00:00.000Z",
+  "finishedAt": "2026-06-02T18:12:34.000Z",
+  "status": "failed",
+  "environment": {
+    "name": "ci-pr-smoke",
+    "wpUrl": "http://localhost:8888",
+    "storefrontUrl": "http://localhost:3000",
+    "gitSha": "abc1234",
+    "branch": "feat/e2e-smoke"
+  },
+  "summary": {
+    "total": 24,
+    "passed": 22,
+    "failed": 2,
+    "skipped": 0,
+    "flaky": 0,
+    "durationMs": 754000,
+    "apps": [
+      { "app": "minimal-app", "passed": 18, "failed": 2 },
+      { "app": "weave-wordpress", "passed": 4, "failed": 0 }
+    ]
+  },
+  "tickets": [
+    {
+      "id": "E2E-0001",
+      "severity": "P1",
+      "category": "design-token",
+      "title": "Add to cart button uses wrong accent color",
+      "description": "Primary CTA on PDP does not match Arc commerce accent #0369a1.",
+      "requirementIds": ["ARC-NEXT-07"],
+      "uxRuleIds": ["DESIGN-ACCENT-CTA", "FORBID-ACCENT-MISUSE"],
+      "reproduction": {
+        "testFile": "Arc/Next/examples/minimal-app/e2e/catalog/pdp.spec.ts",
+        "testTitle": "PDP primary CTA matches Arc design tokens",
+        "grep": "PDP primary CTA",
+        "steps": [
+          "pnpm wp:setup",
+          "pnpm --filter minimal-app dev",
+          "pnpm exec playwright test e2e/catalog/pdp.spec.ts"
+        ],
+        "route": "/products/test-product",
+        "browser": "chromium"
+      },
+      "evidence": {
+        "screenshot": "Artifacts/e2e-reports/ci-42/test-results/pdp-design-accent.png",
+        "computedStyles": {
+          "backgroundColor": "rgb(255, 92, 168)",
+          "color": "rgb(255, 255, 255)"
+        },
+        "expected": "background-color rgb(3, 105, 161)",
+        "actual": "background-color rgb(255, 92, 168)"
+      },
+      "suggestedFix": {
+        "summary": "Use --btn-primary-bg / Arc token classes for add-to-cart; remove marketing magenta from commerce CTA.",
+        "likelyFiles": [
+          "Arc/Next/examples/minimal-app/components/optimistic-cart-demo.tsx",
+          "Design-Systems/Arc-Design/tokens/arc-tokens.css"
+        ],
+        "designRefs": [
+          "Design-Systems/Arc-Design/SKILL.md",
+          "Design-Systems/Arc-Design/references/COMMERCE.md"
+        ],
+        "implementationHints": [
+          "Import arc-tokens.css at app root if missing",
+          "Add data-testid=\"add-to-cart\" for stable selectors"
+        ],
+        "llmReview": {
+          "uxNotes": [
+            "Commerce accent must be reserved for revenue actions per Arc Design philosophy."
+          ],
+          "workflowNotes": []
+        }
+      },
+      "ownerPackage": "minimal-app",
+      "quarantine": false
+    }
+  ],
+  "artifacts": {
+    "htmlReport": "Artifacts/e2e-reports/ci-42/index.html",
+    "playwrightReport": "Artifacts/e2e-reports/ci-42/playwright-report",
+    "traceDir": "Artifacts/e2e-reports/ci-42/traces"
+  }
+}
