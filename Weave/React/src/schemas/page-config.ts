@@ -10,28 +10,32 @@
 import { z } from 'zod';
 
 /** One section entry — ADR-0005 `sections[]` shape. */
-export const WeaveSectionSchema = z.object({
-  /** Stable UUIDv4 generated at section create-time. */
-  id: z.string().min(1),
-  /** Registry key; matched to a registered section in the renderer (not validated here). */
-  type: z.string().min(1),
-  /** Per-type props — validated later by the section's own Zod schema. */
-  data: z.record(z.string(), z.unknown()),
-  /** Per-section schema version; enables per-section migrations (integer). */
-  version: z.number().int(),
-});
+export const WeaveSectionSchema = z
+  .object({
+    /** Stable UUIDv4 generated at section create-time. */
+    id: z.string().min(1),
+    /** Registry key; matched to a registered section in the renderer (not validated here). */
+    type: z.string().min(1),
+    /** Per-type props — validated later by the section's own Zod schema. */
+    data: z.record(z.string(), z.unknown()),
+    /** Per-section schema version; enables per-section migrations (integer). */
+    version: z.number().int(),
+  })
+  .strict();
 
-/** Top-level page config — ADR-0005 root shape. */
-export const WeavePageConfigSchema = z.object({
-  /** Root schema version (integer). */
-  schemaVersion: z.number().int(),
-  /** URL slug of the page. */
-  slug: z.string().min(1),
-  /** Ordered sections; render order = array order. */
-  sections: z.array(WeaveSectionSchema),
-  /** ISO8601 timestamp of last save (string, not over-constrained). */
-  updatedAt: z.string(),
-});
+/** Top-level page config — ADR-0005 root shape (strict — matches PHP Weave_Validator D-07). */
+export const WeavePageConfigSchema = z
+  .object({
+    /** Root schema version (integer). */
+    schemaVersion: z.number().int(),
+    /** URL slug of the page. */
+    slug: z.string().min(1),
+    /** Ordered sections; render order = array order. */
+    sections: z.array(WeaveSectionSchema),
+    /** ISO8601 timestamp of last save (string, not over-constrained). */
+    updatedAt: z.string(),
+  })
+  .strict();
 
 /** Inferred type for a single section. */
 export type WeaveSection = z.infer<typeof WeaveSectionSchema>;

@@ -23,6 +23,11 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.mjs",
       "require": "./dist/server.js"
+    },
+    "./server-page": {
+      "types": "./dist/server-page.d.ts",
+      "import": "./dist/server-page.mjs",
+      "require": "./dist/server-page.js"
     }
   },
   "scripts": {

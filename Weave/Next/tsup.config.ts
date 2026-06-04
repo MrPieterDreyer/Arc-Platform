@@ -1,5 +1,5 @@
 import { arcTsup } from '../../tsup.base';
 
 export default arcTsup({
-  entry: ['src/index.ts', 'src/server.ts'],
+  entry: ['src/index.ts', 'src/server.ts', 'src/server-page.ts'],
 });

@@ -52,6 +52,15 @@ describe('@weave/next/server — export surface', () => {
   });
 });
 
+describe('@weave/next/server-page — WeavePage entry', () => {
+  it('exports WeavePage for all-in-one storefront routes', async () => {
+    const mod = await import('../server-page.js');
+    expect('WeavePage' in mod).toBe(true);
+    expect(typeof mod.WeavePage).toBe('function');
+    expect(mod.WeavePage.name).toBe('WeavePage');
+  });
+});
+
 describe('@weave/next (./index) — RSC-safe surface', () => {
   it('re-exports the pure weaveTag helper', async () => {
     const index = await import('../index.js');
