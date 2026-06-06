@@ -28,6 +28,10 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - name: Guard — refuse accidental major/v1 publish
+        run: node Scripts/verify-changesets-no-major.mjs
+        env:
+          ARC_ALLOW_V1_PUBLISH: ${{ secrets.ARC_ALLOW_V1_PUBLISH }}
       - uses: changesets/action@v1
         with:
           publish: pnpm changeset publish
