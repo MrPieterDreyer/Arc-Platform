@@ -43,8 +43,17 @@ Runtime production dependencies of `@arc/*`, `@weave/*` JS packages, and `Templa
 | Unlicense | `Unlicense` |
 | Blue Oak 1.0.0 | `BlueOak-1.0.0` |
 | Python Software Foundation 2.0 | `Python-2.0` |
+| Creative Commons Attribution 4.0 | `CC-BY-4.0` |
+| MIT No Attribution | `MIT-0` |
+| Apache 2.0 + LGPL 3.0+ (native binary only) | `Apache-2.0 AND LGPL-3.0-or-later` |
 
 This allowlist applies to **runtime production dependencies and their transitive closure** — packages that appear in `dependencies` (not `devDependencies` or `peerDependencies`) of any published package.
+
+**Justification for the final three entries** (added 2026-06-04 to bring this ADR into sync with the already-validated state of `Scripts/check-licenses.mjs` — see Changelog):
+
+- **`CC-BY-4.0`** — carried by `caniuse-lite` (browser-compatibility data consumed transitively). This is a *data* license attached to a dataset, not a code license that copyleft-contaminates Arc's MIT source. The CC-BY attribution requirement applies to the data only and does not reach Arc's code.
+- **`MIT-0`** (MIT No Attribution) — strictly *more* permissive than MIT (it drops even the attribution requirement). Appears via `@csstools/*` transitives of `@wordpress/*`. If MIT is permitted, MIT-0 is permitted a fortiori.
+- **`Apache-2.0 AND LGPL-3.0-or-later`** — reported for `@img/sharp-*` platform binaries pulled in transitively by Next.js's image optimizer. The LGPL covers the **bundled `libvips` native binary**, not Arc's MIT code, and Arc's *published* packages (`@arc/core`, `@arc/next`) do not depend on `sharp` — it arrives via the consumer's `next` install or the private example app. This native-binary boundary keeps the LGPL copyleft from reaching Arc's MIT code (the same boundary rationale `check-licenses.mjs` applies to the `@wordpress/*` GPL exception).
 
 The CI gate is `Scripts/check-licenses.mjs` (plan 08), which runs `pnpm licenses list --prod --json` and validates every entry against this allowlist. The `pnpm license-check` npm script in the root `package.json` is the entry point.
 
@@ -74,9 +83,13 @@ The CI gate is `Scripts/check-licenses.mjs` (plan 08), which runs `pnpm licenses
 ## Implementation Notes
 
 - `Scripts/check-licenses.mjs` (plan 08) implements this allowlist verbatim. The allowed SPDX IDs array in that script must match this ADR exactly.
-- To add a license to the allowlist: open a PR that edits **both** this ADR (allowlist table above) and `Scripts/check-licenses.mjs` (the `ALLOWED_LICENSES` constant). PRs that edit one without the other must be rejected.
+- To add a license to the allowlist: open a PR that edits **both** this ADR (allowlist table above) and `Scripts/check-licenses.mjs` (the `ALLOWED` constant). PRs that edit one without the other must be rejected.
 - `pnpm license-check` (root `package.json` script alias) is the CI command. The GitHub Actions job (plan 06) runs this in the lint phase.
 - Packages that report `UNLICENSED` or missing `license` field in their `package.json` are treated as violations — they must be resolved (typically by contacting the maintainer or switching to an alternative).
+
+## Changelog
+
+- **2026-06-04** — Added `CC-BY-4.0`, `MIT-0`, and `Apache-2.0 AND LGPL-3.0-or-later` to the permitted-licenses table to bring this ADR into sync with the validated state of `Scripts/check-licenses.mjs`. The script already allowed (and justified, via inline comments) these three SPDX IDs; this amendment is a one-directional reconciliation that documents the script's existing, legitimate entries. The script was NOT modified — trimming it would have reintroduced real license drift for `caniuse-lite`, `@img/sharp-*`, and the `@csstools/*`/`@wordpress/*` transitives. The "edit ADR table and script together" rule (see Implementation Notes) remains in force for all future changes.
 
 ## References
 
