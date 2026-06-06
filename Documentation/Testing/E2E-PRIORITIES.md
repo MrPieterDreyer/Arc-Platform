@@ -149,8 +149,8 @@ Spec: `e2e/perf/routes.spec.ts` (`@perf`). Lighthouse (PILOT-06) deferred.
 | WEAVE-WP-07 | Admin sidebar add/reorder/save | — | — | 🟡 | 8 |
 | WEAVE-WP-08 | Media picker for image input | — | — | ⬜ | 8 |
 | WEAVE-NEXT-01 | `loadPageConfig` cached tag | ✅ | — | ✅ | 4 |
-| WEAVE-NEXT-03 | Draft preview bypasses cache | — | — | ⬜ | 8 |
-| WEAVE-NEXT-04 | WP webhook → `weave:page:{slug}` | — | ✅ | ⬜ | 1 |
+| WEAVE-NEXT-03 | Draft preview bypasses cache | ✅ | — | ⬜ | 8 |
+| WEAVE-NEXT-04 | WP webhook → `weave:page:{slug}` | ✅ | ✅ | ⬜ | 1 |
 
 ---
 
