@@ -7,6 +7,11 @@
       "inputs": ["src/**", "tsup.config.ts", "package.json", "tsconfig.json"],
       "outputs": ["dist/**"]
     },
+    "weave-admin#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "package.json", "tsconfig.json"],
+      "outputs": ["build/**"]
+    },
     "lint": {
       "inputs": ["src/**", "biome.json", "package.json"],
       "outputs": []
