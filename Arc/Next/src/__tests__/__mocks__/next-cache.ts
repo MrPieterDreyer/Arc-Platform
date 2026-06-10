@@ -8,13 +8,8 @@ export const revalidateTagMock: Mock = vi.fn();
 
 export const revalidatePathMock: Mock = vi.fn();
 
-export function mockNextCache() {
-  vi.mock('next/cache', () => ({
-    cacheTag: cacheTagMock,
-    revalidateTag: revalidateTagMock,
-    revalidatePath: revalidatePathMock,
-    unstable_cacheTag: cacheTagMock,
-    unstable_cacheLife: vi.fn(),
-    cacheLife: vi.fn(),
-  }));
-}
+// NOTE: never wrap `vi.mock` in an exported helper here. Vitest hoists vi.mock
+// calls to the top of THIS module on import, so a helper-scoped factory closes
+// over parameters that don't exist at hoisted position and silently overrides
+// every test file's own next/* registration. Each test file declares its own
+// top-level `vi.mock('next/cache', …)` using these spies.
