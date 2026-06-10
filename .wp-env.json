@@ -3,7 +3,7 @@
   "core": "https://wordpress.org/wordpress-7.0.zip",
   "plugins": [
     "https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip",
-    "https://downloads.wordpress.org/plugin/wp-graphql.latest-stable.zip",
+    "https://downloads.wordpress.org/plugin/wp-graphql.zip",
     "https://github.com/wp-graphql/wp-graphql-woocommerce/releases/download/v1.0.2/wp-graphql-woocommerce.zip"
   ],
   "port": 8888,
