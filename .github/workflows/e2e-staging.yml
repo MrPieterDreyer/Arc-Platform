@@ -42,7 +42,7 @@ jobs:
         run: pnpm exec playwright install chromium --with-deps
         working-directory: Arc/Next/examples/minimal-app
       - name: Build minimal-app
-        run: pnpm --filter @arc/next-example build
+        run: pnpm --filter @arc-platform/next-example build
       - name: Checkout regression (requires live staging URLs in secrets)
         run: pnpm test:e2e:checkout
         env:

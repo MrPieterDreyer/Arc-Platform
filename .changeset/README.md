@@ -11,5 +11,5 @@ We have a quick list of common questions to get you started engaging with this p
 
 - Public packages stay on `0.x.y` until LOFT prod 90 days + 1 community site (ADR-0001).
 - Major bumps are blocked by `Scripts/verify-changesets-no-major.mjs` unless `ARC_ALLOW_V1_PUBLISH=true` is set.
-- `@arc/*` packages release in lockstep; `@weave/*` packages release in lockstep (see `fixed` in config.json).
+- `@arc-platform/*` packages release in lockstep; `@weave-platform/*` packages release in lockstep (see `fixed` in config.json).
 - Publishing happens via CI only (`.github/workflows/release.yml`), never from a dev machine.

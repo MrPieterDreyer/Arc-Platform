@@ -29,10 +29,10 @@ Two Next.js 16 facts shape the decision:
 
 ## Decision
 
-**Proposed:** Ship security headers as a first-class `@arc/next` concern, split by whether a value is
+**Proposed:** Ship security headers as a first-class `@arc-platform/next` concern, split by whether a value is
 per-request (nonce CSP) or static.
 
-1. **New module `@arc/next/src/security-headers.ts`** exporting:
+1. **New module `@arc-platform/next/src/security-headers.ts`** exporting:
    - `arcSecurityHeaders()` — the static header set (HSTS, `X-Content-Type-Options: nosniff`,
      `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: SAMEORIGIN`,
      a conservative `Permissions-Policy`), returned in the shape Next's `headers()` expects.
@@ -64,7 +64,7 @@ per-request (nonce CSP) or static.
 
 ## Consequences
 
-- **`@arc/next`** gains `src/security-headers.ts` and a documented `proxy.ts` template. `connectSrc` is a
+- **`@arc-platform/next`** gains `src/security-headers.ts` and a documented `proxy.ts` template. `connectSrc` is a
   required input — there is no safe default origin list for an arbitrary WC backend.
 - **CSP interacts with Weave section rendering.** `SectionRenderer` already never
   `dangerouslySetInnerHTML`s config data (`Weave/React/src/render/SectionRenderer.tsx:96-105`), so a strict

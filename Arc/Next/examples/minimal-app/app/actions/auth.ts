@@ -1,9 +1,9 @@
 'use server';
 
-// ADR-0009 customer-auth Server Actions — thin wrappers over @arc/next/server
+// ADR-0009 customer-auth Server Actions — thin wrappers over @arc-platform/next/server
 // (a 'use server' file may only export async functions, not re-exports).
 // Tokens never reach the client: they live in the two HttpOnly cookies.
-import { loginAction as login, logoutAction as logout } from '@arc/next/server';
+import { loginAction as login, logoutAction as logout } from '@arc-platform/next/server';
 import { redirect } from 'next/navigation';
 
 export async function loginFormAction(formData: FormData): Promise<void> {

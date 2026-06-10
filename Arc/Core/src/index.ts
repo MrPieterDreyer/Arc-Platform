@@ -25,7 +25,7 @@ export { getProduct, getProducts, getProductVariations } from './graphql/product
 export type { WCSearchFilter } from './graphql/search';
 export { searchProducts } from './graphql/search';
 // Phase 1 — Hooks (React 19, Client Components only) are exported from the
-// SEPARATE `@arc/core/hooks` entry to keep this barrel RSC-safe. Do NOT
+// SEPARATE `@arc-platform/core/hooks` entry to keep this barrel RSC-safe. Do NOT
 // re-export them here — doing so pulls useEffect/useOptimistic into Server
 // Components and breaks the Next.js build. See src/hooks/index.ts.
 export { isWooError, sleep, withRetry } from './http';

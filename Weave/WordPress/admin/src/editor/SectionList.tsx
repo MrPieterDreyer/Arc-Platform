@@ -8,7 +8,7 @@
  * section via `addSection(type)`.
  */
 
-import { listSections } from '@weave/react';
+import { listSections } from '@weave-platform/react';
 import { Button, SelectControl } from '@wordpress/components';
 import { useState } from 'react';
 import { useEditorStore } from '../store/editor-store';

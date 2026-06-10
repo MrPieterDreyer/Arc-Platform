@@ -25,5 +25,5 @@ In Next.js App Router, import in `app/globals.css` or root layout.
 
 - `Arc/Pilot` — Phase 5 canonical starter
 - `Templates/Arc-Commerce`, `Templates/Arc-Golf`
-- `@weave/react` section components
+- `@weave-platform/react` section components
 - LOFT Pro Shop (private repo) via same tokens

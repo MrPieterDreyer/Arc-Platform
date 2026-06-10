@@ -4,7 +4,7 @@
 
 ## Changeset
 
-- [ ] Changeset added (required for `@arc/*` or `@weave/*` changes)
+- [ ] Changeset added (required for `@arc-platform/*` or `@weave-platform/*` changes)
 - [ ] N/A — docs, CI, or tooling only
 
 ## Checklist

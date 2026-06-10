@@ -1,14 +1,14 @@
 'use server';
 
 // A `'use server'` file may only export async functions — NOT re-exports.
-// So we wrap @arc/next's server helpers in thin async Server Actions. These are
+// So we wrap @arc-platform/next's server helpers in thin async Server Actions. These are
 // what client components import and pass to form actions / event handlers.
-import type { AddItemPayload, UpdateItemPayload } from '@arc/core';
+import type { AddItemPayload, UpdateItemPayload } from '@arc-platform/core';
 import {
   addItemAction as addItem,
   removeItemAction as removeItem,
   updateItemAction as updateItem,
-} from '@arc/next/server';
+} from '@arc-platform/next/server';
 
 export async function addItemAction(payload: AddItemPayload) {
   return addItem(payload);

@@ -8,7 +8,7 @@
 
 ## Context
 
-Arc (`@arc/core`, `@arc/next`) and Weave (`@weave/react`, `@weave/next`) and `Templates/*` are published under the MIT license. This MIT promise to consumers means they can use the packages in any project — open source, commercial, proprietary — without restriction.
+Arc (`@arc-platform/core`, `@arc-platform/next`) and Weave (`@weave-platform/react`, `@weave-platform/next`) and `Templates/*` are published under the MIT license. This MIT promise to consumers means they can use the packages in any project — open source, commercial, proprietary — without restriction.
 
 Per PITFALLS P14, a transitive runtime dependency carrying a GPL, LGPL, AGPL, or SSPL license would arguably contaminate the MIT promise. While the legal boundary between "linking" and "bundling" in Node.js ecosystems is debated, the risk is real enough that enterprise adopters will be blocked by their legal teams if any transitive dep appears in a copyleft license scan. npm has no built-in enforcement mechanism.
 
@@ -29,7 +29,7 @@ The Weave WP PHP plugin is published under GPL-2.0+ (mandatory for WordPress.org
 
 ## Decision
 
-Runtime production dependencies of `@arc/*`, `@weave/*` JS packages, and `Templates/*` must be licensed under one of the following:
+Runtime production dependencies of `@arc-platform/*`, `@weave-platform/*` JS packages, and `Templates/*` must be licensed under one of the following:
 
 | License | SPDX ID |
 |---------|---------|
@@ -53,7 +53,7 @@ This allowlist applies to **runtime production dependencies and their transitive
 
 - **`CC-BY-4.0`** — carried by `caniuse-lite` (browser-compatibility data consumed transitively). This is a *data* license attached to a dataset, not a code license that copyleft-contaminates Arc's MIT source. The CC-BY attribution requirement applies to the data only and does not reach Arc's code.
 - **`MIT-0`** (MIT No Attribution) — strictly *more* permissive than MIT (it drops even the attribution requirement). Appears via `@csstools/*` transitives of `@wordpress/*`. If MIT is permitted, MIT-0 is permitted a fortiori.
-- **`Apache-2.0 AND LGPL-3.0-or-later`** — reported for `@img/sharp-*` platform binaries pulled in transitively by Next.js's image optimizer. The LGPL covers the **bundled `libvips` native binary**, not Arc's MIT code, and Arc's *published* packages (`@arc/core`, `@arc/next`) do not depend on `sharp` — it arrives via the consumer's `next` install or the private example app. This native-binary boundary keeps the LGPL copyleft from reaching Arc's MIT code (the same boundary rationale `check-licenses.mjs` applies to the `@wordpress/*` GPL exception).
+- **`Apache-2.0 AND LGPL-3.0-or-later`** — reported for `@img/sharp-*` platform binaries pulled in transitively by Next.js's image optimizer. The LGPL covers the **bundled `libvips` native binary**, not Arc's MIT code, and Arc's *published* packages (`@arc-platform/core`, `@arc-platform/next`) do not depend on `sharp` — it arrives via the consumer's `next` install or the private example app. This native-binary boundary keeps the LGPL copyleft from reaching Arc's MIT code (the same boundary rationale `check-licenses.mjs` applies to the `@wordpress/*` GPL exception).
 
 The CI gate is `Scripts/check-licenses.mjs` (plan 08), which runs `pnpm licenses list --prod --json` and validates every entry against this allowlist. The `pnpm license-check` npm script in the root `package.json` is the entry point.
 
@@ -66,7 +66,7 @@ The CI gate is `Scripts/check-licenses.mjs` (plan 08), which runs `pnpm licenses
 ### Positive
 
 - MIT promise is enforceable and auditable: enterprise legal teams can run `pnpm license-check` and get a pass/fail result
-- Downstream commercial users of `@arc/*` and `@weave/*` have legal clarity; no copyleft surprise in transitive deps
+- Downstream commercial users of `@arc-platform/*` and `@weave-platform/*` have legal clarity; no copyleft surprise in transitive deps
 - CI gate catches violations before merge — no human review dependency
 
 ### Negative

@@ -1,4 +1,4 @@
-// ADR-0010 — security headers + Content-Security-Policy as a first-class @arc/next
+// ADR-0010 — security headers + Content-Security-Policy as a first-class @arc-platform/next
 // concern (parity audit finding H-1). Pure module: no next/* imports, safe in the
 // RSC barrel. The per-request nonce accessor lives in ./nonce.ts (server-only).
 

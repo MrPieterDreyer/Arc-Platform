@@ -11,7 +11,7 @@ export const ARC_REFRESH_TOKEN_COOKIE = 'arc_refresh_token' as const;
 export const WEAVE_WEBHOOK_SECRET_ENV = 'WEAVE_WEBHOOK_SECRET' as const;
 
 /**
- * REQUIRED Next.js 16 config fragment for any app consuming `@arc/next`.
+ * REQUIRED Next.js 16 config fragment for any app consuming `@arc-platform/next`.
  *
  * The `'use cache'` directive used by Arc's loaders is INERT unless the
  * consuming app sets `cacheComponents: true` in `next.config`. Without it,
@@ -19,7 +19,7 @@ export const WEAVE_WEBHOOK_SECRET_ENV = 'WEAVE_WEBHOOK_SECRET' as const;
  * into your config so the caching layer actually engages:
  *
  *   // next.config.ts
- *   import { recommendedNextConfig } from '@arc/next';
+ *   import { recommendedNextConfig } from '@arc-platform/next';
  *   export default { ...recommendedNextConfig };
  */
 export const recommendedNextConfig = {

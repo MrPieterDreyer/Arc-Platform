@@ -11,7 +11,7 @@
 ```markdown
 # Arc Platform — GSD plan vs implementation + Hydrogen/Weaverse benchmark
 
-You are the lead reviewer for **Arc Platform** (`D:\00. Arc Platform`) — headless WooCommerce (`@arc/core`, `@arc/next`) and visual sections (`@weave/react`, `@weave/next`, WP plugin).
+You are the lead reviewer for **Arc Platform** (`D:\00. Arc Platform`) — headless WooCommerce (`@arc-platform/core`, `@arc-platform/next`) and visual sections (`@weave-platform/react`, `@weave-platform/next`, WP plugin).
 
 **Benchmark (read-only):** `D:\09. LOFT Pro Shop\loft-platform` — production Hydrogen + Weaverse Pilot storefront (Customer Zero). Do **not** copy LOFT code into Arc; compare for **parity, gaps, and deliberate differences** only.
 
@@ -74,7 +74,7 @@ Read `D:\09. LOFT Pro Shop\loft-platform\CLAUDE.md` first, then:
 | `@shopify/hydrogen-react` cart hooks | Server Actions + optimistic cart (`minimal-app`) |
 | Shopify Checkout | WC checkout handoff (`minimal-app/app/checkout`) |
 | Customer Account API (`account/*` routes) | ADR-0009 + `/account` (session/orders partial) |
-| `@weaverse/hydrogen` sections + theme settings | `@weave/react` schemas + WP-stored page config |
+| `@weaverse/hydrogen` sections + theme settings | `@weave-platform/react` schemas + WP-stored page config |
 | Weaverse editor / Pilot theme settings | Weave WP Admin sidebar (Phase 4b, mostly scaffold) |
 | Hydrogen cache / Oxygen | Next 16 `'use cache'` + `cacheTag` (ADR-0004) |
 | Webhook → cache invalidation | HMAC `/api/revalidate` (ARC-NEXT-05) |
@@ -85,7 +85,7 @@ Read `D:\09. LOFT Pro Shop\loft-platform\CLAUDE.md` first, then:
 
 ### A — Arc core & Next
 
-Verify: `ARC-NEXT-02/03/05/07`, `ARC-API-04`, ADR-0004/6/7; `@arc/core` must not import Next server APIs.
+Verify: `ARC-NEXT-02/03/05/07`, `ARC-API-04`, ADR-0004/6/7; `@arc-platform/core` must not import Next server APIs.
 
 ### B — Requirement coverage
 
@@ -109,7 +109,7 @@ Cart-Token cookies, HMAC timing-safe revalidate, section HTML safety, no secrets
 
 ### G — CI/CD & release (Arc)
 
-Changesets for `@arc/*` / `@weave/*`; no major without `ARC_ALLOW_V1_PUBLISH`.
+Changesets for `@arc-platform/*` / `@weave-platform/*`; no major without `ARC_ALLOW_V1_PUBLISH`.
 
 ### H — Benchmark: Hydrogen + Weaverse vs Arc + Weave (required)
 

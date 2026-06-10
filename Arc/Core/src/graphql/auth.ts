@@ -1,9 +1,9 @@
 // ADR-0009 — customer authentication via wp-graphql-jwt-authentication.
-// JWT is the credential FORMAT; storage/transport is @arc/next's HttpOnly cookie
+// JWT is the credential FORMAT; storage/transport is @arc-platform/next's HttpOnly cookie
 // bridge (auth-cookies.ts). This module stays framework-agnostic: no next/*.
 //
 // TODO(codegen): Replace inline gql documents with typed __generated__ imports
-// after running: pnpm --filter @arc/core codegen (requires the JWT plugin schema).
+// after running: pnpm --filter @arc-platform/core codegen (requires the JWT plugin schema).
 import { type GraphQLClient, gql } from 'graphql-request';
 
 /** Identity fields returned alongside the tokens at login. */

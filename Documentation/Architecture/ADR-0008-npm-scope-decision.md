@@ -1,10 +1,23 @@
 # ADR-0008: npm Scope Decision
 
-**Status:** Accepted
+**Status:** Accepted — amended 2026-06-10 (scope fallback invoked, see below)
 **Date:** 2026-05-28
 **Deciders:** Arc Platform maintainers
 **Phase:** Phase 0
 **Related requirements:** TOOL-09
+
+> **Amendment 2026-06-10 — fallback invoked: scopes renamed to `@arc-platform` / `@weave-platform`.**
+> The race window called out in Consequences/Negative closed against us: at first
+> publish (release run 27283644112), `npm publish` returned `E404` on every
+> package and authenticated org probes returned `403` for both `arc` and
+> `weave` — the names were claimed on npmjs.com between the 2026-05-28
+> verification and the first publish. Per the Implementation Notes fallback
+> path, all packages were renamed in a single PR: `@arc/*` → `@arc-platform/*`
+> and `@weave/*` → `@weave-platform/*` (package names, imports, changesets
+> `fixed` groups, CI filters, docs). The `arc-platform` and `weave-platform`
+> npm orgs are created and owned by `trigger-consulting`. The body below is
+> preserved as the historical record of the original decision; all current
+> import paths use the `-platform` scopes.
 
 ## Context
 

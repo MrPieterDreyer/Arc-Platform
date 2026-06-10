@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createWPGraphQLClient } from '@arc/core';
+import { createWPGraphQLClient } from '@arc-platform/core';
 import { GraphQLClient } from 'graphql-request';
 import { createCartClient } from './cookies.js';
 

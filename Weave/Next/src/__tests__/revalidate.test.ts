@@ -49,7 +49,7 @@ describe('WEAVE-NEXT-04 — createWeaveRevalidateHandler (pins weave: prefix)', 
     expect(revalidateTagMock).toHaveBeenCalledWith('weave:page:home', 'max');
   });
 
-  it('rejects an arc: prefix (allowed by @arc/next defaults, NOT by our pin) with 400', async () => {
+  it('rejects an arc: prefix (allowed by @arc-platform/next defaults, NOT by our pin) with 400', async () => {
     const { createWeaveRevalidateHandler } = await import('../revalidate.js');
     const POST = createWeaveRevalidateHandler({ secret });
     const timestamp = new Date().toISOString();

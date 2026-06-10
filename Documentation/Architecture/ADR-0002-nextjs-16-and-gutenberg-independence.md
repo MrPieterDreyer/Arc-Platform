@@ -18,7 +18,7 @@ As of 2026-05-28, `next@latest` resolves to `16.2.6`; Next.js 15 is on the `next
 3. Turbopack configuration moved from `experimental.turbopack` to top-level `turbopack`
 4. `'use cache'` + `cacheTag` + `revalidateTag` are the **recommended** (no longer experimental) caching model; `unstable_cache` is explicitly labelled legacy
 
-Building `@arc/next` against Next.js 15 on day one ships one major version behind immediately. Every caching primitive in `@arc/next` would be built against the legacy `unstable_cache` API, creating a mandatory breaking migration at Next 16 adoption — the worst time to impose migration burden on early adopters.
+Building `@arc-platform/next` against Next.js 15 on day one ships one major version behind immediately. Every caching primitive in `@arc-platform/next` would be built against the legacy `unstable_cache` API, creating a mandatory breaking migration at Next 16 adoption — the worst time to impose migration burden on early adopters.
 
 **Decision B — Weave editor model:**
 Per PITFALLS P8 (Frontity postmortem), Frontity was a React-on-WordPress framework whose data model was entangled with Gutenberg blocks. When WP core's block editor direction changed, Frontity could not adapt and was eventually abandoned. Weave's defensible differentiation is owning its OWN editor and its OWN data model — specifically JSON stored in a custom post type, not serialized block markup in `post_content`.
@@ -41,7 +41,7 @@ If Weave were to build its editor on Gutenberg's `@wordpress/blocks` primitives,
 
 ## Decision
 
-**Arc + Weave target Next.js 16 + React 19 from v0.1.** Peer dependency in `@arc/next` and `@weave/next`: `"next": ">=16.0.0"`, `"react": ">=19.0.0"`.
+**Arc + Weave target Next.js 16 + React 19 from v0.1.** Peer dependency in `@arc-platform/next` and `@weave-platform/next`: `"next": ">=16.0.0"`, `"react": ">=19.0.0"`.
 
 **Weave ships its OWN editor.** The v0.1 editor is a WP Admin React sidebar with form-based section editing (no drag-and-drop). The v2 Weave Studio is a full SaaS drag-and-drop editor running outside WP Admin. In both versions:
 
@@ -57,7 +57,7 @@ The Weave WP plugin stores page configuration as versioned JSON in `post_content
 ### Positive
 
 - Won't strand the project if WP core changes block editor semantics — Weave's data model is block-agnostic (Frontity's failure mode is avoided by design).
-- Ships on the current Next.js major. `'use cache'` + `cacheTag` are available as recommended (not experimental) APIs in `@arc/next` from day one — no legacy migration debt.
+- Ships on the current Next.js major. `'use cache'` + `cacheTag` are available as recommended (not experimental) APIs in `@arc-platform/next` from day one — no legacy migration debt.
 - Weave Studio (Phase 2 SaaS) can be built as a standalone React app without any WP Admin dependency, because the data model (JSON CPT) is already framework-agnostic.
 - Pilot starter `proxy.ts` (not `middleware.ts`) is correct from v0.1 — no migration required at Next 16 upgrade.
 

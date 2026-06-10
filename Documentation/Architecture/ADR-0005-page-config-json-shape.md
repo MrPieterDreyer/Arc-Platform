@@ -24,7 +24,7 @@ The Weave WP plugin uses a custom post type `weave_page` for page configs. Each 
 - Schema evolvability: configs saved today must be readable by future plugin versions
 - Simple storage: no custom DB tables; use WP's established CPT + REST pattern
 - REST-readable: the Next.js app fetches configs via `GET /wp-json/weave/v1/pages/{slug}` without PHP coupling
-- Zod-validatable: `@weave/react` schema types are derived from this JSON shape directly
+- Zod-validatable: `@weave-platform/react` schema types are derived from this JSON shape directly
 - PITFALLS P11: undo history must NOT be stored server-side (client-side only); list endpoints must return metadata only to avoid bloat
 
 ## Considered Options
@@ -75,7 +75,7 @@ Page configuration is stored as versioned JSON in the `post_content` field of a 
 | `slug` | `string` | URL slug of the page; matches the `weave_page` post slug |
 | `sections` | `array` | Ordered array of section objects; render order = array insertion order |
 | `sections[].id` | `string` (UUIDv4) | Stable identifier generated at section create-time; NEVER reused after deletion |
-| `sections[].type` | `string` | Section component type key; matched to a registered `WeaveComponent` in `@weave/react` |
+| `sections[].type` | `string` | Section component type key; matched to a registered `WeaveComponent` in `@weave-platform/react` |
 | `sections[].data` | `object` | Section props; shape is per-type and validated by the component's Zod schema |
 | `sections[].version` | `number` (integer) | Per-section schema version; allows per-section migrations independent of root `schemaVersion` |
 | `updatedAt` | `string` (ISO8601) | Server-set timestamp of last save; written by the WP plugin on every PUT |
@@ -95,7 +95,7 @@ Page configuration is stored as versioned JSON in the `post_content` field of a 
 
 - Schema evolution is traceable: `schemaVersion` at root + `version` per section allow independent migrations forward
 - JSON in `post_content` is greppable in MySQL (`SELECT post_content FROM wp_posts WHERE post_type = 'weave_page'`), DB-portable (WP exporter works), and REST-friendly (no PHP deserialization)
-- Zod schema in `@weave/react` directly validates this shape; TypeScript types are inferred from the schema — single source of truth
+- Zod schema in `@weave-platform/react` directly validates this shape; TypeScript types are inferred from the schema — single source of truth
 
 ### Negative
 
@@ -109,10 +109,10 @@ Page configuration is stored as versioned JSON in the `post_content` field of a 
 
 ## Implementation Notes
 
-- Phase 3 (`@weave/react`): `src/schemas/page-config.ts` exports `WeavePageConfigSchema` (Zod) and the inferred TypeScript type `WeavePageConfig`. The schema validates this exact shape.
+- Phase 3 (`@weave-platform/react`): `src/schemas/page-config.ts` exports `WeavePageConfigSchema` (Zod) and the inferred TypeScript type `WeavePageConfig`. The schema validates this exact shape.
 - Phase 4a (Weave WP plugin): `class-weave-cpt.php` registers `weave_page` CPT with `'show_in_rest' => true`, `'supports' => ['title', 'custom-fields']` (no `'editor'` — Gutenberg excluded per ADR-0002). REST controller in `class-weave-rest-controller.php` validates `post_content` against the JSON shape on `PUT`; returns 422 with field-level errors on validation failure.
-- Phase 4b (`@weave/next`): `loadPageConfig(slug: string): Promise<WeavePageConfig>` fetches `GET /wp-json/weave/v1/pages/{slug}`, validates response with `WeavePageConfigSchema.parse()`, throws on mismatch.
-- Migration strategy: when `schemaVersion` is incremented, ship a PHP migration in the plugin that reads all `weave_page` posts and upgrades stored JSON; per-section `version` bumps are handled by a section-level migration registry in `@weave/react`.
+- Phase 4b (`@weave-platform/next`): `loadPageConfig(slug: string): Promise<WeavePageConfig>` fetches `GET /wp-json/weave/v1/pages/{slug}`, validates response with `WeavePageConfigSchema.parse()`, throws on mismatch.
+- Migration strategy: when `schemaVersion` is incremented, ship a PHP migration in the plugin that reads all `weave_page` posts and upgrades stored JSON; per-section `version` bumps are handled by a section-level migration registry in `@weave-platform/react`.
 - Section `id` generation: `crypto.randomUUID()` in the editor (browser); `wp_generate_uuid4()` in the WP plugin (PHP side).
 
 ## References

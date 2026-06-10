@@ -14,7 +14,7 @@
  * the `{ id, url }` attachment shape.
  */
 
-import { type WeaveInput, evaluateCondition } from '@weave/react';
+import { type WeaveInput, evaluateCondition } from '@weave-platform/react';
 import {
   ColorPalette,
   __experimentalNumberControl as NumberControl,

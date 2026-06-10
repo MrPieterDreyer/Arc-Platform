@@ -38,7 +38,7 @@ Canonical rules for **all** AI agents (Cursor, Claude Code, GSD, Trigger, Copilo
 
 ## Release rules
 
-- Any change to publishable packages (`@arc/*`, `@weave/*`) requires a **Changeset** (see [`.changeset/README.md`](./.changeset/README.md))
+- Any change to publishable packages (`@arc-platform/*`, `@weave-platform/*`) requires a **Changeset** (see [`.changeset/README.md`](./.changeset/README.md))
 - Stay on **`0.x.y`** per [ADR-0001](./Documentation/Architecture/ADR-0001-versioning-policy.md) until explicitly promoted
 - Never set a **major** bump unless `ARC_ALLOW_V1_PUBLISH=true` in CI
 - Publication is CI-only via Changesets — no manual `npm publish`

@@ -1,12 +1,12 @@
 /**
- * @arc/core — Public error model (ARC-API-03)
+ * @arc-platform/core — Public error model (ARC-API-03)
  *
- * Every error thrown by @arc/core is an instance of {@link ArcClientError} and
+ * Every error thrown by @arc-platform/core is an instance of {@link ArcClientError} and
  * carries a normalized {@link ArcError} discriminated union on its `.arcError`
  * property. This lets callers do exhaustive matching on the error category
  * without sniffing for HTTP-shaped fields:
  *
- *   import { isArcError } from '@arc/core';
+ *   import { isArcError } from '@arc-platform/core';
  *
  *   try {
  *     await getCart(client);
@@ -24,7 +24,7 @@
 export type { WooApiError } from './woo.js';
 
 /**
- * Discriminated union covering every error category @arc/core can produce.
+ * Discriminated union covering every error category @arc-platform/core can produce.
  * Satisfies ARC-API-03.
  *
  * - `api`     — the WC Store API returned a structured error response (4xx/5xx).
@@ -37,7 +37,7 @@ export type ArcError =
   | { type: 'parse'; message: string; cause?: unknown };
 
 /**
- * Base class for every error @arc/core throws. Guarantees a normalized
+ * Base class for every error @arc-platform/core throws. Guarantees a normalized
  * {@link ArcError} is available on `.arcError` regardless of subclass.
  */
 export abstract class ArcClientError extends Error {

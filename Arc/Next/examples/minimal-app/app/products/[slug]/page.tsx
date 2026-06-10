@@ -1,5 +1,5 @@
-import { getCart } from '@arc/core';
-import { createLoaders, createReadOnlyCartClient } from '@arc/next/server';
+import { getCart } from '@arc-platform/core';
+import { createLoaders, createReadOnlyCartClient } from '@arc-platform/next/server';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { PdpAddToCart } from '../../../components/pdp-add-to-cart';

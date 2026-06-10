@@ -54,7 +54,7 @@ export class WooClientError extends ArcClientError {
  * - AbortSignal timeout (default 10 s, configurable)
  *
  * Does NOT set cookies — that is the responsibility of the framework layer
- * (`@arc/next`) via the `onCartToken` callback.
+ * (`@arc-platform/next`) via the `onCartToken` callback.
  */
 export class WooClient {
   private readonly baseUrl: string;

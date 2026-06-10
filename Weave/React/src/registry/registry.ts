@@ -21,7 +21,7 @@ export interface WeaveComponentEntry {
 }
 
 /** Symbol-keyed so the singleton survives chunk duplication and accidental re-evaluation. */
-const KEY = Symbol.for('@weave/react.registry');
+const KEY = Symbol.for('@weave-platform/react.registry');
 
 type Reg = Map<string, WeaveComponentEntry>;
 

@@ -1,4 +1,4 @@
-import { arcSecurityHeaders } from '@arc/next';
+import { arcSecurityHeaders } from '@arc-platform/next';
 import type { NextConfig } from 'next';
 
 const nextConfig = {

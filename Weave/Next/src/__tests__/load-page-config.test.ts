@@ -15,7 +15,7 @@ vi.mock('next/headers', () => ({
   draftMode: vi.fn(async () => draft),
 }));
 
-// `loadPageConfig` validates against the real `@weave/react` schema — no mock.
+// `loadPageConfig` validates against the real `@weave-platform/react` schema — no mock.
 
 const VALID_CONFIG = {
   schemaVersion: 1,

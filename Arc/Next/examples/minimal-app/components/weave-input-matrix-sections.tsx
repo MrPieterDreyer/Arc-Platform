@@ -1,6 +1,6 @@
 'use client';
 
-import { SectionRenderer, type WeavePageConfig } from '@weave/react';
+import { SectionRenderer, type WeavePageConfig } from '@weave-platform/react';
 
 import '../lib/register-weave-sections';
 

@@ -16,7 +16,7 @@ Page-config storage + REST API for headless WooCommerce, powering the Weave visu
 
 Weave stores versioned page configurations as JSON inside a `weave_page` custom post type and exposes an authenticated REST API (`weave/v1`) for a headless Next.js storefront to read and mutate them. On every save it fires an HMAC-signed outbound webhook to a configured Next.js revalidate URL so the storefront's cache stays fresh.
 
-This is the server-side half of Weave. The Next.js consumer (`@weave/next`) and the WP Admin sidebar editor are delivered separately.
+This is the server-side half of Weave. The Next.js consumer (`@weave-platform/next`) and the WP Admin sidebar editor are delivered separately.
 
 == Configuration ==
 

@@ -7,7 +7,7 @@ import type { WeaveComponentSchema } from '../../schema/types';
 /**
  * SDK-02 / D-03: `defineSection<TProps>(component, schema)` registers `type -> component` and
  * returns the component UNCHANGED (D-03b). `warnOnDrift` is the dev-only, warn-once drift check
- * the renderer calls; it emits the LOCKED `[@weave/react]` strings from UI-SPEC §Console Contract.
+ * the renderer calls; it emits the LOCKED `[@weave-platform/react]` strings from UI-SPEC §Console Contract.
  */
 
 interface HeroProps extends Record<string, unknown> {
@@ -49,7 +49,7 @@ describe('warnOnDrift — locked console contract', () => {
     const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     warnOnDrift('hero', ['heading', 'extra'], heroSchema as WeaveComponentSchema);
     expect(spy).toHaveBeenCalledWith(
-      '[@weave/react] Section "hero": prop "extra" is rendered but has no matching schema input.',
+      '[@weave-platform/react] Section "hero": prop "extra" is rendered but has no matching schema input.',
     );
   });
 
@@ -70,7 +70,7 @@ describe('warnOnDrift — locked console contract', () => {
     const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     warnOnDrift('hero', ['heading'], driftSchema);
     expect(spy).toHaveBeenCalledWith(
-      '[@weave/react] Section "hero": schema input "missingProp" has no matching component prop.',
+      '[@weave-platform/react] Section "hero": schema input "missingProp" has no matching component prop.',
     );
   });
 

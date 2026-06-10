@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// OQ1 contract: @weave/next builds three entries and EXTERNALIZES React — the
-// server-page bundle must `import` React / @weave/react / @arc/next rather than
+// OQ1 contract: @weave-platform/next builds three entries and EXTERNALIZES React — the
+// server-page bundle must `import` React / @weave-platform/react / @arc-platform/next rather than
 // inline a second React copy (which would collide with the host app's React).
-// server.mjs must NOT import @weave/react (loader-only graph; Pitfall 5).
+// server.mjs must NOT import @weave-platform/react (loader-only graph; Pitfall 5).
 const { existsSync, readFileSync } = require('node:fs');
 const { join } = require('node:path');
 
@@ -30,7 +30,7 @@ for (const f of REQUIRED) {
 }
 if (failed > 0) {
   console.error(
-    `\n[externals] ${failed} missing artifact(s). Run \`pnpm --filter @weave/next build\` first.`,
+    `\n[externals] ${failed} missing artifact(s). Run \`pnpm --filter @weave-platform/next build\` first.`,
   );
   process.exit(1);
 }
@@ -38,11 +38,11 @@ if (failed > 0) {
 const server = readFileSync(join(DIST, 'server.mjs'), 'utf8');
 const serverPage = readFileSync(join(DIST, 'server-page.mjs'), 'utf8');
 
-// 2. server.mjs must NOT pull @weave/react (loader-only; avoids client-only in RSC graph).
+// 2. server.mjs must NOT pull @weave-platform/react (loader-only; avoids client-only in RSC graph).
 if (/\bfrom\s*["']@weave\/react["']/.test(server)) {
   console.error(
-    '[externals] FAIL: dist/server.mjs imports @weave/react main barrel. ' +
-      'Use @weave/react/schemas in load-page-config only; WeavePage belongs in server-page.mjs.',
+    '[externals] FAIL: dist/server.mjs imports @weave-platform/react main barrel. ' +
+      'Use @weave-platform/react/schemas in load-page-config only; WeavePage belongs in server-page.mjs.',
   );
   process.exit(1);
 }
@@ -53,7 +53,7 @@ const EXTERNAL_IMPORT =
 if (!EXTERNAL_IMPORT.test(serverPage)) {
   console.error(
     '[externals] FAIL: dist/server-page.mjs does not import any externalized peer ' +
-      '(react / react-dom / @weave/react / @arc/next). React/peers may have been bundled.',
+      '(react / react-dom / @weave-platform/react / @arc-platform/next). React/peers may have been bundled.',
   );
   process.exit(1);
 }

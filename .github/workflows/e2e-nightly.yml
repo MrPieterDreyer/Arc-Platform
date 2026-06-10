@@ -33,7 +33,7 @@ jobs:
         run: pnpm exec playwright install chromium --with-deps
         working-directory: Arc/Next/examples/minimal-app
       - name: Build minimal-app
-        run: pnpm --filter @arc/next-example build
+        run: pnpm --filter @arc-platform/next-example build
       - name: E2E nightly (all non-quarantine, incl. @regression catalog)
         run: pnpm test:e2e:nightly
       - name: Upload agent report

@@ -7,7 +7,7 @@ export default function HomePage() {
   return (
     <div style={{ display: 'grid', gap: 'var(--space-8)' }}>
       <section>
-        <h1 style={{ fontFamily: 'var(--font-display)' }}>@arc/next minimal app</h1>
+        <h1 style={{ fontFamily: 'var(--font-display)' }}>@arc-platform/next minimal app</h1>
         <p style={{ color: 'var(--color-text-muted)' }}>
           Demonstrates loaders, cart actions, optimistic UI, and revalidate webhook wiring.
         </p>

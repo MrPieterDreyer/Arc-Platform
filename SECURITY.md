@@ -19,7 +19,7 @@ Please include:
 
 - Description of the vulnerability and impact
 - Steps to reproduce
-- Affected packages or paths (`@arc/core`, `@arc/next`, `@weave/react`, `@weave/next`, WP plugin, etc.)
+- Affected packages or paths (`@arc-platform/core`, `@arc-platform/next`, `@weave-platform/react`, `@weave-platform/next`, WP plugin, etc.)
 - Suggested fix if you have one
 
 Do **not** open a public issue for undisclosed security vulnerabilities.
@@ -32,7 +32,7 @@ Do **not** open a public issue for undisclosed security vulnerabilities.
 
 ## npm packages
 
-Published packages use the `@arc/*` and `@weave/*` scopes per [ADR-0008](./Documentation/Architecture/ADR-0008-npm-scope-decision.md). Verify package provenance on npm before installing in production.
+Published packages use the `@arc-platform/*` and `@weave-platform/*` scopes per [ADR-0008](./Documentation/Architecture/ADR-0008-npm-scope-decision.md). Verify package provenance on npm before installing in production.
 
 ## Secrets in the repository
 

@@ -200,21 +200,21 @@
             <td><b>Customer auth designed but unbuilt.</b> ADR-0009 accepted; login/refresh/logout modules absent; order history reads a raw test JWT env var.</td>
             <td><span class="sev sev-crit">CRIT</span></td>
             <td><span class="ref">ADR-0009.md:22</span>, <span class="ref">load-account-orders.ts:15</span></td>
-            <td><span class="pkg">@arc/core/src/graphql/auth.ts</span> + <span class="pkg">@arc/next/{auth-cookies,auth-actions}.ts</span>; reject empty/short tokens</td>
+            <td><span class="pkg">@arc-platform/core/src/graphql/auth.ts</span> + <span class="pkg">@arc-platform/next/{auth-cookies,auth-actions}.ts</span>; reject empty/short tokens</td>
           </tr>
           <tr>
             <td>H-1</td>
             <td><b>No CSP / security headers.</b> No nonce, no <code>frameAncestors</code>, no HSTS/nosniff/Referrer-Policy; no <code>proxy.ts</code>/<code>headers()</code>.</td>
             <td><span class="sev sev-high">HIGH</span></td>
             <td><span class="ref">minimal-app/next.config.ts:3-5</span> (only cacheComponents)</td>
-            <td>New <span class="pkg">@arc/next/src/security-headers.ts</span> (nonce CSP builder) + Pilot <code>proxy.ts</code></td>
+            <td>New <span class="pkg">@arc-platform/next/src/security-headers.ts</span> (nonce CSP builder) + Pilot <code>proxy.ts</code></td>
           </tr>
           <tr>
             <td>H-3</td>
             <td><b><code>SameSite=None</code> cart cookie widens CSRF surface.</b> Required for cross-origin RSC reads; mutations are Server Actions but should not rely on cookie-sameness alone. <span class="muted">[INFERENCE]</span></td>
             <td><span class="sev sev-high">HIGH</span></td>
             <td><span class="ref">Arc/Next/src/cookies.ts:19</span></td>
-            <td><span class="pkg">@arc/next/src/actions.ts</span> — add <code>Origin</code>/<code>Sec-Fetch-Site</code> allowlist in the <code>'use server'</code> wrapper</td>
+            <td><span class="pkg">@arc-platform/next/src/actions.ts</span> — add <code>Origin</code>/<code>Sec-Fetch-Site</code> allowlist in the <code>'use server'</code> wrapper</td>
           </tr>
           <tr>
             <td>M-1</td>
@@ -228,7 +228,7 @@
             <td><b>Response validation covers cart only.</b> Orders/checkout/customer responses are unguarded <code>request&lt;T&gt;()</code> casts — silent Store-API drift.</td>
             <td><span class="sev sev-med">MED</span></td>
             <td><span class="ref">store-api/validate.ts:42</span>; <span class="ref">orders.ts</span>, <span class="ref">checkout.ts</span> uncovered</td>
-            <td><span class="pkg">@arc/core/src/store-api/validate.ts</span> — add <code>safeValidateOrder</code>/<code>safeValidateCheckout</code>, wire in</td>
+            <td><span class="pkg">@arc-platform/core/src/store-api/validate.ts</span> — add <code>safeValidateOrder</code>/<code>safeValidateCheckout</code>, wire in</td>
           </tr>
           <tr>
             <td>E-1</td>
@@ -369,9 +369,9 @@
       <div class="whead"><h3>Wave 1 — Security &amp; release blockers</h3><span class="tag">do first</span></div>
       <ul>
         <li><span class="t"><b>Implement customer auth per ADR-0009.</b></span> <span class="effort">L</span>
-          <div class="d">Build <span class="pkg">@arc/core/src/graphql/auth.ts</span> (login/refresh/logout), <span class="pkg">@arc/next/src/auth-cookies.ts</span> + <span class="pkg">auth-actions.ts</span>; reuse <code>CART_COOKIE_OPTIONS</code>; reject empty/short tokens; remove <code>TEST_JWT_TOKEN</code> read. <b>Unblocks all account pages.</b> (H-2)</div></li>
+          <div class="d">Build <span class="pkg">@arc-platform/core/src/graphql/auth.ts</span> (login/refresh/logout), <span class="pkg">@arc-platform/next/src/auth-cookies.ts</span> + <span class="pkg">auth-actions.ts</span>; reuse <code>CART_COOKIE_OPTIONS</code>; reject empty/short tokens; remove <code>TEST_JWT_TOKEN</code> read. <b>Unblocks all account pages.</b> (H-2)</div></li>
         <li><span class="t"><b>Ship CSP + security headers.</b></span> <span class="effort">M</span>
-          <div class="d">New <span class="pkg">@arc/next/src/security-headers.ts</span> (nonce CSP mirroring Hydrogen, <code>X-Frame-Options</code>, <code>nosniff</code>, HSTS, <code>Referrer-Policy</code>); wire via Pilot <code>proxy.ts</code> + example <code>next.config.ts headers()</code>. Pin WC checkout + gateway origins in <code>connectSrc</code>. (H-1, → ADR-0010)</div></li>
+          <div class="d">New <span class="pkg">@arc-platform/next/src/security-headers.ts</span> (nonce CSP mirroring Hydrogen, <code>X-Frame-Options</code>, <code>nosniff</code>, HSTS, <code>Referrer-Policy</code>); wire via Pilot <code>proxy.ts</code> + example <code>next.config.ts headers()</code>. Pin WC checkout + gateway origins in <code>connectSrc</code>. (H-1, → ADR-0010)</div></li>
         <li><span class="t"><b><code>shouldCacheResult</code> guard in catalog loaders.</b></span> <span class="effort">S</span>
           <div class="d">Guard <code>loadProduct/loadProducts/loadCollection/loadCollectionProducts/cachedConfig</code> so <code>null</code> / partial-error responses are not cached for the full TTL. (CACHE-P1)</div></li>
         <li><span class="t"><b>npm provenance + OIDC Trusted Publishing.</b></span> <span class="effort">S</span>
@@ -387,7 +387,7 @@
       <div class="whead"><h3>Wave 2 — Commerce parity (storefront-enabling)</h3><span class="tag">v0.1 surface</span></div>
       <ul>
         <li><span class="t"><b>Ship <code>&lt;Money&gt;</code> and <code>&lt;Image&gt;</code> primitives.</b></span> <span class="effort">M</span>
-          <div class="d"><span class="pkg">@arc/core</span> or <span class="pkg">Arc-Design</span>: <code>Intl.NumberFormat</code> wrapper keyed on WC price shape; <code>next/image</code> wrapper on <code>WCProductImage</code>. <code>&lt;Video&gt;</code>/<code>&lt;RichText&gt;</code> follow (Low/Med).</div></li>
+          <div class="d"><span class="pkg">@arc-platform/core</span> or <span class="pkg">Arc-Design</span>: <code>Intl.NumberFormat</code> wrapper keyed on WC price shape; <code>next/image</code> wrapper on <code>WCProductImage</code>. <code>&lt;Video&gt;</code>/<code>&lt;RichText&gt;</code> follow (Low/Med).</div></li>
         <li><span class="t"><b>Add route-level <code>error.tsx</code> + <code>not-found.tsx</code>.</b></span> <span class="effort">S</span>
           <div class="d">Pilot + minimal-app; switch null-product path to <code>notFound()</code>. Document as a required convention.</div></li>
         <li><span class="t"><b>SEO <code>generateMetadata</code> helper.</b></span> <span class="effort">M</span>
@@ -437,7 +437,7 @@
     <p>Three new draft ADRs accompany this report (Markdown, alongside the existing
       <code>ADR-*.md</code> series). Two existing ADRs need <em>implementation</em>, not redecision:</p>
     <ul class="clean">
-      <li><b>ADR-0010 — Security-header &amp; CSP policy</b> <span class="muted">(new, draft)</span> — nonce-based CSP, frame/transport/referrer headers, where they live in <code>@arc/next</code> + Pilot <code>proxy.ts</code>.</li>
+      <li><b>ADR-0010 — Security-header &amp; CSP policy</b> <span class="muted">(new, draft)</span> — nonce-based CSP, frame/transport/referrer headers, where they live in <code>@arc-platform/next</code> + Pilot <code>proxy.ts</code>.</li>
       <li><b>ADR-0011 — Multi-tenant isolation for Phase-2 SaaS</b> <span class="muted">(new, draft)</span> — WP Multisite per tenant, tenant-scoped cache tags, preview sandboxing, per-tenant authz.</li>
       <li><b>ADR-0012 — Supply-chain hardening</b> <span class="muted">(new, draft)</span> — npm provenance/OIDC, SHA-pinned actions, WPGraphQL version floor, Composer/Dependabot coverage.</li>
       <li><b>ADR-0009 (existing, Accepted)</b> — customer auth: <em>build it</em> (Wave 1). No decision change.</li>
@@ -455,7 +455,7 @@
     <ul class="clean">
       <li><b>Pilot starter</b> (<code>Arc/Pilot/</code>) has no <code>app/</code> directory found — error-boundary / SEO patterns were verified only against <code>Arc/Next/examples/minimal-app/</code>.</li>
       <li><b><code>.env.example</code></b> could not be read (sandbox treats <code>.env*</code> as secret-bearing); <code>.gitignore:23-25</code> confirms only <code>.env.example</code> is tracked. Recommend a manual eyeball that it holds placeholders only.</li>
-      <li><b><code>next.config.ts</code></b> resolved TTL/SWR values for <code>'hours'</code>/<code>'minutes'</code> profiles live in the consumer app, not <code>@arc/next</code> — the actual numbers were not confirmed.</li>
+      <li><b><code>next.config.ts</code></b> resolved TTL/SWR values for <code>'hours'</code>/<code>'minutes'</code> profiles live in the consumer app, not <code>@arc-platform/next</code> — the actual numbers were not confirmed.</li>
       <li><b>WP plugin PHPUnit tests</b> beyond <code>test-rest-auth.php</code> were not located; <code>auto_update_plugin</code> hook presence is <span class="muted">[INFERENCE]</span> (WP defaults off for non-.org plugins).</li>
       <li><b><code>pnpm-lock.yaml</code></b> not read — the <code>@tanstack/react-query@5.101.0</code> exclusion vs caret resolution was not verified against the lockfile.</li>
       <li><b>WordPress Multisite compatibility</b> of <code>class-weave-cpt.php</code> is untested/undocumented.</li>

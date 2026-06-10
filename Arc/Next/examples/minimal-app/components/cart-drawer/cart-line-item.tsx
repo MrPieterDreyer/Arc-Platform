@@ -1,6 +1,6 @@
 'use client';
 
-import type { WooCartItem } from '@arc/core';
+import type { WooCartItem } from '@arc-platform/core';
 
 // ---------------------------------------------------------------------------
 // Helpers

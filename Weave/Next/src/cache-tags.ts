@@ -1,5 +1,5 @@
 /**
- * Cache tag taxonomy for `@weave/next` (ADR-0004).
+ * Cache tag taxonomy for `@weave-platform/next` (ADR-0004).
  * Pure module — safe to import from the barrel and client bundles.
  */
 export const weaveTag = {

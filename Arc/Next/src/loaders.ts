@@ -11,7 +11,7 @@ import {
   type WCProduct,
   type WCProductFilter,
   type WCProductList,
-} from '@arc/core';
+} from '@arc-platform/core';
 import { arcTag } from './cache-tags.js';
 import { createCatalogClient, type CatalogClientConfig } from './client-factory.js';
 import { ARC_CACHE_PROFILE } from './isr.js';

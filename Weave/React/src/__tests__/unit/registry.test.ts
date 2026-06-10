@@ -12,10 +12,10 @@ import type { WeaveComponentSchema } from '../../schema/types';
 /**
  * SDK-03: the registry is a `globalThis`-keyed `Map` shared across module instances so a
  * section registered in one bundler chunk is visible to a `<SectionRenderer>` in another
- * (RESEARCH §Pattern 2, §Pitfall 3). The Map is keyed by `Symbol.for('@weave/react.registry')`.
+ * (RESEARCH §Pattern 2, §Pitfall 3). The Map is keyed by `Symbol.for('@weave-platform/react.registry')`.
  */
 
-const REG_KEY = Symbol.for('@weave/react.registry');
+const REG_KEY = Symbol.for('@weave-platform/react.registry');
 
 /** A trivial component + schema entry for registration assertions. */
 function makeEntry(type: string): WeaveComponentEntry {

@@ -10,10 +10,10 @@
 
 | Package | Description |
 |---------|-------------|
-| `@arc/core` | WooCommerce Store API client, hooks, TypeScript types |
-| `@arc/next` | Next.js App Router integration |
-| `@weave/react` | Sections schema SDK |
-| `@weave/next` | Next.js sections integration |
+| `@arc-platform/core` | WooCommerce Store API client, hooks, TypeScript types |
+| `@arc-platform/next` | Next.js App Router integration |
+| `@weave-platform/react` | Sections schema SDK |
+| `@weave-platform/next` | Next.js sections integration |
 
 ## Starter themes
 

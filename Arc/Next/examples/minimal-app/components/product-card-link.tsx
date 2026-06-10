@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { WCProduct } from '@arc/core';
+import type { WCProduct } from '@arc-platform/core';
 
 export function ProductCardLink({ product }: { product: WCProduct }) {
   return (

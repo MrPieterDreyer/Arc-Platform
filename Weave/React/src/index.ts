@@ -1,13 +1,13 @@
 /**
- * `@weave/react` — RSC-safe public barrel (D-13).
+ * `@weave-platform/react` — RSC-safe public barrel (D-13).
  *
  * This entry is Server-Component-safe: it re-exports the schema authoring API, registry,
  * `<SectionRenderer>`, validation/defaults/condition helpers, the input-type registry, and the
  * page-config schema. None of these pull `client-only` or `next/*`.
  *
  * NOTE: `<SectionErrorBoundary>` is intentionally NOT exported here. It is the one client-only
- * piece and lives in `@weave/react/client`. Re-exporting it would pull `client-only` into this
- * RSC-safe barrel and break Server Component consumers (mirrors `@arc/core`'s `./hooks` split —
+ * piece and lives in `@weave-platform/react/client`. Re-exporting it would pull `client-only` into this
+ * RSC-safe barrel and break Server Component consumers (mirrors `@arc-platform/core`'s `./hooks` split —
  * see src/client/index.ts and RESEARCH §Pitfall 4).
  */
 

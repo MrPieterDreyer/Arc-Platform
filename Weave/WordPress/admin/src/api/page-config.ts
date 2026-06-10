@@ -10,7 +10,7 @@
  *     4a save_post webhook → the Plan-04 revalidate handler — closing the WEAVE-NEXT-04 loop)
  */
 
-import type { WeavePageConfig } from '@weave/react';
+import type { WeavePageConfig } from '@weave-platform/react';
 import apiFetch from '@wordpress/api-fetch';
 
 /** The weave/v1 REST path for one page slug (URL-encoded). */

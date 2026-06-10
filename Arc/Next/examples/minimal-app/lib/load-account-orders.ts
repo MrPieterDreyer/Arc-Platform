@@ -1,7 +1,7 @@
 import 'server-only';
 
-import { createWPGraphQLClient, getCustomerOrders, type WCCustomerOrdersResult } from '@arc/core';
-import { loadCustomerOrders } from '@arc/next/server';
+import { createWPGraphQLClient, getCustomerOrders, type WCCustomerOrdersResult } from '@arc-platform/core';
+import { loadCustomerOrders } from '@arc-platform/next/server';
 
 export type AccountOrdersModel =
   | { kind: 'no-auth' }

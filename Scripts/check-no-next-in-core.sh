@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# TOOL-08: fail if @arc/core or @weave/react import from next/*
+# TOOL-08: fail if @arc-platform/core or @weave-platform/react import from next/*
 # Source: ripgrep recommended for cross-platform; fall back to grep on POSIX
 set -euo pipefail
 

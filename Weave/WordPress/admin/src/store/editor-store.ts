@@ -12,12 +12,12 @@
  * sets it false). `setSaving`/`setNotice` touch only their own slice.
  *
  * `addSection` mirrors UI-SPEC §Interaction Contract: a new section is `{ id: crypto.randomUUID(),
- * type, data: applyDefaults(schema, {}), version: 1 }`. The schema is resolved via the `@weave/react`
+ * type, data: applyDefaults(schema, {}), version: 1 }`. The schema is resolved via the `@weave-platform/react`
  * registry; an unregistered type fails soft to `data: {}` (no throw) so a stale picker option can't
  * crash the editor.
  */
 
-import { applyDefaults, getSection, type WeaveSection } from '@weave/react';
+import { applyDefaults, getSection, type WeaveSection } from '@weave-platform/react';
 import { create } from 'zustand';
 
 /** A status notice (UI-SPEC §Component Inventory `<Notice>`): WP semantic status + message. */

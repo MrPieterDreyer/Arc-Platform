@@ -1,4 +1,4 @@
-import type { WeavePageConfig } from '@weave/react/schemas';
+import type { WeavePageConfig } from '@weave-platform/react/schemas';
 
 import { INPUT_MATRIX_CASES, inputMatrixSectionType } from './input-matrix-cases';
 

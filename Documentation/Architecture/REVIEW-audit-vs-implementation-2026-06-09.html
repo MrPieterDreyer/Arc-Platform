@@ -138,10 +138,10 @@
 
     <div class="callout green">
       <h4>The build is faithful to the plan.</h4>
-      <p>Phases 0–4b shipped what their plans promised: <span class="pkg">@arc/core</span> (Cart-Token
+      <p>Phases 0–4b shipped what their plans promised: <span class="pkg">@arc-platform/core</span> (Cart-Token
       lifecycle, typed Store API + WPGraphQL clients, discriminated-union errors),
-      <span class="pkg">@arc/next</span> (RSC loaders on <code>'use cache'</code>, HttpOnly cookie bridge,
-      HMAC revalidation), <span class="pkg">@weave/react</span> / <span class="pkg">@weave/next</span>
+      <span class="pkg">@arc-platform/next</span> (RSC loaders on <code>'use cache'</code>, HttpOnly cookie bridge,
+      HMAC revalidation), <span class="pkg">@weave-platform/react</span> / <span class="pkg">@weave-platform/next</span>
       (15 input types, RSC-safe SectionRenderer, draft preview), and the WP plugin + Admin editor.
       250+ tests, all CI gates green, <code>pnpm build</code> exits 0. The audit found <b>no case where
       the implementation diverged from an accepted ADR or phase plan</b>.</p>
@@ -225,7 +225,7 @@
       <li><b>Single <code>require_cap()</code> REST choke-point</b> with an explicit 401/403 auth-matrix test; zero <code>__return_true</code> permission callbacks.</li>
       <li><b>Write-safety in the WP plugin</b> — server-minted section IDs, 1 MB body gate, strict unknown-key rejection.</li>
       <li><b>Zero <code>unstable_cache</code> usage</b> — clean Next.js 16 <code>'use cache'</code> + <code>cacheTag</code> discipline; loaders construct clients inside the cached fn.</li>
-      <li><b>RSC-safe SDK</b> — <span class="pkg">@weave/react</span> barrel omits client-only exports; SectionRenderer never throws.</li>
+      <li><b>RSC-safe SDK</b> — <span class="pkg">@weave-platform/react</span> barrel omits client-only exports; SectionRenderer never throws.</li>
       <li><b>Deploy-target agnostic</b> — pure Next.js, no Oxygen-style runtime coupling.</li>
       <li><b>Dual-gate boundary enforcement</b> — <code>next/*</code> imports blocked by Biome <em>and</em> a bash grep failsafe in CI.</li>
     </ul>
@@ -248,7 +248,7 @@
             <td>Pull forward into Phase 4c, before Pilot work begins</td></tr>
           <tr><td class="dom">Security headers</td><td>Never a phase deliverable</td>
             <td><span class="sev sev-high">HIGH</span> H-1 — single largest Hydrogen parity gap; ADR-0010 written</td>
-            <td>Phase 4c — <span class="pkg">@arc/next/security-headers.ts</span> + Pilot <code>proxy.ts</code></td></tr>
+            <td>Phase 4c — <span class="pkg">@arc-platform/next/security-headers.ts</span> + Pilot <code>proxy.ts</code></td></tr>
           <tr><td class="dom">Release integrity</td><td>Release workflow existed since Phase 0; provenance/pinning never specified</td>
             <td><span class="sev sev-high">HIGH</span> S-1/S-2/S-3 — three P1 blockers before first public npm publish; ADR-0012 written</td>
             <td>Phase 4c — all three are &lt;½-day items</td></tr>
@@ -282,7 +282,7 @@
     <div class="wave">
       <div class="whead"><h3>Phase 4c — Security &amp; Release Hardening <span class="muted">(new, inserted before Phase 5)</span></h3><span class="tag">Audit Wave 1 + Phase 4a P0s</span></div>
       <ul>
-        <li><span class="t">Customer auth per ADR-0009</span> <span class="effort">L</span><div class="d"><span class="pkg">@arc/core/src/graphql/auth.ts</span> (login/refresh/logout) + <span class="pkg">@arc/next</span> auth-cookies/auth-actions; remove <code>TEST_JWT_TOKEN</code> read (H-2)</div></li>
+        <li><span class="t">Customer auth per ADR-0009</span> <span class="effort">L</span><div class="d"><span class="pkg">@arc-platform/core/src/graphql/auth.ts</span> (login/refresh/logout) + <span class="pkg">@arc-platform/next</span> auth-cookies/auth-actions; remove <code>TEST_JWT_TOKEN</code> read (H-2)</div></li>
         <li><span class="t">CSP + security headers per ADR-0010</span> <span class="effort">M</span><div class="d"><span class="pkg">security-headers.ts</span> (nonce CSP builder), Pilot <code>proxy.ts</code>, example-app <code>headers()</code>; report-only first (H-1)</div></li>
         <li><span class="t"><code>shouldCacheResult</code> guard in catalog loaders</span> <span class="effort">S</span><div class="d">Null/partial-error responses never cached full TTL (CACHE-P1)</div></li>
         <li><span class="t">npm provenance + OIDC Trusted Publishing</span> <span class="effort">S</span><div class="d"><code>--provenance</code>, register scopes, <code>NPM_TOKEN: ''</code> (S-1, ADR-0012)</div></li>

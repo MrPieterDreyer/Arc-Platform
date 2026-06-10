@@ -1,5 +1,5 @@
 /**
- * Cache tag taxonomy for `@arc/next` (ADR-0004).
+ * Cache tag taxonomy for `@arc-platform/next` (ADR-0004).
  * Pure module — safe to import from the barrel and client bundles.
  */
 export const arcTag = {

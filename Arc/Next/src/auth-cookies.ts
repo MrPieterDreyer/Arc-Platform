@@ -21,7 +21,7 @@ export const REFRESH_COOKIE_OPTIONS = {
 } as const;
 
 /**
- * Minimum credible JWT length — mirrors @arc/core's auth guard (audit H-2:
+ * Minimum credible JWT length — mirrors @arc-platform/core's auth guard (audit H-2:
  * reject empty/short tokens before they reach a cookie).
  */
 const MIN_TOKEN_LENGTH = 16;

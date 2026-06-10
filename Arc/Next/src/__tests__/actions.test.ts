@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { WooClientError, type WooCart } from '@arc/core';
+import { WooClientError, type WooCart } from '@arc-platform/core';
 
 const mocks = vi.hoisted(() => ({
   createCartClient: vi.fn(),
@@ -17,8 +17,8 @@ vi.mock('../cookies.js', () => ({
   readCartTokenValue: mocks.readCartTokenValue,
 }));
 
-vi.mock('@arc/core', async () => {
-  const actual = await vi.importActual<typeof import('@arc/core')>('@arc/core');
+vi.mock('@arc-platform/core', async () => {
+  const actual = await vi.importActual<typeof import('@arc-platform/core')>('@arc-platform/core');
   return {
     ...actual,
     getCart: mocks.getCart,

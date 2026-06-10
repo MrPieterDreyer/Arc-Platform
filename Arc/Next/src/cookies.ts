@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { WooClient, type WooClientOptions } from '@arc/core';
+import { WooClient, type WooClientOptions } from '@arc-platform/core';
 import { cookies } from 'next/headers';
 import { ARC_CART_TOKEN_COOKIE } from './constants.js';
 

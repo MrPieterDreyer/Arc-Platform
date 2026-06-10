@@ -4,7 +4,7 @@ Platform-specific PNGs live here (`win32/` on Windows, `linux/` in GitHub Action
 
 ```bash
 pnpm wp:setup
-pnpm --filter @arc/next-example build
+pnpm --filter @arc-platform/next-example build
 pnpm test:e2e:update-snapshots
 ```
 

@@ -10,7 +10,7 @@
  * type' notice instead of crashing the whole editor.
  */
 
-import { type WeaveInput, getSection } from '@weave/react';
+import { type WeaveInput, getSection } from '@weave-platform/react';
 import { Button, Notice, PanelBody, PanelRow } from '@wordpress/components';
 import { chevronDown, chevronUp } from '@wordpress/icons';
 import { FieldControl } from '../form/field-control';

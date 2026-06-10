@@ -5,7 +5,7 @@
  * unit-test runs that do not have a live wp-env instance running.
  *
  * Run with a live wp-env:
- *   CI_WP_ENV=true WP_GRAPHQL_ENDPOINT=http://localhost:8888/graphql pnpm --filter @arc/core test --run
+ *   CI_WP_ENV=true WP_GRAPHQL_ENDPOINT=http://localhost:8888/graphql pnpm --filter @arc-platform/core test --run
  */
 import { describe, expect, test } from 'vitest';
 import { createWPGraphQLClient } from '../../graphql/client';

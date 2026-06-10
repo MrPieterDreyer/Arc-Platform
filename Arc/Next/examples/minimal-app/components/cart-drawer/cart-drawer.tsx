@@ -1,6 +1,6 @@
 'use client';
 
-import type { WooCart } from '@arc/core';
+import type { WooCart } from '@arc-platform/core';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { CartLineItem } from './cart-line-item';

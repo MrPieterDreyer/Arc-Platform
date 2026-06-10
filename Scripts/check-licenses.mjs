@@ -63,8 +63,8 @@ for (const [license, pkgs] of Object.entries(data)) {
     }
     // Platform-specific native binaries pulled in transitively by Next.js's image
     // optimizer (sharp → libvips). The LGPL covers the bundled libvips native
-    // binary, not Arc's MIT code, and Arc's PUBLISHED packages (@arc/core,
-    // @arc/next) do not depend on sharp — it arrives via the consumer's `next`
+    // binary, not Arc's MIT code, and Arc's PUBLISHED packages (@arc-platform/core,
+    // @arc-platform/next) do not depend on sharp — it arrives via the consumer's `next`
     // install / the private example app. See ADR-0003.
     if (p.name?.startsWith('@img/sharp')) {
       continue;
@@ -73,7 +73,7 @@ for (const [license, pkgs] of Object.entries(data)) {
     // WordPress itself is GPL, so its packages must be. They are deps of the
     // GPL-licensed Weave WP-admin editor + WP plugin ONLY, and are externalized at
     // runtime by @wordpress/scripts (provided by the WP host, not bundled). The
-    // PUBLISHED MIT packages (@arc/core, @arc/next, @weave/react, @weave/next)
+    // PUBLISHED MIT packages (@arc-platform/core, @arc-platform/next, @weave-platform/react, @weave-platform/next)
     // never depend on them, so this copyleft does not reach Arc's MIT code. Same
     // boundary rationale as @img/sharp above. See ADR-0003.
     if (p.name?.startsWith('@wordpress/')) {

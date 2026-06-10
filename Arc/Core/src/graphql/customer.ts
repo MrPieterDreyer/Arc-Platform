@@ -1,5 +1,5 @@
 // TODO(codegen): Replace inline gql document with typed __generated__ import
-// after running: pnpm --filter @arc/core codegen
+// after running: pnpm --filter @arc-platform/core codegen
 // Expected import:
 //   import { GetCustomerOrdersDocument } from './__generated__/graphql.js'
 import { type GraphQLClient, gql } from 'graphql-request';
@@ -78,7 +78,7 @@ const GetCustomerOrdersDocument = gql`
  * throw in that case.
  *
  * Use `createWPGraphQLClient({ authToken: () => yourToken })` from
- * `@arc/next`'s cookie bridge to provide the token server-side.
+ * `@arc-platform/next`'s cookie bridge to provide the token server-side.
  *
  * @param client - Authenticated GraphQLClient (must have auth token set)
  * @param vars   - Pagination variables (first: number of orders, after: cursor)
@@ -94,7 +94,7 @@ export async function getCustomerOrders(
   if (!data.customer) {
     throw new Error(
       'WPGraphQL returned null for customer. Ensure the GraphQLClient is configured with a valid authToken. ' +
-        'Use createWPGraphQLClient({ authToken: () => yourToken }) from @arc/next.',
+        'Use createWPGraphQLClient({ authToken: () => yourToken }) from @arc-platform/next.',
     );
   }
   return data.customer;

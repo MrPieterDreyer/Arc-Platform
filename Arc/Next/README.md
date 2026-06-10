@@ -1,4 +1,4 @@
-# @arc/next
+# @arc-platform/next
 
 Next.js 16 App Router integration for Arc — cached catalog loaders, cart Server Actions, Cart-Token cookie bridge, and HMAC revalidation webhooks.
 
@@ -16,9 +16,9 @@ Cart cookies require **HTTPS** in production (`SameSite=None; Secure` per ADR-00
 
 | Entry | Use for |
 |-------|---------|
-| `@arc/next` | `arcTag`, `ARC_CACHE_PROFILE`, cookie/webhook constant names |
-| `@arc/next/server` | `createLoaders`, `createArcClient`, cart actions, `createRevalidateHandler` |
-| `@arc/next/client` | `useOptimisticCart` |
+| `@arc-platform/next` | `arcTag`, `ARC_CACHE_PROFILE`, cookie/webhook constant names |
+| `@arc-platform/next/server` | `createLoaders`, `createArcClient`, cart actions, `createRevalidateHandler` |
+| `@arc-platform/next/client` | `useOptimisticCart` |
 
 ## Server Actions (consumer pattern)
 
@@ -28,7 +28,7 @@ Library exports plain async functions. Re-export from your app with `'use server
 // app/actions/cart.ts
 'use server';
 
-export { addItemAction, updateItemAction, removeItemAction } from '@arc/next/server';
+export { addItemAction, updateItemAction, removeItemAction } from '@arc-platform/next/server';
 ```
 
 Actions **throw** `WooClientError` on failure (no `{ ok: false }`) so `useOptimisticCart` can roll back. Surface UI copy in your error boundary (see Phase 2 UI-SPEC).
@@ -38,7 +38,7 @@ Actions **throw** `WooClientError` on failure (no `{ ok: false }`) so `useOptimi
 Consumer `next.config.ts` must set `cacheComponents: true`. Loaders use `'use cache'` + `cacheTag` + `cacheLife`:
 
 ```typescript
-import { createLoaders } from '@arc/next/server';
+import { createLoaders } from '@arc-platform/next/server';
 
 const { loadProduct } = createLoaders({
   graphqlEndpoint: process.env.ARC_GRAPHQL_ENDPOINT!,
@@ -53,7 +53,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
 ## ISR / cacheLife profiles (Pilot)
 
-Import `ARC_CACHE_PROFILE` from `@arc/next` and pass to `cacheLife()` in loaders (or rely on `createLoaders`, which applies them automatically):
+Import `ARC_CACHE_PROFILE` from `@arc-platform/next` and pass to `cacheLife()` in loaders (or rely on `createLoaders`, which applies them automatically):
 
 | Route type | Profile constant | Typical use |
 |------------|------------------|-------------|
@@ -65,7 +65,7 @@ Import `ARC_CACHE_PROFILE` from `@arc/next` and pass to `cacheLife()` in loaders
 
 ```typescript
 // app/api/revalidate/route.ts
-import { createRevalidateHandler, WEAVE_WEBHOOK_SECRET_ENV } from '@arc/next/server';
+import { createRevalidateHandler, WEAVE_WEBHOOK_SECRET_ENV } from '@arc-platform/next/server';
 
 export const POST = createRevalidateHandler({
   secret: process.env[WEAVE_WEBHOOK_SECRET_ENV]!,

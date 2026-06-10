@@ -12,7 +12,7 @@ export interface WPGraphQLConfig {
   /**
    * Optional callback that returns a JWT or Application Password auth token.
    * Called on each request. Return null/undefined for unauthenticated requests.
-   * In @arc/next, wire this to read the token from an HttpOnly cookie.
+   * In @arc-platform/next, wire this to read the token from an HttpOnly cookie.
    */
   authToken?: () => string | null | undefined;
 }

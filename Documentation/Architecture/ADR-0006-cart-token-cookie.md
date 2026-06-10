@@ -23,7 +23,7 @@ Per the WooCommerce developer docs: "When using a Cart-Token a Nonce Token is no
 - Cross-origin support: Next origin ≠ WP origin is a first-class deployment pattern for Arc
 - Security: HttpOnly eliminates XSS exfiltration; no JavaScript should ever read this cookie
 - ITP/TCP survival: `SameSite=None; Secure` is the only combination that works cross-origin; `SameSite=Lax` or `SameSite=Strict` breaks cross-origin cart writes
-- Consistency: cookie name must be a stable constant — both `@arc/core` (WooClient) and `@arc/next` (cookie bridge) reference it
+- Consistency: cookie name must be a stable constant — both `@arc-platform/core` (WooClient) and `@arc-platform/next` (cookie bridge) reference it
 - Multi-tab: cookie is shared across tabs by the browser automatically (unlike localStorage or sessionStorage which can be tab-isolated in some modes)
 
 ## Considered Options
@@ -34,7 +34,7 @@ Per the WooCommerce developer docs: "When using a Cart-Token a Nonce Token is no
 
 ## Decision
 
-The WC Store API Cart-Token is persisted as an HttpOnly cookie named **`arc_cart_token`** set on the Next.js origin by `@arc/next` Server Actions or route handlers.
+The WC Store API Cart-Token is persisted as an HttpOnly cookie named **`arc_cart_token`** set on the Next.js origin by `@arc-platform/next` Server Actions or route handlers.
 
 **Cookie specification:**
 
@@ -50,9 +50,9 @@ The WC Store API Cart-Token is persisted as an HttpOnly cookie named **`arc_cart
 
 **Token lifecycle:**
 1. On first cart interaction (GET `/wp-json/wc/store/v1/cart`), WC returns a `Cart-Token` response header
-2. `WooClient` (Phase 1, `@arc/core`) extracts the token and calls a registered `onCartToken` callback
-3. `@arc/next` (Phase 2) registers the callback; the callback sets the `arc_cart_token` cookie via Next.js `cookies().set()`
-4. On subsequent cart requests, `@arc/next` reads the cookie via `cookies().get('arc_cart_token')` and injects it as a `Cart-Token` request header to WC
+2. `WooClient` (Phase 1, `@arc-platform/core`) extracts the token and calls a registered `onCartToken` callback
+3. `@arc-platform/next` (Phase 2) registers the callback; the callback sets the `arc_cart_token` cookie via Next.js `cookies().set()`
+4. On subsequent cart requests, `@arc-platform/next` reads the cookie via `cookies().get('arc_cart_token')` and injects it as a `Cart-Token` request header to WC
 5. On each successful cart response, the cookie `Max-Age` is refreshed to reset the 30-day window
 
 **Local development:** HTTPS is required because `SameSite=None` mandates `Secure`. Use `mkcert` to provision a local TLS certificate. The Pilot starter (Phase 5) documents this setup.
@@ -76,13 +76,13 @@ The WC Store API Cart-Token is persisted as an HttpOnly cookie named **`arc_cart
 
 ### Neutral
 
-- Cookie name `arc_cart_token` is reserved — NEVER used for any other purpose in `@arc/*` or `@weave/*` packages
+- Cookie name `arc_cart_token` is reserved — NEVER used for any other purpose in `@arc-platform/*` or `@weave-platform/*` packages
 - The `Domain` attribute is intentionally unset (host-only) — the cookie does NOT propagate to subdomains; each subdomain deployment manages its own cookie
 
 ## Implementation Notes
 
-- Phase 1 (`@arc/core`, `WooClient`): `WooClient` is framework-agnostic — it does not set cookies directly. It accepts an `onCartToken: (token: string) => void` constructor option and calls it when a new `Cart-Token` header is received. This keeps `@arc/core` free of Next.js or browser dependencies.
-- Phase 2 (`@arc/next`): the cookie bridge registers `onCartToken` and uses the Next.js `cookies()` API:
+- Phase 1 (`@arc-platform/core`, `WooClient`): `WooClient` is framework-agnostic — it does not set cookies directly. It accepts an `onCartToken: (token: string) => void` constructor option and calls it when a new `Cart-Token` header is received. This keeps `@arc-platform/core` free of Next.js or browser dependencies.
+- Phase 2 (`@arc-platform/next`): the cookie bridge registers `onCartToken` and uses the Next.js `cookies()` API:
   ```typescript
   cookies().set('arc_cart_token', token, {
     httpOnly: true,
@@ -92,9 +92,9 @@ The WC Store API Cart-Token is persisted as an HttpOnly cookie named **`arc_cart
     maxAge: 2_592_000,
   });
   ```
-- Phase 2 (`@arc/next`): cart request interceptor reads `cookies().get('arc_cart_token')?.value` and injects `'Cart-Token': token` into every WC Store API request header.
+- Phase 2 (`@arc-platform/next`): cart request interceptor reads `cookies().get('arc_cart_token')?.value` and injects `'Cart-Token': token` into every WC Store API request header.
 - Phase 5 (Pilot starter): `README.md` documents the `mkcert` setup for local HTTPS as a prerequisite for cart functionality.
-- The cookie name constant `ARC_CART_TOKEN_COOKIE = 'arc_cart_token'` is exported from `@arc/next` as a named constant — both the bridge and any consumer code use the constant, never a string literal.
+- The cookie name constant `ARC_CART_TOKEN_COOKIE = 'arc_cart_token'` is exported from `@arc-platform/next` as a named constant — both the bridge and any consumer code use the constant, never a string literal.
 
 ## References
 

@@ -4,7 +4,7 @@ import 'client-only';
 import { Component, type CSSProperties, type ReactNode } from 'react';
 
 /**
- * SectionErrorBoundary — the ONE client-only piece of @weave/react (D-08).
+ * SectionErrorBoundary — the ONE client-only piece of @weave-platform/react (D-08).
  *
  * Isolates a single broken section so one failure never crashes the page
  * (WEAVE-SDK-09, Success Criterion #4). Three failure kinds route to the same

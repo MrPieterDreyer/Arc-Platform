@@ -17,8 +17,8 @@ const loginCustomer = vi.fn();
 const refreshAuthToken = vi.fn();
 const getCustomerOrders = vi.fn();
 
-vi.mock('@arc/core', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@arc/core')>();
+vi.mock('@arc-platform/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@arc-platform/core')>();
   return {
     ...actual,
     loginCustomer,

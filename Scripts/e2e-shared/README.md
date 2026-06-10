@@ -40,8 +40,8 @@ Set `E2E_ENV=staging` and provide `E2E_STAGING_STOREFRONT_URL` / `E2E_STAGING_WP
 
 ## Weave server imports
 
-- **`@weave/next/server`** — `loadPageConfig`, revalidate handlers, `weaveTag` (no client code).
-- **`@weave/next/server-page`** — `WeavePage` all-in-one server component (pulls `@weave/react`).
+- **`@weave-platform/next/server`** — `loadPageConfig`, revalidate handlers, `weaveTag` (no client code).
+- **`@weave-platform/next/server-page`** — `WeavePage` all-in-one server component (pulls `@weave-platform/react`).
 
 Minimal-app uses `loadPageConfig` from `./server` plus a client `SectionRenderer` wrapper — see `components/weave-page-sections.tsx`.
 

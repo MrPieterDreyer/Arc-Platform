@@ -2,7 +2,7 @@
  * Contract tests for the WC Store API /order/{id} endpoint.
  *
  * All tests are gated behind CI_WP_ENV=true — they require a live wp-env instance.
- * Run with: CI_WP_ENV=true WP_URL=http://localhost:8888 pnpm --filter @arc/core test
+ * Run with: CI_WP_ENV=true WP_URL=http://localhost:8888 pnpm --filter @arc-platform/core test
  */
 import { describe, expect, test } from 'vitest';
 import { WooClient } from '../../client/WooClient';

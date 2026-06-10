@@ -1,7 +1,7 @@
 // Next 16 proxy (replaces middleware.ts) — mints the per-request CSP nonce and sets
 // the Arc CSP header per ADR-0010. Starts REPORT-ONLY: flip to ARC_CSP_HEADER once
 // the storefront's third-party origins are validated.
-import { ARC_CSP_REPORT_ONLY_HEADER, ARC_NONCE_HEADER, createArcCsp } from '@arc/next';
+import { ARC_CSP_REPORT_ONLY_HEADER, ARC_NONCE_HEADER, createArcCsp } from '@arc-platform/next';
 import { type NextRequest, NextResponse } from 'next/server';
 
 /** 128-bit random nonce, base64 — Web Crypto so it runs on the edge runtime too. */

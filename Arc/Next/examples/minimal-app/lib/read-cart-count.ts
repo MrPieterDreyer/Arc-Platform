@@ -1,7 +1,7 @@
 import 'server-only';
 
-import { getCart } from '@arc/core';
-import { createReadOnlyCartClient } from '@arc/next/server';
+import { getCart } from '@arc-platform/core';
+import { createReadOnlyCartClient } from '@arc-platform/next/server';
 import { connection } from 'next/server';
 
 function wcRequestTimeoutMs(): number {

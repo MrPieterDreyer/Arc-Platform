@@ -1,7 +1,7 @@
 /**
  * useProduct — React 19 hook for fetching a single WPGraphQL product by slug.
  *
- * Client Component only — for RSC, use getProduct() from @arc/next server loader.
+ * Client Component only — for RSC, use getProduct() from @arc-platform/next server loader.
  * No next/* imports — framework-agnostic.
  */
 
@@ -24,7 +24,7 @@ export interface ProductState {
  * @param client - GraphQLClient instance (from createWPGraphQLClient)
  * @param slug   - Product slug
  *
- * @remarks Client Component only — use @arc/next getProduct server loader for RSC.
+ * @remarks Client Component only — use @arc-platform/next getProduct server loader for RSC.
  */
 export function useProduct(client: GraphQLClient, slug: string): ProductState {
   const [product, setProduct] = useState<WCProduct | null>(null);

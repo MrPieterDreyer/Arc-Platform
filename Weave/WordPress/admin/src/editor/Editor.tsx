@@ -14,7 +14,7 @@
  * Copy is verbatim from the UI-SPEC Copywriting Contract.
  */
 
-import type { WeavePageConfig } from '@weave/react';
+import type { WeavePageConfig } from '@weave-platform/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button, Notice, Panel, Spinner } from '@wordpress/components';
 import { useEffect } from 'react';

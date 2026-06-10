@@ -34,7 +34,7 @@ P2 hygiene:
 
 **Proposed:** Adopt the following as the supply-chain hardening baseline, sequenced P1-first.
 
-1. **npm OIDC Trusted Publishing + `--provenance`.** Register `@arc/*` and `@weave/*` packages for OIDC on
+1. **npm OIDC Trusted Publishing + `--provenance`.** Register `@arc-platform/*` and `@weave-platform/*` packages for OIDC on
    npmjs.com; change the publish step to `pnpm changeset publish --provenance` and set `NPM_TOKEN: ''` so
    the static token is removed and Sigstore attestation is forced. `SECURITY.md`'s "verify provenance"
    note becomes truthful once this lands.
@@ -65,7 +65,7 @@ P2 hygiene:
 
 - **Release pipeline** changes are small and mechanical (one publish flag, token removal, SHA pins) but
   must be verified end-to-end on the next release: `npm audit signatures` should pass for a published
-  `@arc/*` package.
+  `@arc-platform/*` package.
 - **Merchants** on a too-old WPGraphQL will be blocked by WP's plugin-dependency enforcement instead of
   silently running a vulnerable stack.
 - **Dependabot PR volume** rises slightly (Composer + SHA-pinned actions); the existing grouped-dev-deps

@@ -27,7 +27,7 @@ Copy this file to `.cursor/rules/e2e-testing.mdc` (`.cursor/` is gitignored).
 
 ## Before marking UI work complete
 
-1. Run `pnpm test` and `pnpm test:contract` if touching `@arc/*` or `@weave/*`
+1. Run `pnpm test` and `pnpm test:contract` if touching `@arc-platform/*` or `@weave-platform/*`
 2. Run `pnpm test:e2e:smoke` if touching user-visible flows
 3. If E2E failed: read `Artifacts/e2e-reports/latest.json` and fix **all P0/P1 tickets** before claiming done
 

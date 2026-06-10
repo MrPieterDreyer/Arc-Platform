@@ -2,14 +2,14 @@
 
 import 'client-only';
 
-import type { WooCart } from '@arc/core';
+import type { WooCart } from '@arc-platform/core';
 import { useOptimistic, useTransition } from 'react';
 
 export type AddItemAction = (payload: { id: number; quantity: number }) => Promise<WooCart>;
 
 /**
  * Optimistic cart count for Server Actions that throw on error (ARC-NEXT-07).
- * Pair with `addItemAction` from `@arc/next/server` in a consumer `app/actions/cart.ts`.
+ * Pair with `addItemAction` from `@arc-platform/next/server` in a consumer `app/actions/cart.ts`.
  */
 export function useOptimisticCart(cart: WooCart | null, addItemAction: AddItemAction) {
   const [isPending, startTransition] = useTransition();

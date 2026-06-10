@@ -3,7 +3,7 @@
 // SDK-01 compile-error gate:
 //   1. Copy this body into a temp file OUTSIDE src/__fixtures__ (e.g. src/_probe.tsx),
 //      fixing the relative import to '../schema/types' → './schema/types'.
-//   2. Run: pnpm --filter @weave/react typecheck
+//   2. Run: pnpm --filter @weave-platform/react typecheck
 //      → the line WITHOUT @ts-expect-error must error
 //        (TS2322: Type '"subheading"' is not assignable to type '"heading"').
 //      → removing the `subheading` input OR the @ts-expect-error directive flips the result.

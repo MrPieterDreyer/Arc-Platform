@@ -56,7 +56,7 @@ Spec: `e2e/weave/render.spec.ts` (`@regression`) — seeds `e2e-weave-render` vi
 Spec: `e2e/weave/input-matrix.spec.ts` (`@regression`) — static fixture `/e2e-fixtures/weave-inputs`; optional REST seed via `buildWeaveInputMatrixPageConfig()` + slug `e2e-weave-inputs`.
 | WEAVE-SDK-09 | Broken section isolated (error boundary) | ✅ | — | ✅ | 5 |
 
-Spec: `e2e/weave/error-boundary.spec.ts` (`@regression`) — static fixture `/e2e-fixtures/weave-errors` with unknown section type; render-throw covered in `@weave/react` unit tests.
+Spec: `e2e/weave/error-boundary.spec.ts` (`@regression`) — static fixture `/e2e-fixtures/weave-errors` with unknown section type; render-throw covered in `@weave-platform/react` unit tests.
 
 ---
 

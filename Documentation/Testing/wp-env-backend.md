@@ -1,6 +1,6 @@
 # Contract-Test Backend (wp-env)
 
-Arc's `@arc/core` contract and perf tests run against a real WooCommerce instance
+Arc's `@arc-platform/core` contract and perf tests run against a real WooCommerce instance
 provisioned by [`@wordpress/env`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)
 (Docker). Unit tests mock `fetch` and need none of this; the contract suite
 (`*.contract.ts`, `*.perf.ts`) is gated behind `CI_WP_ENV=true` and skips unless a
@@ -15,7 +15,7 @@ backend is present.
 
 ```bash
 pnpm wp:setup        # wp-env start + seed (first run pulls WP image + plugins)
-pnpm test:contract   # runs @arc/core tests with the seeded env loaded
+pnpm test:contract   # runs @arc-platform/core tests with the seeded env loaded
 ```
 
 Or step by step:
@@ -23,7 +23,7 @@ Or step by step:
 ```bash
 pnpm wp:start        # boot WordPress + WooCommerce + WPGraphQL + WooGraphQL
 pnpm wp:seed         # seed fixtures, write .env.wp-test
-pnpm test:contract   # dotenv -e .env.wp-test -- vitest (@arc/core)
+pnpm test:contract   # dotenv -e .env.wp-test -- vitest (@arc-platform/core)
 pnpm wp:stop         # stop containers (data persists)
 pnpm wp:destroy      # remove containers + volumes (full reset)
 ```

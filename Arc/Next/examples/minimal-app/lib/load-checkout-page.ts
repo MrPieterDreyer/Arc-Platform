@@ -1,7 +1,7 @@
 import 'server-only';
 
-import { getCart, getCheckoutSchema, type WooCart, type WCCheckoutResponse } from '@arc/core';
-import { createReadOnlyCartClient } from '@arc/next/server';
+import { getCart, getCheckoutSchema, type WooCart, type WCCheckoutResponse } from '@arc-platform/core';
+import { createReadOnlyCartClient } from '@arc-platform/next/server';
 import { connection } from 'next/server';
 
 export type CheckoutPageModel =

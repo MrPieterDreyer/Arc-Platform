@@ -1,6 +1,6 @@
 'use client';
 
-import type { WooCart } from '@arc/core';
+import type { WooCart } from '@arc-platform/core';
 import { useEffect, useState } from 'react';
 import { CART_UPDATED_EVENT, readLatestCartCount } from '../lib/cart-sync';
 import { CartDrawer } from './cart-drawer/cart-drawer';
