@@ -46,4 +46,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # setup-node's registry-url writes an .npmrc (NPM_CONFIG_USERCONFIG)
+          # that authenticates via ${NODE_AUTH_TOKEN} and OVERRIDES the
+          # ~/.npmrc the changesets action writes from NPM_TOKEN. Without this
+          # line npm publishes with setup-node's literal placeholder token and
+          # the registry masks the bad auth as E404 on every scoped PUT.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: 'true'
