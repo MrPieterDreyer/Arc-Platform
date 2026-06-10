@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ADR-0009 Spike — Customer Authentication for Headless WooCommerce</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #1a2332;
+    --muted: #5a6678;
+    --line: #d8e3ef;
+    --accent: #0369a1;
+    --accent-soft: #eef6fb;
+    --good: #1a7f4b;
+    --bad: #b4232a;
+    --warn: #9a6b00;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 28px 96px; }
+  h1, h2, h3, h4 { font-weight: 400; line-height: 1.2; color: var(--ink); }
+  h1 { font-size: 30px; margin: 0 0 6px; }
+  h2 { font-size: 22px; margin: 48px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 17px; margin: 26px 0 8px; }
+  h4 { font-size: 15px; margin: 18px 0 6px; color: var(--accent); }
+  p { margin: 8px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  code, pre, .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+  code { background: var(--accent-soft); padding: 1px 5px; font-size: 13px; color: #0b3a52; }
+  .meta { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+  .tag { display: inline-block; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; padding: 3px 9px; border: 1px solid var(--line); color: var(--muted); }
+  .card { border: 1px solid var(--line); padding: 20px 22px; margin: 16px 0; background: #fff; }
+  .rec { border: 1px solid var(--accent); border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 22px 24px; margin: 22px 0; }
+  .rec h2 { border: 0; margin: 0 0 8px; padding: 0; color: var(--accent); }
+  .pill { display: inline-block; background: var(--accent); color: #fff; font-size: 13px; padding: 4px 12px; font-weight: 600; margin-top: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); font-weight: 600; color: #0b3a52; }
+  td.y { color: var(--good); font-weight: 600; }
+  td.n { color: var(--bad); font-weight: 600; }
+  td.p { color: var(--warn); font-weight: 600; }
+  pre { background: #f7fafd; border: 1px solid var(--line); padding: 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.45; color: #14222f; }
+  ul, ol { margin: 8px 0; padding-left: 22px; }
+  li { margin: 4px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .winner { border-left: 4px solid var(--good); }
+  .reject { border-left: 4px solid var(--bad); }
+  .fileref { font-size: 12px; color: var(--muted); }
+  .fileref code { background: transparent; padding: 0; color: var(--accent); }
+  .small { font-size: 13px; color: var(--muted); }
+  .kv { display: grid; grid-template-columns: 170px 1fr; gap: 4px 14px; font-size: 13.5px; margin: 8px 0; }
+  .kv div:nth-child(odd) { color: var(--muted); }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } .kv { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="tag">Architecture Spike — Read-only</span>
+  <h1>ADR-0009 — Customer Authentication for Headless WooCommerce</h1>
+  <p class="meta">Date: 2026-06-04 &nbsp;·&nbsp; Author: Backend Architect spike &nbsp;·&nbsp; For: Pieter Dreyer &nbsp;·&nbsp; Resolves: ADR-0009 (Open → recommend Accepted)</p>
+  <p class="meta">Scope: customer login / logout, order history, address &amp; profile management for a headless Next.js 16 + WC Store API v1 storefront.</p>
+
+  <div class="rec">
+    <h2>Executive Recommendation</h2>
+    <p><strong>Adopt Option 1 — WPGraphQL JWT — but store the credential in HttpOnly cookies via the existing ADR-0006 cookie-bridge.</strong> This is not a choice <em>between</em> "JWT" and "cookie bridge": JWT is the <em>credential format</em>, the cookie bridge is the <em>transport &amp; storage</em>. Combining them is the only option that satisfies every constraint and matches the direction the code already took.</p>
+    <span class="pill">Recommended: WPGraphQL JWT + HttpOnly cookie bridge (refresh-token rotation)</span>
+    <ul style="margin-top:14px;">
+      <li><strong>Already the de-facto path.</strong> <code>createWPGraphQLClient</code> injects <code>Authorization: Bearer {token}</code> and <code>getCustomerOrders</code> requires a JWT; the JWT decision is effectively pre-committed in code — what is missing is login + refresh + storage. <span class="fileref"><code>Arc/Core/src/graphql/client.ts:27-42</code>, <code>Arc/Core/src/graphql/customer.ts:74-100</code></span></li>
+      <li><strong>Unlocks the full surface.</strong> WPGraphQL for WooCommerce exposes <code>customer { orders, billing, shipping, downloadableItems }</code> and mutations (<code>updateCustomer</code>, <code>login</code>, <code>refreshJwtAuthToken</code>) — the cross-session data the Store API <em>cannot</em> return. <span class="fileref"><code>Arc/Core/src/store-api/orders.ts:1-12</code>, <code>Arc/Core/src/store-api/customer.ts:28-41</code></span></li>
+      <li><strong>Security parity with the cart.</strong> Reuses the proven HttpOnly / <code>SameSite=None; Secure</code> pattern from ADR-0006 — same XSS posture, same cross-origin behaviour, no new storage mechanism. <span class="fileref"><code>Arc/Next/src/cookies.ts:17-50</code></span></li>
+      <li><strong>RSC-readable.</strong> A Server Component reads auth state with <code>cookies().get(ARC_AUTH_TOKEN_COOKIE)</code>, exactly as it reads the cart token today. <span class="fileref"><code>Arc/Next/src/cookies.ts:71-74</code></span></li>
+      <li><strong>Outcome-equivalent to LOFT/Shopify.</strong> LOFT delegates to <code>context.customerAccount.login()</code> (server-held session, refreshable). Arc gives the same outcome: server-held credential, RSC-readable, refreshable — over WooCommerce. <span class="fileref"><code>D:\09. LOFT Pro Shop\loft-platform\LOFT Pro Shop\app\routes\account\auth\login.ts</code></span></li>
+    </ul>
+  </div>
+
+  <h2>1. Problem &amp; Current State</h2>
+  <p>The WC Store API customer surface is <strong>session-scoped only</strong>. <code>getCustomer()</code> derives billing/shipping from <code>GET /cart</code> (id is <code>0</code> for guests), and <code>getOrder()</code> can only return an order that belongs to the current Cart-Token session. There is no login, no cross-session lookup, no order list. <span class="fileref"><code>Arc/Core/src/store-api/customer.ts:28-41</code>, <code>Arc/Core/src/store-api/orders.ts:1-44</code>, <code>Arc/Core/src/types/customer.ts:1-7</code></span></p>
+  <p>Phase 1 (<code>@arc/core</code>) deliberately shipped the authenticated half as a <strong>token-shaped hole</strong>: <code>getCustomerOrders(client)</code> takes a <code>GraphQLClient</code> whose <code>authToken</code> callback returns a JWT, and the contract test feeds it from <code>TEST_JWT_TOKEN</code>. Nothing in the repo today <em>issues</em>, <em>stores</em>, or <em>refreshes</em> that token — that is precisely what ADR-0009 must close. <span class="fileref"><code>Arc/Core/src/__tests__/contract/customer.contract.test.ts:22-25, 73-82</code>, <code>Arc/Core/src/hooks/useCustomer.ts:31-65</code></span></p>
+
+  <h2>2. Options Comparison</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:18%">Criterion</th>
+        <th>Opt&nbsp;1 — WPGraphQL JWT (+ cookie bridge)</th>
+        <th>Opt&nbsp;2 — WC REST + Application Passwords</th>
+        <th>Opt&nbsp;3 — Pure WP session-cookie bridge</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Unlocks order history / cross-session</td>
+        <td class="y">Yes — <code>customer.orders</code> + mutations</td>
+        <td class="y">Yes — REST v3 <code>/orders?customer=</code></td>
+        <td class="p">Only if WP login session can be forged headlessly (it can't, cleanly)</td>
+      </tr>
+      <tr>
+        <td>WC Store API / catalog compatibility</td>
+        <td class="y">Native — same WPGraphQL endpoint as catalog; cart stays Cart-Token</td>
+        <td class="p">Separate REST surface; over-fetched, untyped JSON (CLAUDE.md "what NOT to use")</td>
+        <td class="n">Nonce model doesn't exist for an anonymous Next visitor (ADR-0006 ctx)</td>
+      </tr>
+      <tr>
+        <td>Where the credential lives</td>
+        <td class="y">Short-lived JWT + refresh token in <strong>HttpOnly</strong> cookies</td>
+        <td class="n"><strong>Long-lived</strong> base64 user:password — permanent app-password equivalent</td>
+        <td class="p">WP auth cookie — but cross-origin + HttpOnly makes it unreadable to Next as auth state</td>
+      </tr>
+      <tr>
+        <td>XSS / CSRF exposure</td>
+        <td class="y">HttpOnly blocks JS read; CSRF mitigated by SameSite + Server-Action origin checks</td>
+        <td class="n">If ever readable by JS, leaks a near-permanent credential; high blast radius</td>
+        <td class="p">Inherits WP cookie CSRF model; awkward to defend cross-origin</td>
+      </tr>
+      <tr>
+        <td>Token lifecycle / refresh</td>
+        <td class="y">Defined: short access token + rotating refresh token (plugin-supported)</td>
+        <td class="n">No lifecycle — credential never rotates; revoke = delete app password</td>
+        <td class="p">Tied to WP login session TTL; no clean programmatic refresh</td>
+      </tr>
+      <tr>
+        <td>RSC-readable auth state</td>
+        <td class="y">Yes — <code>cookies().get()</code> in a Server Component</td>
+        <td class="y">Yes (cookie), but storing a permanent credential server-side is the wrong trade</td>
+        <td class="n">HttpOnly WP cookie on the WP origin is not visible to the Next origin</td>
+      </tr>
+      <tr>
+        <td>Extra WP plugin / maintenance risk</td>
+        <td class="p"><code>wp-graphql-jwt-authentication</code> — small bus factor; pin + watch advisories</td>
+        <td class="y">None — Application Passwords ship in WP core 5.6+</td>
+        <td class="y">None — but requires custom Next proxy glue (high own-code risk)</td>
+      </tr>
+      <tr>
+        <td>Pilot starter DX</td>
+        <td class="y">One login Server Action + 2 cookies; mirrors cart bridge devs already learn</td>
+        <td class="p">User must generate app passwords manually — not a real consumer login UX</td>
+        <td class="n">Requires reverse-proxy / same-site deployment; breaks Arc's cross-origin default</td>
+      </tr>
+      <tr>
+        <td>Verdict</td>
+        <td class="y">RECOMMENDED</td>
+        <td class="n">Rejected (machine-to-machine only)</td>
+        <td class="n">Rejected</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Rejected alternatives — why</h3>
+  <div class="grid2">
+    <div class="card reject">
+      <h4>Option 2 — Application Passwords over HTTP Basic</h4>
+      <p>Application Passwords are a <strong>long-lived, effectively-permanent</strong> credential designed for machine-to-machine integrations and admin tooling, not end-user storefront login. There is no self-service "create my app password" flow a shopper can perform, no rotation, and a leak exposes a credential with the user's full capability set until manually revoked. It also forces the catalog onto WC core REST — explicitly listed under "what NOT to use" in CLAUDE.md (over-fetched, untyped, N+1 variations). Keep it as an <em>optional</em> server-to-server adapter, never the customer login path.</p>
+    </div>
+    <div class="card reject">
+      <h4>Option 3 — Pure WP session-cookie bridge</h4>
+      <p>WordPress auth cookies are bound to the WP origin and the nonce/login-session model. For an anonymous Next.js visitor on a <strong>different origin</strong> (Arc's first-class deployment, per ADR-0006), there is no WP login session to bridge, the WP HttpOnly cookie isn't readable as auth state by the Next origin, and faking it requires brittle reverse-proxy / same-site glue that defeats the cross-origin design. ADR-0006 already rejected nonce-centric auth for the cart for the same reason. High custom-code risk, no upside over JWT.</p>
+    </div>
+  </div>
+
+  <h2>3. Recommended Design — Token Lifecycle</h2>
+  <p>Two cookies, both set on the <strong>Next.js origin</strong> by Server Actions / Route Handlers, both following ADR-0006 attribute rules. A <strong>short-lived access JWT</strong> is sent as <code>Authorization: Bearer</code> to WPGraphQL; a <strong>long-lived refresh token</strong> mints new access tokens without re-login.</p>
+
+  <div class="kv">
+    <div>Access cookie</div><div><code>arc_auth_token</code> — JWT, Max-Age ≈ access-token TTL (e.g. 10–15 min), HttpOnly, SameSite=None, Secure, Path <code>/</code></div>
+    <div>Refresh cookie</div><div><code>arc_refresh_token</code> — refresh JWT, Max-Age ≈ session window (e.g. 14–30 days), HttpOnly, SameSite=None, Secure, Path <code>/</code></div>
+    <div>Attribute source</div><div>Reuse <code>CART_COOKIE_OPTIONS</code> shape verbatim (incl. the <code>ARC_CART_COOKIE_SECURE=false</code> local-HTTP E2E escape hatch). <span class="fileref"><code>Arc/Next/src/cookies.ts:7-23</code></span></div>
+  </div>
+
+<pre>
+LOGIN
+  Browser ──POST /account/login (email,pwd)──▶ Next Server Action
+                                                  │
+                                                  │ login mutation (WPGraphQL JWT plugin)
+                                                  ▼
+                                              WPGraphQL  ──▶ { authToken (access JWT),
+                                                              refreshToken }
+                                                  │
+                                  cookies().set('arc_auth_token',    access,  HttpOnly/None/Secure)
+                                  cookies().set('arc_refresh_token', refresh, HttpOnly/None/Secure)
+                                                  ▼
+                                            302 → /account
+
+AUTHENTICATED READ  (Server Component / loader)
+  RSC ── cookies().get('arc_auth_token') ──▶ createWPGraphQLClient({ authToken })
+                                                  │  Authorization: Bearer {access}
+                                                  ▼
+                                              WPGraphQL customer { orders, billing, shipping }
+
+REFRESH  (access expired → WPGraphQL 'expired token' error)
+  Server Action catches expired ──▶ refreshJwtAuthToken(refresh) ──▶ new access JWT
+                                  cookies().set('arc_auth_token', newAccess, ...)   ← rotate
+                                  (retry original query once — mirrors WooClient nonce-retry)
+
+LOGOUT
+  Server Action ──▶ cookies().delete('arc_auth_token')
+                    cookies().delete('arc_refresh_token')
+                    (optional) server-side refresh-token revocation
+                                                  ▼
+                                            302 → /
+</pre>
+
+  <p class="small">The single-retry-on-expiry loop is intentionally identical to the proven nonce-refresh-and-retry already in <code>WooClient.request()</code> — same shape, different credential. <span class="fileref"><code>Arc/Core/src/client/WooClient.ts:219-235</code></span></p>
+
+  <h2>4. Security Considerations</h2>
+  <ul>
+    <li><strong>Credential never touches JavaScript.</strong> Both cookies are HttpOnly — an XSS payload cannot read or exfiltrate the JWT, identical to the ADR-0006 cart-token rationale. <span class="fileref"><code>ADR-0006 §Decision, Consequences</code>; <code>Arc/Next/src/cookies.ts:17-23</code></span></li>
+    <li><strong>Short access TTL bounds the blast radius.</strong> A leaked access token (e.g. via an intercepted bearer header on a misconfigured proxy) expires in minutes; the long-lived secret (refresh token) is only ever sent to the Next origin, never to WPGraphQL in a header.</li>
+    <li><strong>CSRF.</strong> <code>SameSite=None</code> is mandatory for cross-origin (ADR-0006), so do not rely on SameSite alone for CSRF. Mutations go through Next.js Server Actions, which already enforce same-origin POST + the framework's action-id protection; add an explicit <code>Origin</code>/<code>Host</code> allow-list check in the login/refresh handlers.</li>
+    <li><strong>Refresh-token rotation + revocation on logout.</strong> Rotate the refresh cookie on every use and clear both cookies on logout; expose optional server-side revocation so "log out everywhere" is possible.</li>
+    <li><strong>HTTPS everywhere.</strong> <code>SameSite=None</code> ⇒ <code>Secure</code> ⇒ TLS in all envs including local dev (<code>mkcert</code>), already a documented Arc prerequisite; the same <code>ARC_*_COOKIE_SECURE=false</code> override exists for localhost E2E. <span class="fileref"><code>ADR-0006 §Local development</code>; <code>Arc/Next/src/cookies.ts:8-15</code></span></li>
+    <li><strong>Plugin supply-chain.</strong> CLAUDE.md flags a recent WPGraphQL core CVE (CVE-2026-33290) and the one-maintainer shape of WPGraphQL-for-WC. Pin the JWT plugin minor, watch advisories, and document a REST fallback for any query GraphQL cannot serve. The <em>JWT secret</em> lives only in <code>wp-config.php</code> (<code>GRAPHQL_JWT_AUTH_SECRET_KEY</code>) — never in the Arc repo (<code>.env.example</code> only).</li>
+    <li><strong>Reserved cookie names.</strong> Add <code>arc_auth_token</code> and <code>arc_refresh_token</code> to the reserved list alongside <code>arc_cart_token</code> — never reused for any other purpose. <span class="fileref"><code>ADR-0006 §Consequences (Neutral)</code></span></li>
+  </ul>
+
+  <h2>5. Implementation Outline</h2>
+
+  <h4>@arc/core (framework-agnostic, no next/*)</h4>
+  <ul>
+    <li><code>src/graphql/auth.ts</code> — new module: <code>loginCustomer(client, {username,password})</code>, <code>refreshAuthToken(client, refreshToken)</code>, <code>logoutCustomer(...)</code> wrapping the JWT plugin's <code>login</code> / <code>refreshJwtAuthToken</code> mutations. Returns <code>{ authToken, refreshToken, expiresAt }</code>.</li>
+    <li><code>src/graphql/client.ts</code> — already injects <code>Authorization: Bearer</code>; add an <code>onAuthError</code> / expiry hook so callers can trigger refresh-and-retry. <span class="fileref"><code>Arc/Core/src/graphql/client.ts:27-42</code></span></li>
+    <li><code>src/graphql/customer.ts</code> — extend the existing <code>customer</code> query with address mutations (<code>updateCustomer</code>) for cross-session profile edits; <code>getCustomerOrders</code> stays as-is. <span class="fileref"><code>Arc/Core/src/graphql/customer.ts:42-101</code></span></li>
+    <li>Types: add <code>WCAuthSession</code> to <code>src/types/customer.ts</code>; no breaking change to <code>WCCustomer</code>.</li>
+  </ul>
+
+  <h4>@arc/next (cookie bridge + Server Actions)</h4>
+  <ul>
+    <li><code>src/constants.ts</code> — add <code>ARC_AUTH_TOKEN_COOKIE = 'arc_auth_token'</code> and <code>ARC_REFRESH_TOKEN_COOKIE = 'arc_refresh_token'</code>. <span class="fileref"><code>Arc/Next/src/constants.ts:1-2</code></span></li>
+    <li><code>src/auth-cookies.ts</code> — mirror <code>cookies.ts</code>: <code>readAuthToken()</code> (RSC-safe), <code>persistAuthSession()</code>, <code>clearAuthSession()</code>, reusing <code>CART_COOKIE_OPTIONS</code> attribute logic. <span class="fileref"><code>Arc/Next/src/cookies.ts:29-85</code></span></li>
+    <li><code>src/auth-actions.ts</code> — <code>loginAction</code>, <code>logoutAction</code>, <code>refreshAction</code> Server Actions (<code>'use server'</code>), with Origin allow-list check; wired to <code>@arc/core</code> auth module. Mirrors the existing cart actions factory. <span class="fileref"><code>Arc/Next/src/actions.ts</code>, <code>Arc/Next/src/client-factory.ts:27-34</code></span></li>
+    <li><code>src/client-factory.ts</code> — <code>createArcClient</code> wires <code>createWPGraphQLClient({ authToken: () => readAuthToken() })</code> so every server-side GraphQL request is auto-authenticated and refresh-aware. <span class="fileref"><code>Arc/Next/src/client-factory.ts:18-34</code></span></li>
+    <li><code>src/server.ts</code> — export the new auth surface from the server barrel. <span class="fileref"><code>Arc/Next/src/server.ts:1-31</code></span></li>
+  </ul>
+
+  <h4>Pilot starter (Phase 5)</h4>
+  <ul>
+    <li><code>app/account/login/</code> + <code>app/account/page.tsx</code> — login form → <code>loginAction</code>; account dashboard reads orders/addresses in an RSC via <code>createArcClient</code>. Matches LOFT's <code>routes/account/*</code> outcome on WooCommerce. <span class="fileref"><code>D:\09. LOFT Pro Shop\loft-platform\LOFT Pro Shop\app\routes\account\auth\{login,authorize,logout}.ts</code></span></li>
+    <li>Document the JWT plugin install + <code>GRAPHQL_JWT_AUTH_SECRET_KEY</code> in <code>wp-config.php</code> as a prerequisite, alongside the existing <code>mkcert</code> note.</li>
+  </ul>
+
+  <h4>Tests</h4>
+  <ul>
+    <li>The existing contract test already exercises authenticated vs unauthenticated <code>getCustomerOrders</code> via <code>TEST_JWT_TOKEN</code> — extend it to mint the token through the new <code>loginCustomer()</code> rather than an env var, closing the loop. <span class="fileref"><code>Arc/Core/src/__tests__/contract/customer.contract.test.ts:60-82</code></span></li>
+    <li>Add a refresh-expiry unit test mirroring the WooClient nonce-retry test pattern.</li>
+  </ul>
+
+  <h2>6. ADR-0009 — Proposed Resolution</h2>
+  <div class="card winner">
+    <p><strong>Status: Open → Accepted.</strong> Decision: customer authentication uses <strong>WPGraphQL JWT (via <code>wp-graphql-jwt-authentication</code>), with the access + refresh tokens stored in HttpOnly cookies on the Next.js origin per the ADR-0006 cookie-bridge pattern.</strong> Application Passwords (Option 2) and the pure WP-session-cookie bridge (Option 3) are rejected for customer login; Application Passwords may remain an optional server-to-server adapter. The <code>authToken</code> parameter already threaded through <code>@arc/core</code> in Phase 1 is the integration seam — Phase 2 fills it from <code>arc_auth_token</code>.</p>
+  </div>
+
+  <p class="small">All file-path claims above reference the working tree at <code>D:\00. Arc Platform</code> (non-worktree copies under <code>Arc/Core/src</code> and <code>Arc/Next/src</code>). Spike was read-only; this HTML report is the only file written.</p>
+
+</div>
+</body>
+</html>

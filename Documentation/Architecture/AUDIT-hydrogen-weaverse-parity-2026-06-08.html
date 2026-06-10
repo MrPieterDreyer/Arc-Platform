@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arc + Weave — Hydrogen / Weaverse Enterprise Parity &amp; Security Audit</title>
+<style>
+  :root{
+    --bg:#1A2332; --surface:#22304a; --surface-raised:#2b3d55;
+    --text:#f0f6fc; --muted:#9fb1c7; --border:#2b3d55;
+    --accent:#38bdf8; --accent-dim:rgba(56,189,248,.14);
+    --rose:#ff5ca8; --rose-dim:rgba(255,92,168,.14);
+    --crit:#ff5c5c; --high:#ff9f43; --med:#ffd166; --low:#6ee7a8;
+    --have:#6ee7a8; --partial:#ffd166; --missing:#ff7a7a; --green:#6ee7a8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  h1,h2,h3,h4{font-weight:400;letter-spacing:-.01em;line-height:1.15;margin:0 0 .4em}
+  h1{font-size:2.6rem}
+  h2{font-size:1.9rem;margin-top:0}
+  h3{font-size:1.3rem;color:var(--text)}
+  h4{font-size:1.05rem;color:var(--accent)}
+  p{margin:0 0 1em}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:Consolas,"SF Mono",Menlo,monospace;font-size:.86em;background:var(--surface-raised);
+       padding:.12em .4em;border-radius:3px;color:#cfe6ff;white-space:nowrap}
+  header.hero{border-bottom:1px solid var(--border);padding:64px 0 48px;
+       background:linear-gradient(160deg,rgba(56,189,248,.10),transparent 60%)}
+  .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.24em;color:var(--muted);margin-bottom:14px}
+  .hero .lede{font-size:1.18rem;color:var(--muted);max-width:760px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:24px;font-size:.84rem;color:var(--muted)}
+  .meta b{color:var(--text);font-weight:500}
+  section{padding:48px 0;border-bottom:1px solid var(--border)}
+  .pink-rule{height:3px;width:120px;background:linear-gradient(90deg,var(--accent),var(--rose));margin:0 0 28px}
+  /* score cards */
+  .scoregrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:8px 0 4px}
+  .score{border:1px solid var(--border);background:var(--surface);padding:18px 20px}
+  .score .n{font-size:2.3rem;line-height:1;color:var(--accent)}
+  .score .n.rose{color:var(--rose)}
+  .score .n.crit{color:var(--crit)}
+  .score .n.high{color:var(--high)}
+  .score .l{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-top:8px}
+  /* callouts */
+  .callout{border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--surface);
+       padding:16px 20px;margin:18px 0}
+  .callout.rose{border-left-color:var(--rose)}
+  .callout.crit{border-left-color:var(--crit)}
+  .callout h4{margin:0 0 .35em;color:var(--text)}
+  .callout p:last-child{margin-bottom:0}
+  /* tables */
+  .tablewrap{overflow-x:auto;border:1px solid var(--border);margin:18px 0}
+  table{border-collapse:collapse;width:100%;font-size:.82rem;min-width:760px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--surface-raised);font-weight:500;color:var(--text);position:sticky;top:0;
+     font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+  tr:last-child td{border-bottom:none}
+  td.dom{color:var(--muted);white-space:nowrap}
+  .pill{display:inline-block;font-size:.68rem;font-weight:600;padding:.16em .6em;border-radius:999px;
+        text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+  .s-have{background:rgba(110,231,168,.16);color:var(--have)}
+  .s-partial{background:rgba(255,209,102,.16);color:var(--partial)}
+  .s-missing{background:rgba(255,122,122,.18);color:var(--missing)}
+  .s-green{background:rgba(110,231,168,.16);color:var(--green)}
+  .sev{display:inline-block;font-size:.68rem;font-weight:700;padding:.16em .55em;border-radius:3px;letter-spacing:.04em}
+  .sev-crit{background:rgba(255,92,92,.2);color:var(--crit)}
+  .sev-high{background:rgba(255,159,67,.2);color:var(--high)}
+  .sev-med{background:rgba(255,209,102,.18);color:var(--med)}
+  .sev-low{background:rgba(110,231,168,.16);color:var(--low)}
+  /* wave cards */
+  .wave{border:1px solid var(--border);background:var(--surface);margin:16px 0;padding:0}
+  .wave>.whead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+       padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface-raised)}
+  .wave .whead h3{margin:0;font-size:1.15rem}
+  .wave .whead .tag{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+  .wave ul{margin:0;padding:14px 20px 16px 20px;list-style:none}
+  .wave li{padding:8px 0;border-bottom:1px dashed var(--border)}
+  .wave li:last-child{border-bottom:none}
+  .wave li .t{color:var(--text)}
+  .wave li .d{color:var(--muted);font-size:.86rem}
+  .effort{display:inline-block;font-size:.66rem;font-weight:700;border:1px solid var(--border);
+          border-radius:3px;padding:.05em .4em;margin-left:6px;color:var(--muted)}
+  .pkg{color:#cfe6ff;font-family:Consolas,monospace;font-size:.78rem}
+  /* toc */
+  nav.toc{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:26px}
+  nav.toc a{font-size:.82rem;color:var(--muted);border:1px solid var(--border);padding:6px 12px;background:var(--surface)}
+  nav.toc a:hover{color:var(--accent);border-color:var(--accent);text-decoration:none}
+  .muted{color:var(--muted)}
+  .foot{padding:36px 0 64px;color:var(--muted);font-size:.82rem}
+  ul.clean{padding-left:1.1em}
+  ul.clean li{margin:.3em 0}
+  .ref{color:var(--accent);font-family:Consolas,monospace;font-size:.78rem}
+  @media(max-width:640px){h1{font-size:2rem}h2{font-size:1.5rem}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Arc Platform · Architecture &amp; Security Audit</div>
+    <h1>Hydrogen + Weaverse Enterprise Parity &amp; Security Audit</h1>
+    <p class="lede">A read-only benchmark of Shopify <b>Hydrogen</b> (storefront framework) and
+      <b>Weaverse</b> (visual sections editor) against <b>Arc + Weave</b>, producing a gap matrix,
+      severity-rated security findings, and a sequenced remediation roadmap — every finding cited to
+      <code>file:line</code> in the actual source.</p>
+    <div class="meta">
+      <span><b>Date:</b> 2026-06-08</span>
+      <span><b>Method:</b> 6 parallel specialist auditors + synthesis</span>
+      <span><b>References:</b> Hydrogen &amp; Weaverse (fully open source, cloned)</span>
+      <span><b>Scope:</b> read-only — no Arc/Weave code modified</span>
+    </div>
+    <nav class="toc">
+      <a href="#summary">Executive Summary</a>
+      <a href="#security">Security Findings</a>
+      <a href="#matrix">Gap-Analysis Matrix</a>
+      <a href="#roadmap">Remediation Roadmap</a>
+      <a href="#adrs">ADR Proposals</a>
+      <a href="#evidence">Evidence Gaps</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ EXEC SUMMARY ============ -->
+<section id="summary">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>Executive summary</h2>
+    <p>Arc/Weave is <b>further along than a v0.1 framework usually is</b>, and in several areas it is
+      <em>ahead</em> of Hydrogen: a more structured typed-error model, runtime Zod validation of Store-API
+      responses, HMAC-signed webhook revalidation with replay protection, a single REST permission
+      choke-point in the WP plugin, and a clean Next.js 16 <code>'use cache'</code> model with
+      <b>zero <code>unstable_cache</code> usage</b>. The supply-chain and release governance baseline
+      (license-check CI, frozen lockfiles, Changesets, SECURITY.md, pnpm catalogs) is strong.</p>
+
+    <p>The gaps cluster in three places: <b>(1) security hardening that Hydrogen ships and Arc does not</b>
+      (no CSP / security headers, customer auth designed-but-unbuilt), <b>(2) commerce-storefront
+      primitives and conventions</b> (<code>&lt;Money&gt;</code>/<code>&lt;Image&gt;</code>, error
+      boundaries, SEO, pagination, optimistic line injection), and <b>(3) release-integrity and
+      Phase-2 SaaS isolation</b> (npm provenance, SHA-pinned actions, WPGraphQL version floor; and a
+      multi-tenant model that is entirely greenfield).</p>
+
+    <div class="scoregrid">
+      <div class="score"><div class="n crit">2</div><div class="l">Critical / High blockers</div></div>
+      <div class="score"><div class="n high">6</div><div class="l">High priority</div></div>
+      <div class="score"><div class="n">9</div><div class="l">Medium / P2</div></div>
+      <div class="score"><div class="n rose">5</div><div class="l">Phase-2 greenfield</div></div>
+      <div class="score"><div class="n" style="color:var(--have)">0</div><div class="l"><code>unstable_cache</code> usages</div></div>
+    </div>
+
+    <div class="callout crit">
+      <h4>The two things to fix before anything else</h4>
+      <p><b>1. Customer auth is accepted but unbuilt.</b> ADR-0009 specifies WPGraphQL-JWT in HttpOnly
+        cookies, but <code>graphql/auth.ts</code>, <code>auth-cookies.ts</code>, and
+        <code>auth-actions.ts</code> do not exist — order history currently reads a raw
+        <code>process.env.TEST_JWT_TOKEN</code> (<span class="ref">load-account-orders.ts:15</span>).
+        There is no real login, rotation, or logout today.</p>
+      <p><b>2. No Content-Security-Policy or security headers anywhere.</b> Hydrogen ships
+        <code>createContentSecurityPolicy()</code> + <code>useNonce()</code>; Arc's example app sets only
+        <code>cacheComponents</code> (<span class="ref">minimal-app/next.config.ts:3</span>). For a
+        framework that renders merchant-authored page-config and handles carts, the absence of CSP,
+        <code>X-Frame-Options</code>, <code>nosniff</code>, HSTS, and <code>Referrer-Policy</code> is the
+        single largest parity gap.</p>
+    </div>
+
+    <div class="callout">
+      <h4>Where Arc/Weave is already ahead of the reference</h4>
+      <ul class="clean">
+        <li>Typed discriminated-union error model (<span class="ref">Arc/Core/src/types/errors.ts:34</span>) vs Hydrogen's flat GraphQL error array.</li>
+        <li>Runtime Zod validation of cart responses, warn-not-throw (<span class="ref">store-api/validate.ts:42</span>).</li>
+        <li>HMAC-SHA256 webhook revalidation with ±5-min replay window + tag allowlist (<span class="ref">Arc/Next/src/revalidate.ts:52</span>) — Hydrogen delegates purge to Oxygen.</li>
+        <li>Single <code>require_cap()</code> REST choke-point with an explicit 401/403 auth-matrix test (<span class="ref">class-weave-rest-controller.php:118</span>, <span class="ref">test-rest-auth.php</span>).</li>
+        <li>Server-minted section IDs + 1&nbsp;MB body gate + strict unknown-key rejection in the WP plugin — stricter than Weaverse's client-trusting model.</li>
+        <li>Deploy-target agnostic (pure Next.js) where Hydrogen is coupled to Oxygen.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECURITY ============ -->
+<section id="security">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>Security findings</h2>
+    <p class="muted">Highest-priority pass. Severities: <span class="sev sev-crit">CRIT</span>
+      <span class="sev sev-high">HIGH</span> <span class="sev sev-med">MED</span>
+      <span class="sev sev-low">LOW</span>. Every row cites source.</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>ID</th><th>Finding</th><th>Sev</th><th>Evidence</th><th>Fix (package · path)</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>H-2</td>
+            <td><b>Customer auth designed but unbuilt.</b> ADR-0009 accepted; login/refresh/logout modules absent; order history reads a raw test JWT env var.</td>
+            <td><span class="sev sev-crit">CRIT</span></td>
+            <td><span class="ref">ADR-0009.md:22</span>, <span class="ref">load-account-orders.ts:15</span></td>
+            <td><span class="pkg">@arc/core/src/graphql/auth.ts</span> + <span class="pkg">@arc/next/{auth-cookies,auth-actions}.ts</span>; reject empty/short tokens</td>
+          </tr>
+          <tr>
+            <td>H-1</td>
+            <td><b>No CSP / security headers.</b> No nonce, no <code>frameAncestors</code>, no HSTS/nosniff/Referrer-Policy; no <code>proxy.ts</code>/<code>headers()</code>.</td>
+            <td><span class="sev sev-high">HIGH</span></td>
+            <td><span class="ref">minimal-app/next.config.ts:3-5</span> (only cacheComponents)</td>
+            <td>New <span class="pkg">@arc/next/src/security-headers.ts</span> (nonce CSP builder) + Pilot <code>proxy.ts</code></td>
+          </tr>
+          <tr>
+            <td>H-3</td>
+            <td><b><code>SameSite=None</code> cart cookie widens CSRF surface.</b> Required for cross-origin RSC reads; mutations are Server Actions but should not rely on cookie-sameness alone. <span class="muted">[INFERENCE]</span></td>
+            <td><span class="sev sev-high">HIGH</span></td>
+            <td><span class="ref">Arc/Next/src/cookies.ts:19</span></td>
+            <td><span class="pkg">@arc/next/src/actions.ts</span> — add <code>Origin</code>/<code>Sec-Fetch-Site</code> allowlist in the <code>'use server'</code> wrapper</td>
+          </tr>
+          <tr>
+            <td>M-1</td>
+            <td><b>No GraphQL depth/cost limiting.</b> Client forwards arbitrary documents; WPGraphQL has no default cost analysis. Cannot be fully fixed client-side.</td>
+            <td><span class="sev sev-med">MED</span></td>
+            <td><span class="ref">Arc/Core/src/graphql/client.ts:27</span></td>
+            <td>Document mandatory server-side WPGraphQL depth/complexity limits; note dependency in <span class="pkg">client.ts</span> header + ADR</td>
+          </tr>
+          <tr>
+            <td>M-2</td>
+            <td><b>Response validation covers cart only.</b> Orders/checkout/customer responses are unguarded <code>request&lt;T&gt;()</code> casts — silent Store-API drift.</td>
+            <td><span class="sev sev-med">MED</span></td>
+            <td><span class="ref">store-api/validate.ts:42</span>; <span class="ref">orders.ts</span>, <span class="ref">checkout.ts</span> uncovered</td>
+            <td><span class="pkg">@arc/core/src/store-api/validate.ts</span> — add <code>safeValidateOrder</code>/<code>safeValidateCheckout</code>, wire in</td>
+          </tr>
+          <tr>
+            <td>E-1</td>
+            <td><b>No object-level authz in WP REST.</b> Any <code>edit_posts</code> user can read/write any <code>weave_page</code> slug; no per-post <code>edit_post</code> cap check. Fine for single-tenant Phase&nbsp;1; P1 for SaaS.</td>
+            <td><span class="sev sev-med">MED</span></td>
+            <td><span class="ref">class-weave-rest-controller.php:162-204</span></td>
+            <td><span class="pkg">Weave/WordPress/src/class-weave-rest-controller.php</span> — add <code>current_user_can('edit_post',$id)</code> in get/update/section callbacks</td>
+          </tr>
+          <tr>
+            <td>S-1</td>
+            <td><b>No npm provenance.</b> <code>id-token: write</code> is declared but publish runs without <code>--provenance</code> and still passes a static <code>NPM_TOKEN</code> — no Sigstore attestation for consumers.</td>
+            <td><span class="sev sev-high">HIGH</span></td>
+            <td><span class="ref">release.yml:15,37-38,41</span></td>
+            <td>Append <code>--provenance</code>; migrate to npm OIDC Trusted Publishing (<code>NPM_TOKEN: ''</code>)</td>
+          </tr>
+          <tr>
+            <td>S-2</td>
+            <td><b>GitHub Actions pinned to mutable tags.</b> <code>@v4</code>/<code>@v1</code> across all workflows; a repointed tag injects code into the release pipeline.</td>
+            <td><span class="sev sev-high">HIGH</span></td>
+            <td><span class="ref">ci.yml</span>, <span class="ref">release.yml</span> (all actions)</td>
+            <td>SHA-pin all third-party actions (Dependabot <code>github-actions</code> already configured to manage updates)</td>
+          </tr>
+          <tr>
+            <td>S-3</td>
+            <td><b>No WPGraphQL version floor.</b> CVE-2026-33290 class; merchants can install Weave atop a vulnerable WPGraphQL with no warning.</td>
+            <td><span class="sev sev-high">HIGH</span></td>
+            <td><span class="ref">weave.php:1-13</span> (no <code>Requires Plugins</code>)</td>
+            <td>Add <code>Requires Plugins: wp-graphql, wp-graphql-woocommerce</code> + documented minimum version past the CVE fix</td>
+          </tr>
+          <tr>
+            <td>SEC-OK</td>
+            <td class="muted"><b>Verified strong:</b> webhook HMAC fail-closed (<span class="ref">revalidate.ts:52</span>), preview token <code>timingSafeEqual</code> (<span class="ref">preview.ts:25</span>), no secrets in repo (<span class="ref">.gitignore:23-25</span>), page-config <code>.strict()</code> both layers, <code>SectionRenderer</code> never <code>dangerouslySetInnerHTML</code>s config data (<span class="ref">SectionRenderer.tsx:96</span>), PII-safe logging.</td>
+            <td><span class="sev sev-low">OK</span></td>
+            <td class="muted">—</td>
+            <td class="muted">No action</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GAP MATRIX ============ -->
+<section id="matrix">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>Gap-analysis matrix</h2>
+    <p class="muted">Status: <span class="pill s-have">Have</span> <span class="pill s-partial">Partial</span>
+      <span class="pill s-missing">Missing</span> <span class="pill s-green">Greenfield</span>.
+      Condensed to the load-bearing rows; full per-domain detail lives in the specialist findings.</p>
+
+    <h3>Architecture &amp; primitives</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Capability</th><th>Hydrogen</th><th>Arc today (file:line)</th><th>Status</th><th>Pri</th></tr></thead>
+      <tbody>
+        <tr><td>Route/loader model</td><td>RR7 loaders + per-request context</td><td><span class="ref">loaders.ts:31</span> RSC <code>'use cache'</code>; manual <code>createArcClient</code></td><td><span class="pill s-partial">Partial</span></td><td>Med</td></tr>
+        <tr><td>Streaming / Suspense</td><td><code>defer()</code>+<code>&lt;Await&gt;</code></td><td><span class="ref">minimal-app/.../page.tsx:16</span> native RSC <code>&lt;Suspense&gt;</code></td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+        <tr><td>Route error boundaries / not-found</td><td><code>ErrorBoundary</code> per route</td><td>None found; silent <code>&lt;p&gt;</code> on null product (<span class="ref">products/[slug]/page.tsx:44</span>)</td><td><span class="pill s-missing">Missing</span></td><td>High</td></tr>
+        <tr><td><code>&lt;Money&gt;</code></td><td>full component + <code>useMoney</code></td><td>CSS pattern only (<span class="ref">COMMERCE.md:85</span>)</td><td><span class="pill s-partial">Partial</span></td><td>High</td></tr>
+        <tr><td><code>&lt;Image&gt;</code> / <code>&lt;Video&gt;</code></td><td>CDN srcSet components</td><td>No component (<span class="ref">COMMERCE.md:14</span>)</td><td><span class="pill s-missing">Missing</span></td><td>High</td></tr>
+        <tr><td>SEO (<code>generateMetadata</code>)</td><td><code>getSeoMeta()</code> + JSON-LD</td><td>None implemented/documented</td><td><span class="pill s-missing">Missing</span></td><td>High</td></tr>
+        <tr><td>Cursor pagination</td><td><code>&lt;Pagination&gt;</code></td><td><code>WCPageInfo</code> type exists, no hook/component</td><td><span class="pill s-partial">Partial</span></td><td>High</td></tr>
+        <tr><td>Typed GraphQL codegen</td><td>enforced in dev</td><td><code>__generated__</code> exists; not enforced in CI</td><td><span class="pill s-partial">Partial</span></td><td>High</td></tr>
+        <tr><td>Env validation</td><td>typed <code>env</code> injected</td><td>inline <code>?? fallback</code>, no startup check (<span class="ref">actions.ts:36</span>)</td><td><span class="pill s-partial">Partial</span></td><td>Med</td></tr>
+        <tr><td>Deploy-target agnosticism</td><td>Oxygen-coupled</td><td>pure Next.js, any host</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Cart &amp; checkout</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Capability</th><th>Hydrogen</th><th>Arc today (file:line)</th><th>Status</th><th>Pri</th></tr></thead>
+      <tbody>
+        <tr><td>Cart persistence + cookie security</td><td>cart GID cookie (consumer-secured)</td><td><code>arc_cart_token</code> HttpOnly, Max-Age refresh on mutation (<span class="ref">cookies.ts:17</span>, <span class="ref">actions.ts:67</span>)</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+        <tr><td>Optimistic <b>add</b> injects line item</td><td>unshifts line w/ <code>isOptimistic</code> (<span class="ref">useOptimisticCart.tsx:94</span>)</td><td>increments count only, no pending line (<span class="ref">use-optimistic-cart.ts:16</span>)</td><td><span class="pill s-partial">Partial</span></td><td>High</td></tr>
+        <tr><td>Optimistic update/remove + rollback</td><td>XState explicit revert</td><td>React 19 <code>useOptimistic</code> auto-revert (<span class="ref">use-cart-drawer.ts:16</span>)</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+        <tr><td>Line mutations (add/update/remove/coupon)</td><td>full</td><td>full (<span class="ref">store-api/cart.ts:46</span>)</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+        <tr><td>Payment-method discovery</td><td>Shopify checkout</td><td><code>getPaymentGateways</code> non-functional — must parse <code>GET /checkout</code> (<span class="ref">checkout.ts:68</span>)</td><td><span class="pill s-missing">Missing</span></td><td>High</td></tr>
+        <tr><td>Custom checkout form on <code>submitCheckout</code></td><td>delegated end-to-end</td><td>fn exists, no form/UI (<span class="ref">checkout.ts:49</span>, <span class="ref">checkout/page.tsx:77</span>)</td><td><span class="pill s-partial">Partial</span></td><td>High</td></tr>
+        <tr><td>Buyer identity / customer-cart link</td><td><code>updateBuyerIdentity</code></td><td>no customer token on <code>WooClient</code> (<span class="ref">WooClient.ts:59</span>)</td><td><span class="pill s-partial">Partial</span></td><td>High</td></tr>
+        <tr><td>Session bootstrap + nonce refresh + 5xx backoff</td><td>n/a (stateless)</td><td><span class="ref">WooClient.ts:220-256</span>, <span class="ref">http.ts:38</span></td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Caching &amp; data layer</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Capability</th><th>Hydrogen</th><th>Arc today (file:line)</th><th>Status</th><th>Pri</th></tr></thead>
+      <tbody>
+        <tr><td>Cache strategies</td><td><code>CacheShort/Long/None/Custom</code></td><td><code>cacheLife</code> profiles (<span class="ref">isr.ts:5</span>) — TTL table undocumented</td><td><span class="pill s-partial">Partial</span></td><td>Med</td></tr>
+        <tr><td><code>shouldCacheResult</code> guard</td><td>required per call (<span class="ref">create-with-cache.ts:28</span>)</td><td>absent — nulls/errors cached for full TTL</td><td><span class="pill s-missing">Missing</span></td><td>High</td></tr>
+        <tr><td>Tag taxonomy + tag-based revalidation</td><td>none (CDN purge)</td><td><code>arcTag</code>/<code>weaveTag</code> + <code>revalidateTag</code> (<span class="ref">cache-tags.ts:5</span>, <span class="ref">revalidate.ts:93</span>)</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+        <tr><td>Draft-mode bypass (catalog loaders)</td><td>n/a</td><td>present for page-config (<span class="ref">load-page-config.ts:74</span>), <b>absent</b> for product loaders</td><td><span class="pill s-missing">Missing</span></td><td>Med</td></tr>
+        <tr><td><code>createWithCache</code> for arbitrary fetch</td><td>yes (<span class="ref">create-with-cache.ts:59</span>)</td><td>none — only RSC <code>'use cache'</code></td><td><span class="pill s-missing">Missing</span></td><td>Med</td></tr>
+        <tr><td><code>unstable_cache</code> usage</td><td>n/a</td><td><b>CLEAN — zero usages</b>; explicitly forbidden in comments (<span class="ref">loaders.ts:3</span>)</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Editor &amp; SaaS surface (Weaverse → Weave)</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Capability</th><th>Weaverse</th><th>Weave today (file:line)</th><th>Status</th><th>Pri</th></tr></thead>
+      <tbody>
+        <tr><td>REST auth choke-point (401/403)</td><td>SaaS API</td><td>single <code>require_cap()</code> + auth-matrix test (<span class="ref">class-weave-rest-controller.php:118</span>)</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+        <tr><td>Object-level (per-page) authz</td><td><code>projectId</code>-scoped</td><td>no per-post cap check (<span class="ref">class-weave-rest-controller.php:162</span>)</td><td><span class="pill s-missing">Missing</span></td><td>P2</td></tr>
+        <tr><td>Page-config write safety (size gate, server IDs, strict keys)</td><td>client-trusting</td><td>1 MB→413, server-minted UUIDs, unknown-key reject (<span class="ref">class-weave-validator.php:74</span>)</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+        <tr><td>Schema input types</td><td>21 types incl. product-list/collection-list (<span class="ref">schema/src/index.ts:11</span>)</td><td>15 types (<span class="ref">Weave/React/src/schema/types.ts:18</span>)</td><td><span class="pill s-partial">Partial</span></td><td>P2</td></tr>
+        <tr><td>Section <code>type</code> format constraint</td><td>regex <code>/^[a-z0-9-]+$/</code> min3 max50</td><td><code>string</code>, no constraint (<span class="ref">types.ts:201</span>)</td><td><span class="pill s-missing">Missing</span></td><td>P2</td></tr>
+        <tr><td>Schema migration registry</td><td><code>SchemaRegistry.migrate()</code></td><td><code>version</code> field unread; silent default-fallback</td><td><span class="pill s-missing">Missing</span></td><td>P3</td></tr>
+        <tr><td>Preview / draft bridge</td><td>studio JS from SaaS CDN</td><td><code>timingSafeEqual</code> preview handler + draft no-store (<span class="ref">preview.ts:25</span>)</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+        <tr><td>Studio live-edit (postMessage) bridge</td><td><code>window.weaverseStudio</code> (<span class="ref">use-studio.ts:44</span>)</td><td><code>Weave/Studio</code> empty scaffold</td><td><span class="pill s-green">Greenfield</span></td><td>P1·Ph5</td></tr>
+        <tr><td>Multi-tenant isolation (data/authz/cache/preview)</td><td><code>projectId</code> in every call + cache key (<span class="ref">weaverse-client.ts:519</span>)</td><td>no tenant concept anywhere</td><td><span class="pill s-green">Greenfield</span></td><td>P1·Ph2</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Supply chain</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Control</th><th>Shopify/Weaverse</th><th>Arc/Weave today (file:line)</th><th>Status</th><th>Pri</th></tr></thead>
+      <tbody>
+        <tr><td>npm provenance (<code>--provenance</code> / OIDC)</td><td>OIDC Trusted Publishing</td><td><code>id-token</code> set but no flag; static token (<span class="ref">release.yml:37-41</span>)</td><td><span class="pill s-missing">Missing</span></td><td>P1</td></tr>
+        <tr><td>GH Actions SHA-pinning</td><td>full SHA pins</td><td>mutable <code>@v4</code> tags everywhere</td><td><span class="pill s-missing">Missing</span></td><td>P1</td></tr>
+        <tr><td>WPGraphQL version floor / <code>Requires Plugins</code></td><td>—</td><td>none (<span class="ref">weave.php:1</span>)</td><td><span class="pill s-missing">Missing</span></td><td>P1</td></tr>
+        <tr><td>pnpm catalogs + frozen lockfile</td><td>catalogs + frozen</td><td>catalog for runtime deps; <code>--frozen-lockfile</code> in all CI (<span class="ref">pnpm-workspace.yaml:16</span>)</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+        <tr><td>Composer pinning + Dependabot</td><td>n/a</td><td><code>wordpress-stubs:"*"</code> wildcard; no composer ecosystem in Dependabot</td><td><span class="pill s-partial">Partial</span></td><td>P2</td></tr>
+        <tr><td>License check / SECURITY.md / Changesets</td><td>org-level</td><td><code>pnpm license-check</code> in CI, SECURITY.md, fixed Changeset groups</td><td><span class="pill s-have">Have</span></td><td>—</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============ ROADMAP ============ -->
+<section id="roadmap">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>Remediation roadmap</h2>
+    <p class="muted">Sequenced into waves. Effort: <span class="effort">S</span> &lt;½ day ·
+      <span class="effort">M</span> 1–3 days · <span class="effort">L</span> &gt;3 days. Every Partial/Missing
+      matrix row maps to an item here.</p>
+
+    <div class="wave">
+      <div class="whead"><h3>Wave 1 — Security &amp; release blockers</h3><span class="tag">do first</span></div>
+      <ul>
+        <li><span class="t"><b>Implement customer auth per ADR-0009.</b></span> <span class="effort">L</span>
+          <div class="d">Build <span class="pkg">@arc/core/src/graphql/auth.ts</span> (login/refresh/logout), <span class="pkg">@arc/next/src/auth-cookies.ts</span> + <span class="pkg">auth-actions.ts</span>; reuse <code>CART_COOKIE_OPTIONS</code>; reject empty/short tokens; remove <code>TEST_JWT_TOKEN</code> read. <b>Unblocks all account pages.</b> (H-2)</div></li>
+        <li><span class="t"><b>Ship CSP + security headers.</b></span> <span class="effort">M</span>
+          <div class="d">New <span class="pkg">@arc/next/src/security-headers.ts</span> (nonce CSP mirroring Hydrogen, <code>X-Frame-Options</code>, <code>nosniff</code>, HSTS, <code>Referrer-Policy</code>); wire via Pilot <code>proxy.ts</code> + example <code>next.config.ts headers()</code>. Pin WC checkout + gateway origins in <code>connectSrc</code>. (H-1, → ADR-0010)</div></li>
+        <li><span class="t"><b><code>shouldCacheResult</code> guard in catalog loaders.</b></span> <span class="effort">S</span>
+          <div class="d">Guard <code>loadProduct/loadProducts/loadCollection/loadCollectionProducts/cachedConfig</code> so <code>null</code> / partial-error responses are not cached for the full TTL. (CACHE-P1)</div></li>
+        <li><span class="t"><b>npm provenance + OIDC Trusted Publishing.</b></span> <span class="effort">S</span>
+          <div class="d">Append <code>--provenance</code> to <code>changeset publish</code>; register packages for OIDC; set <code>NPM_TOKEN: ''</code>. (S-1, → ADR-0012)</div></li>
+        <li><span class="t"><b>SHA-pin all GitHub Actions.</b></span> <span class="effort">S</span>
+          <div class="d">Replace mutable tags in <code>ci.yml</code>/<code>release.yml</code>; let the existing <code>github-actions</code> Dependabot manage SHA bumps. (S-2)</div></li>
+        <li><span class="t"><b>Declare WPGraphQL version floor.</b></span> <span class="effort">S</span>
+          <div class="d">Add <code>Requires Plugins: wp-graphql, wp-graphql-woocommerce</code> to <code>weave.php</code> + readme minimum past CVE-2026-33290. (S-3)</div></li>
+      </ul>
+    </div>
+
+    <div class="wave">
+      <div class="whead"><h3>Wave 2 — Commerce parity (storefront-enabling)</h3><span class="tag">v0.1 surface</span></div>
+      <ul>
+        <li><span class="t"><b>Ship <code>&lt;Money&gt;</code> and <code>&lt;Image&gt;</code> primitives.</b></span> <span class="effort">M</span>
+          <div class="d"><span class="pkg">@arc/core</span> or <span class="pkg">Arc-Design</span>: <code>Intl.NumberFormat</code> wrapper keyed on WC price shape; <code>next/image</code> wrapper on <code>WCProductImage</code>. <code>&lt;Video&gt;</code>/<code>&lt;RichText&gt;</code> follow (Low/Med).</div></li>
+        <li><span class="t"><b>Add route-level <code>error.tsx</code> + <code>not-found.tsx</code>.</b></span> <span class="effort">S</span>
+          <div class="d">Pilot + minimal-app; switch null-product path to <code>notFound()</code>. Document as a required convention.</div></li>
+        <li><span class="t"><b>SEO <code>generateMetadata</code> helper.</b></span> <span class="effort">M</span>
+          <div class="d"><code>buildProductMetadata(product)</code> / collection / home with OG + JSON-LD.</div></li>
+        <li><span class="t"><b>Cursor-pagination hook/component.</b></span> <span class="effort">M</span>
+          <div class="d">Map <code>WCPageInfo</code> cursor to <code>?after=</code> URL state. Needed for PLP.</div></li>
+        <li><span class="t"><b>Optimistic add injects a pending line.</b></span> <span class="effort">M</span>
+          <div class="d">Splice an optimistic <code>WooCartItem</code> into <code>cart.items</code>; pass product data into <code>addItemAction</code> so thumbnail/price render before the server responds. (CART-P1)</div></li>
+        <li><span class="t"><b>Checkout: payment-method extraction + buyer identity.</b></span> <span class="effort">M</span>
+          <div class="d"><code>getPaymentMethodsFromCheckout()</code> off <code>GET /checkout</code>; add <code>customerToken</code> on <code>WooClient</code> to attach the ADR-0009 JWT at checkout. (CART-P1)</div></li>
+        <li><span class="t"><b>Enforce GraphQL codegen in CI + <code>ArcEnv</code> validation.</b></span> <span class="effort">M</span>
+          <div class="d"><code>@graphql-codegen/client-preset</code> in the Turbo pipeline; <code>validateArcEnv()</code> startup check that throws on missing vars.</div></li>
+      </ul>
+    </div>
+
+    <div class="wave">
+      <div class="whead"><h3>Wave 3 — Hardening &amp; editor</h3><span class="tag">pre-1.0</span></div>
+      <ul>
+        <li><span class="t"><b>Origin / <code>Sec-Fetch-Site</code> check on Server Actions.</b></span> <span class="effort">S</span> <div class="d">Mitigate the <code>SameSite=None</code> CSRF surface. (H-3)</div></li>
+        <li><span class="t"><b>Extend Zod validation to orders/checkout/customer.</b></span> <span class="effort">M</span> <div class="d"><code>safeValidateOrder</code>/<code>safeValidateCheckout</code>. (M-2)</div></li>
+        <li><span class="t"><b>Document + enforce WPGraphQL depth/cost limits.</b></span> <span class="effort">S</span> <div class="d">Server-side config + header note. (M-1)</div></li>
+        <li><span class="t"><b>Object-level authz in WP REST.</b></span> <span class="effort">S</span> <div class="d"><code>current_user_can('edit_post',$id)</code> in get/update/section callbacks. (E-1)</div></li>
+        <li><span class="t"><b>Schema: <code>type</code> regex + product-list/collection-list input types.</b></span> <span class="effort">M</span></li>
+        <li><span class="t"><b>Caching: draft-mode bypass on catalog loaders; document TTL table; note wildcard-purge limitation.</b></span> <span class="effort">S</span></li>
+        <li><span class="t"><b>Supply chain: pin <code>wordpress-stubs</code>, add Composer Dependabot, pin <code>@wordpress/env</code>/<code>dotenv-cli</code>, catalog <code>jsdom</code>.</b></span> <span class="effort">S</span></li>
+      </ul>
+    </div>
+
+    <div class="wave">
+      <div class="whead"><h3>Wave 4 — Phase-2 SaaS (greenfield, design now)</h3><span class="tag">design before build</span></div>
+      <ul>
+        <li><span class="t"><b>Multi-tenant isolation model.</b></span> <span class="effort">L</span>
+          <div class="d">WP Multisite per tenant (reuses WP authz); tenant-scoped cache tags <code>weave:tenant:{id}:page:{slug}</code>; <code>projectId</code>/tenant routing in <code>loadPageConfig</code>; per-tenant REST authz middleware. (→ ADR-0011)</div></li>
+        <li><span class="t"><b>Studio preview bridge with origin validation.</b></span> <span class="effort">L</span>
+          <div class="d">iframe <code>sandbox</code> + <code>postMessage</code> with <code>event.origin</code> allowlist. Design the authz boundary now even though Studio is Phase 5.</div></li>
+        <li><span class="t"><b>Schema migration registry.</b></span> <span class="effort">M</span> <div class="d">Read the per-section <code>version</code> and run migrations instead of silent default-fallback.</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ADRs ============ -->
+<section id="adrs">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>ADR proposals</h2>
+    <p>Three new draft ADRs accompany this report (Markdown, alongside the existing
+      <code>ADR-*.md</code> series). Two existing ADRs need <em>implementation</em>, not redecision:</p>
+    <ul class="clean">
+      <li><b>ADR-0010 — Security-header &amp; CSP policy</b> <span class="muted">(new, draft)</span> — nonce-based CSP, frame/transport/referrer headers, where they live in <code>@arc/next</code> + Pilot <code>proxy.ts</code>.</li>
+      <li><b>ADR-0011 — Multi-tenant isolation for Phase-2 SaaS</b> <span class="muted">(new, draft)</span> — WP Multisite per tenant, tenant-scoped cache tags, preview sandboxing, per-tenant authz.</li>
+      <li><b>ADR-0012 — Supply-chain hardening</b> <span class="muted">(new, draft)</span> — npm provenance/OIDC, SHA-pinned actions, WPGraphQL version floor, Composer/Dependabot coverage.</li>
+      <li><b>ADR-0009 (existing, Accepted)</b> — customer auth: <em>build it</em> (Wave 1). No decision change.</li>
+      <li><b>ADR-0004 (existing, Accepted)</b> — caching: add the <code>shouldCacheResult</code> guard + document the TTL table. No decision change.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ EVIDENCE GAPS ============ -->
+<section id="evidence">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>Evidence gaps &amp; caveats</h2>
+    <p class="muted">Stated explicitly rather than guessed, per the audit's evidence rules.</p>
+    <ul class="clean">
+      <li><b>Pilot starter</b> (<code>Arc/Pilot/</code>) has no <code>app/</code> directory found — error-boundary / SEO patterns were verified only against <code>Arc/Next/examples/minimal-app/</code>.</li>
+      <li><b><code>.env.example</code></b> could not be read (sandbox treats <code>.env*</code> as secret-bearing); <code>.gitignore:23-25</code> confirms only <code>.env.example</code> is tracked. Recommend a manual eyeball that it holds placeholders only.</li>
+      <li><b><code>next.config.ts</code></b> resolved TTL/SWR values for <code>'hours'</code>/<code>'minutes'</code> profiles live in the consumer app, not <code>@arc/next</code> — the actual numbers were not confirmed.</li>
+      <li><b>WP plugin PHPUnit tests</b> beyond <code>test-rest-auth.php</code> were not located; <code>auto_update_plugin</code> hook presence is <span class="muted">[INFERENCE]</span> (WP defaults off for non-.org plugins).</li>
+      <li><b><code>pnpm-lock.yaml</code></b> not read — the <code>@tanstack/react-query@5.101.0</code> exclusion vs caret resolution was not verified against the lockfile.</li>
+      <li><b>WordPress Multisite compatibility</b> of <code>class-weave-cpt.php</code> is untested/undocumented.</li>
+      <li><b>Live IDOR enforcement</b> on <code>getOrder</code>/<code>getCustomerOrders</code> depends on WooCommerce/WPGraphQL server-side scoping — asserted from error-code handling, not tested against a live store.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="wrap foot">
+  <div class="pink-rule"></div>
+  <p><b>Arc + Weave — Hydrogen / Weaverse Enterprise Parity &amp; Security Audit.</b>
+     Generated 2026-06-08 by a 6-specialist parallel audit swarm (Architecture, Cart/Checkout,
+     Caching, Security, Editor/SaaS, Supply-chain) + synthesis. Read-only pass — no Arc/Weave code
+     modified. All findings cite <code>file:line</code> in the audited source or a URL; inferences are
+     flagged <span class="muted">[INFERENCE]</span>.</p>
+  <p class="muted">References benchmarked: Shopify Hydrogen and Weaverse, both fully open source.
+     Companion artifacts: ADR-0010, ADR-0011, ADR-0012 (draft, Markdown).</p>
+</div>
+
+</body>
+</html>
