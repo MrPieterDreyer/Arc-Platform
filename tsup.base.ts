@@ -11,7 +11,7 @@ export function arcTsup(overrides: Partial<Options> = {}): Options {
     target: 'es2022',
     splitting: false,
     minify: false,
-    external: ['react', 'react-dom', 'next', /^@arc\//, /^@weave\//],
+    external: ['react', 'react-dom', 'next', /^@arc-platform\//, /^@weave-platform\//],
     outExtension({ format }) {
       return { js: format === 'esm' ? '.mjs' : '.js' };
     },

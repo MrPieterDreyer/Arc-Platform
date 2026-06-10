@@ -32,6 +32,6 @@ test.describe('Wave 0 — platform health', () => {
   test('Next storefront home loads @smoke', async ({ page }) => {
     const res = await page.goto('/');
     expect(res?.ok()).toBeTruthy();
-    await expect(page.getByRole('heading', { name: /@arc\/next minimal app/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /@arc-platform\/next minimal app/i })).toBeVisible();
   });
 });

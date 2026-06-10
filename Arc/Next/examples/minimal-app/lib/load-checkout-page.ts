@@ -1,6 +1,11 @@
 import 'server-only';
 
-import { getCart, getCheckoutSchema, type WooCart, type WCCheckoutResponse } from '@arc-platform/core';
+import {
+  getCart,
+  getCheckoutSchema,
+  type WooCart,
+  type WCCheckoutResponse,
+} from '@arc-platform/core';
 import { createReadOnlyCartClient } from '@arc-platform/next/server';
 import { connection } from 'next/server';
 

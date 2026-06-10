@@ -39,7 +39,7 @@ const server = readFileSync(join(DIST, 'server.mjs'), 'utf8');
 const serverPage = readFileSync(join(DIST, 'server-page.mjs'), 'utf8');
 
 // 2. server.mjs must NOT pull @weave-platform/react (loader-only; avoids client-only in RSC graph).
-if (/\bfrom\s*["']@weave\/react["']/.test(server)) {
+if (/\bfrom\s*["']@weave-platform\/react["']/.test(server)) {
   console.error(
     '[externals] FAIL: dist/server.mjs imports @weave-platform/react main barrel. ' +
       'Use @weave-platform/react/schemas in load-page-config only; WeavePage belongs in server-page.mjs.',
@@ -49,7 +49,7 @@ if (/\bfrom\s*["']@weave\/react["']/.test(server)) {
 
 // 3. server-page.mjs must externalize peers (import them, not inline them).
 const EXTERNAL_IMPORT =
-  /\bfrom\s*["'](react(\/jsx-runtime)?|react-dom|@weave\/react|@arc\/next(\/server)?)["']/;
+  /\bfrom\s*["'](react(\/jsx-runtime)?|react-dom|@weave-platform\/react|@arc-platform\/next(\/server)?)["']/;
 if (!EXTERNAL_IMPORT.test(serverPage)) {
   console.error(
     '[externals] FAIL: dist/server-page.mjs does not import any externalized peer ' +
