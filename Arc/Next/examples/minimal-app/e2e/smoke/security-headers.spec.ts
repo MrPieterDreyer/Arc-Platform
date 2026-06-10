@@ -15,9 +15,7 @@ test.describe('ADR-0010 — security headers', () => {
     expect(headers['permissions-policy']).toContain('camera=()');
   });
 
-  test('home response carries the report-only nonce CSP from proxy.ts @smoke', async ({
-    page,
-  }) => {
+  test('home response carries the report-only nonce CSP from proxy.ts @smoke', async ({ page }) => {
     const res = await page.goto('/');
     expect(res?.ok()).toBeTruthy();
 

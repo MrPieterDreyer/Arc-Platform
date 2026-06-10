@@ -58,7 +58,7 @@ describe('ADR-0010 — createArcCsp', () => {
       formAction: ['https://wp.example'],
     });
 
-    expect(csp).toContain('script-src \'self\' ' + `'nonce-${NONCE}' https://js.stripe.example`);
+    expect(csp).toContain("script-src 'self' " + `'nonce-${NONCE}' https://js.stripe.example`);
     expect(csp).toContain("frame-src 'self' https://3ds.stripe.example");
     expect(csp).toContain("form-action 'self' https://wp.example");
   });
@@ -73,9 +73,7 @@ describe('ADR-0010 — createArcCsp', () => {
   });
 
   it('rejects a missing/short nonce — no nonce-less CSP ships (fail closed)', () => {
-    expect(() => createArcCsp({ nonce: '', connectSrc: ['https://wp.example'] })).toThrow(
-      /nonce/,
-    );
+    expect(() => createArcCsp({ nonce: '', connectSrc: ['https://wp.example'] })).toThrow(/nonce/);
     expect(() => createArcCsp({ nonce: 'short', connectSrc: ['https://wp.example'] })).toThrow(
       /nonce/,
     );

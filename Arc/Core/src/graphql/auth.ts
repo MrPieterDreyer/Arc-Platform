@@ -66,7 +66,10 @@ interface RawRefreshResponse {
  */
 const MIN_TOKEN_LENGTH = 16;
 
-function assertValidToken(token: string | null | undefined, label: string): asserts token is string {
+function assertValidToken(
+  token: string | null | undefined,
+  label: string,
+): asserts token is string {
   if (typeof token !== 'string' || token.trim().length < MIN_TOKEN_LENGTH) {
     throw new Error(`WPGraphQL JWT auth returned an empty or malformed ${label} (ADR-0009)`);
   }
