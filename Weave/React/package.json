@@ -2,6 +2,10 @@
   "name": "@weave-platform/react",
   "version": "0.1.0",
   "private": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "description": "Weave — sections schema SDK for React",
   "license": "MIT",
   "author": "Pieter Dreyer",
