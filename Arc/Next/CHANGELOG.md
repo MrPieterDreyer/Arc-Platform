@@ -1,5 +1,14 @@
 # @arc-platform/next
 
+## 0.1.3
+
+### Patch Changes
+
+- [#36](https://github.com/MrPieterDreyer/Arc-Platform/pull/36) [`73bd5b7`](https://github.com/MrPieterDreyer/Arc-Platform/commit/73bd5b793d3b943295312ac8e2abd92ae60c0f01) Thanks [@MrPieterDreyer](https://github.com/MrPieterDreyer)! - Publish via npm OIDC Trusted Publishing (ADR-0012): the release workflow exchanges the GitHub Actions id-token for a short-lived publish token — no stored npm secret — and npm attaches Sigstore provenance attestations automatically. This is the first attested release; 0.1.0–0.1.2 shipped unattested because provenance flag plumbing does not survive the changesets→pnpm publish path. No runtime changes.
+
+- Updated dependencies [[`73bd5b7`](https://github.com/MrPieterDreyer/Arc-Platform/commit/73bd5b793d3b943295312ac8e2abd92ae60c0f01)]:
+  - @arc-platform/core@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes
