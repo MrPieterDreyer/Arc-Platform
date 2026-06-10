@@ -57,6 +57,8 @@ The WC Store API Cart-Token is persisted as an HttpOnly cookie named **`arc_cart
 
 **Local development:** HTTPS is required because `SameSite=None` mandates `Secure`. Use `mkcert` to provision a local TLS certificate. The Pilot starter (Phase 5) documents this setup.
 
+**Dev/test escape hatch (`ARC_CART_COOKIE_SECURE`, added 2026-06-09 — decision 1-F):** for plain-HTTP local E2E (`http://localhost`), setting `ARC_CART_COOKIE_SECURE=false` downgrades the cookie to `SameSite=Lax; Secure=false`. The override is **ignored when `NODE_ENV === 'production'`** — production always ships `SameSite=None; Secure` regardless of env (fail-closed rule, AGENTS.md Code conventions). `ARC_CART_COOKIE_SECURE=true` (or unset) is the default everywhere.
+
 ## Consequences
 
 ### Positive

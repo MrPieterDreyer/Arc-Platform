@@ -27,13 +27,17 @@ export function createMockCookieJar() {
     store.set(name, { name, value, options });
   });
 
-  return { get, set, store };
+  const del = vi.fn((name: string) => {
+    store.delete(name);
+  });
+
+  return { get, set, delete: del, store };
 }
 
 export type MockCookieJar = ReturnType<typeof createMockCookieJar>;
 
-export function mockNextHeaders(jar: MockCookieJar) {
-  vi.mock('next/headers', () => ({
-    cookies: vi.fn(async () => jar),
-  }));
-}
+// NOTE: never wrap `vi.mock` in an exported helper here. Vitest hoists vi.mock
+// calls to the top of THIS module on import — the factory then references the
+// `jar` parameter at a position where it doesn't exist (ReferenceError) and
+// overrides every test file's own next/headers registration. Each test file
+// declares its own top-level `vi.mock('next/headers', …)` around its jar.

@@ -1,8 +1,19 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 import { loadAccountOrders } from '../../../lib/load-account-orders';
 
-export default async function AccountOrdersPage() {
+// Order history reads the auth cookie (ADR-0009), which is uncached request
+// data — resolve it INSIDE a <Suspense> boundary (same pattern as /account).
+export default function AccountOrdersPage() {
+  return (
+    <Suspense fallback={<p data-testid="account-orders-loading">Loading order history…</p>}>
+      <OrdersContent />
+    </Suspense>
+  );
+}
+
+async function OrdersContent() {
   const model = await loadAccountOrders();
 
   return (
@@ -15,12 +26,8 @@ export default async function AccountOrdersPage() {
       {model.kind === 'no-auth' ? (
         <div data-testid="account-orders-unauthenticated">
           <p>
-            Authenticated order history is not configured for this environment. Set{' '}
-            <code>TEST_JWT_TOKEN</code> (WPGraphQL JWT) per{' '}
-            <a href="https://github.com/wp-graphql/wp-graphql-jwt-authentication">
-              wp-graphql-jwt-authentication
-            </a>{' '}
-            and ADR-0009.
+            You are not signed in. <Link href="/account/login">Sign in</Link> to view your order
+            history (WPGraphQL JWT cookie bridge, ADR-0009).
           </p>
         </div>
       ) : null}

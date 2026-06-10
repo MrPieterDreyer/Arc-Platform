@@ -4,11 +4,16 @@ import { WooClient, type WooClientOptions } from '@arc/core';
 import { cookies } from 'next/headers';
 import { ARC_CART_TOKEN_COOKIE } from './constants.js';
 
-/** ADR-0006 defaults; set `ARC_CART_COOKIE_SECURE=false` for local HTTP E2E (http://localhost). */
+/**
+ * ADR-0006 defaults; set `ARC_CART_COOKIE_SECURE=false` for local HTTP E2E (http://localhost).
+ * The insecure override is dev/test-only: it is IGNORED when NODE_ENV === 'production'
+ * so a leaked E2E env file can never downgrade production carts to SameSite=Lax over HTTP
+ * (fail-closed rule, AGENTS.md Code conventions).
+ */
 function cartCookieSecure(): boolean {
   const override = process.env.ARC_CART_COOKIE_SECURE;
   if (override === 'true') return true;
-  if (override === 'false') return false;
+  if (override === 'false' && process.env.NODE_ENV !== 'production') return false;
   return true;
 }
 

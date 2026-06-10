@@ -18,6 +18,25 @@ import { ARC_CACHE_PROFILE } from './isr.js';
 
 export interface ArcLoaderConfig extends CatalogClientConfig {}
 
+// CACHE-P1 (parity audit 2026-06-08): `'use cache'` memoizes RESOLVED values for the
+// full cacheLife TTL — including `null`. A product that reads null once (draft, race
+// with publish, transient upstream null) would stay invisible until TTL or webhook
+// purge. Thrown errors are NOT cached, so the guard throws a sentinel INSIDE the
+// cached scope (preventing the cache write) and the uncached wrapper translates it
+// back to the public `null` contract. GraphQL/network failures already throw from
+// graphql-request and are likewise never cached.
+const NULL_RESULT_SENTINEL = 'ARC_NULL_RESULT_DO_NOT_CACHE';
+
+function throwNullResult(): never {
+  const error = new Error(NULL_RESULT_SENTINEL);
+  error.name = 'ArcNullResultError';
+  throw error;
+}
+
+function isNullResultError(error: unknown): boolean {
+  return error instanceof Error && error.message === NULL_RESULT_SENTINEL;
+}
+
 export interface ArcLoaders {
   loadProduct: (slug: string) => Promise<WCProduct | null>;
   loadProducts: (filter?: WCProductFilter) => Promise<WCProductList>;
@@ -34,11 +53,21 @@ export function createLoaders(config: ArcLoaderConfig): ArcLoaders {
   // (non-serializable) GraphQLClient INSIDE each cached function. Closing over a
   // client instance instead throws at build:
   //   "Only plain objects ... can be passed to Client Components".
-  async function loadProduct(slug: string) {
+  async function cachedProduct(slug: string): Promise<WCProduct> {
     'use cache';
     cacheTag(arcTag.product(slug));
     cacheLife(ARC_CACHE_PROFILE.product);
-    return getProduct(createCatalogClient(config), slug);
+    const product = await getProduct(createCatalogClient(config), slug);
+    return product ?? throwNullResult();
+  }
+
+  async function loadProduct(slug: string): Promise<WCProduct | null> {
+    try {
+      return await cachedProduct(slug);
+    } catch (error) {
+      if (isNullResultError(error)) return null;
+      throw error;
+    }
   }
 
   async function loadProducts(filter?: WCProductFilter) {
@@ -48,11 +77,21 @@ export function createLoaders(config: ArcLoaderConfig): ArcLoaders {
     return getProducts(createCatalogClient(config), filter);
   }
 
-  async function loadCollection(slug: string) {
+  async function cachedCollection(slug: string): Promise<WCCollection> {
     'use cache';
     cacheTag(arcTag.collection(slug));
     cacheLife(ARC_CACHE_PROFILE.collection);
-    return getCollection(createCatalogClient(config), slug);
+    const collection = await getCollection(createCatalogClient(config), slug);
+    return collection ?? throwNullResult();
+  }
+
+  async function loadCollection(slug: string): Promise<WCCollection | null> {
+    try {
+      return await cachedCollection(slug);
+    } catch (error) {
+      if (isNullResultError(error)) return null;
+      throw error;
+    }
   }
 
   async function loadCollectionProducts(slug: string, filter?: { first?: number; after?: string }) {

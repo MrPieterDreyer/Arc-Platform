@@ -3,6 +3,9 @@ export const __ARC_CORE_VERSION = '0.0.1';
 
 // Phase 1 — WooClient HTTP foundation
 export { WooClient, WooClientError } from './client/WooClient';
+export type { WCAuthCustomer, WCLoginResult } from './graphql/auth';
+// Phase 4c — customer auth mutations (ADR-0009, wp-graphql-jwt-authentication)
+export { loginCustomer, refreshAuthToken } from './graphql/auth';
 export type { WPGraphQLConfig } from './graphql/client';
 // Phase 1 — GraphQL client
 export { createWPGraphQLClient } from './graphql/client';
