@@ -10,7 +10,9 @@ const TEST_PRODUCT_SLUG = process.env.TEST_PRODUCT_SLUG ?? 'test-product';
 test.describe('Wave 11 — performance budgets @perf', () => {
   test('home navigation timing @perf', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: /@arc-platform\/next minimal app/i })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /@arc-platform\/next minimal app/i }),
+    ).toBeVisible();
     await assertNavigationWithinBudget(page, DEFAULT_PERF_BUDGETS);
   });
 
