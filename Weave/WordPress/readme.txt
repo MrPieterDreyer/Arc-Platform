@@ -4,6 +4,7 @@ Tags: woocommerce, headless, rest-api, page-builder
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
+Requires Plugins: wp-graphql, wp-graphql-woocommerce
 WC requires at least: 9.0
 Stable tag: 0.1.0
 License: MIT
@@ -18,6 +19,12 @@ Weave stores versioned page configurations as JSON inside a `weave_page` custom 
 This is the server-side half of Weave. The Next.js consumer (`@weave/next`) and the WP Admin sidebar editor are delivered separately.
 
 == Configuration ==
+
+= Required plugins (`Requires Plugins` header) =
+
+Weave declares `Requires Plugins: wp-graphql, wp-graphql-woocommerce` (WP 6.5+ enforces this at activation). The Arc storefront reads the catalog through WPGraphQL, so a missing or outdated install breaks the headless frontend even though this plugin's own REST surface would still function.
+
+**Minimum safe versions (ADR-0012):** run WPGraphQL at a release that includes the CVE-2026-33290 fix, and keep WPGraphQL for WooCommerce on its latest minor. Pin minor versions in production and watch the upstream security advisories — see `Documentation/Architecture/ADR-0012-supply-chain-hardening.md`.
 
 = Webhook secret (`WEAVE_WEBHOOK_SECRET`) =
 
