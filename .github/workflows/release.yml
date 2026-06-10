@@ -32,15 +32,18 @@ jobs:
         run: node Scripts/verify-changesets-no-major.mjs
         env:
           ARC_ALLOW_V1_PUBLISH: ${{ secrets.ARC_ALLOW_V1_PUBLISH }}
-      # --provenance emits a Sigstore attestation linking the published tarball to this
-      # workflow run (requires the id-token: write permission above). ADR-0012 P1.
+      # NPM_CONFIG_PROVENANCE makes the underlying npm publish emit a Sigstore
+      # attestation linking the tarball to this workflow run (requires the
+      # id-token: write permission above). `changeset publish` has no
+      # --provenance flag — provenance must come in via npm config. ADR-0012 P1.
       # TODO(ADR-0012): once @arc/* and @weave/* are registered for npm OIDC Trusted
-      # Publishing on npmjs.com, set `NPM_TOKEN: ''` and drop the repository secret â€”
+      # Publishing on npmjs.com, set `NPM_TOKEN: ''` and drop the repository secret —
       # the OIDC exchange replaces the static token entirely.
       - uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1
         with:
-          publish: pnpm changeset publish --provenance
+          publish: pnpm changeset publish
           version: pnpm changeset version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'
