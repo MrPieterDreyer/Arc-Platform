@@ -1,6 +1,11 @@
 # Changesets-driven publish workflow
 # Source: .planning/phases/00-tooling-foundations/00-RESEARCH.md (Pattern 7)
-# NPM_TOKEN must be set as a GitHub repository secret (never committed â€” CLAUDE.md constraint).
+#
+# Auth: npm OIDC Trusted Publishing (ADR-0012) — no NPM_TOKEN secret. All four
+# packages are registered on npmjs.com with this repo + workflow filename as
+# their trusted publisher; pnpm exchanges the Actions id-token for a short-lived
+# publish token at publish time, and npm attaches Sigstore provenance
+# attestations automatically as part of that exchange.
 #
 # Release tags: merging the "Version Packages" PR runs changesets/action, which publishes
 # to npm and creates GitHub releases via @changesets/changelog-github (see .changeset/config.json).
@@ -12,7 +17,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  id-token: write   # for npm provenance
+  id-token: write   # OIDC trusted publishing + provenance attestation
 
 jobs:
   release:
@@ -32,25 +37,18 @@ jobs:
         run: node Scripts/verify-changesets-no-major.mjs
         env:
           ARC_ALLOW_V1_PUBLISH: ${{ secrets.ARC_ALLOW_V1_PUBLISH }}
-      # Provenance (ADR-0012 P1) is configured in the repo-root .npmrc
-      # (`provenance=true`) — the rc option is what `pnpm publish` (which
-      # changesets shells out to) actually reads; publishConfig.provenance and
-      # NPM_CONFIG_PROVENANCE are npm-CLI mechanisms pnpm ignores. The
-      # id-token: write permission above is what lets Sigstore mint the
-      # attestation.
-      # TODO(ADR-0012): once @arc-platform/* and @weave-platform/* are registered for npm OIDC Trusted
-      # Publishing on npmjs.com, set `NPM_TOKEN: ''` and drop the repository secret —
-      # the OIDC exchange replaces the static token entirely.
+      # NPM_TOKEN is the empty string ON PURPOSE (changesets/action#1152 OIDC
+      # workaround): the action requires the variable to exist to skip its
+      # token preflight, while pnpm's OIDC exchange supplies the real
+      # short-lived publish token. Do NOT reintroduce a static token here —
+      # trusted publishing replaces it and yields provenance automatically.
+      # Provenance flag plumbing (env vars / publishConfig / .npmrc) does NOT
+      # reach pnpm through changesets — releases 0.1.0–0.1.2 proved all three
+      # mechanisms ship unattested artifacts.
       - uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1
         with:
           publish: pnpm changeset publish
           version: pnpm changeset version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # setup-node's registry-url writes an .npmrc (NPM_CONFIG_USERCONFIG)
-          # that authenticates via ${NODE_AUTH_TOKEN} and OVERRIDES the
-          # ~/.npmrc the changesets action writes from NPM_TOKEN. Without this
-          # line npm publishes with setup-node's literal placeholder token and
-          # the registry masks the bad auth as E404 on every scoped PUT.
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ''
