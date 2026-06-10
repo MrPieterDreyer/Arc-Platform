@@ -1,5 +1,14 @@
 # @arc-platform/next
 
+## 0.1.2
+
+### Patch Changes
+
+- [#34](https://github.com/MrPieterDreyer/Arc-Platform/pull/34) [`0043dfa`](https://github.com/MrPieterDreyer/Arc-Platform/commit/0043dfa90f779ca71eb6de081a309656590abd28) Thanks [@MrPieterDreyer](https://github.com/MrPieterDreyer)! - Enable Sigstore provenance attestations via the repo-root `.npmrc` `provenance=true` rc option — the mechanism `pnpm publish` actually reads (ADR-0012 S-1). The 0.1.0/0.1.1 tarballs shipped unattested because `publishConfig.provenance` and the `NPM_CONFIG_PROVENANCE` env var are npm-CLI mechanisms that pnpm, which changesets publishes through, ignores. No runtime changes.
+
+- Updated dependencies [[`0043dfa`](https://github.com/MrPieterDreyer/Arc-Platform/commit/0043dfa90f779ca71eb6de081a309656590abd28)]:
+  - @arc-platform/core@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
