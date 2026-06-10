@@ -1,5 +1,6 @@
 import { isAuthenticated } from '@arc/next/server';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 import { loginFormAction, logoutFormAction } from '../../actions/auth';
 
@@ -13,11 +14,21 @@ const fieldStyle = {
   borderRadius: 'var(--radius-sm)',
 } as const;
 
-export default async function AccountLoginPage({
+// Auth state is uncached request data (cookies), so it must resolve INSIDE a
+// <Suspense> boundary — the page shell stays static (same pattern as /account).
+export default function AccountLoginPage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
+  return (
+    <Suspense fallback={<p data-testid="account-login-loading">Loading sign-in…</p>}>
+      <LoginContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function LoginContent({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
   const authenticated = await isAuthenticated();
 

@@ -1,8 +1,19 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 import { loadAccountOrders } from '../../../lib/load-account-orders';
 
-export default async function AccountOrdersPage() {
+// Order history reads the auth cookie (ADR-0009), which is uncached request
+// data — resolve it INSIDE a <Suspense> boundary (same pattern as /account).
+export default function AccountOrdersPage() {
+  return (
+    <Suspense fallback={<p data-testid="account-orders-loading">Loading order history…</p>}>
+      <OrdersContent />
+    </Suspense>
+  );
+}
+
+async function OrdersContent() {
   const model = await loadAccountOrders();
 
   return (
