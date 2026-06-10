@@ -109,6 +109,9 @@ module.exports = defineConfig({
       NEXT_PUBLIC_TEST_PRODUCT_ID: process.env.TEST_PRODUCT_ID ?? '1',
       TEST_JWT_TOKEN: process.env.TEST_JWT_TOKEN ?? '',
       E2E_CUSTOMER_JWT_TOKEN: process.env.E2E_CUSTOMER_JWT_TOKEN ?? '',
+      // Explicit opt-in for the raw-JWT E2E fallback in load-account-orders.ts —
+      // the cookie bridge (ADR-0009) is the real auth path; this never ships enabled.
+      ARC_E2E_ALLOW_TOKEN_AUTH: 'true',
       TEST_CUSTOMER_EMAIL: process.env.TEST_CUSTOMER_EMAIL ?? '',
       WEAVE_WEBHOOK_SECRET:
         process.env.WEAVE_WEBHOOK_SECRET && process.env.WEAVE_WEBHOOK_SECRET.length > 0
