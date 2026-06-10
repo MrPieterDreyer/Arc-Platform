@@ -1,5 +1,15 @@
 # @weave-platform/next
 
+## 0.1.1
+
+### Patch Changes
+
+- [#32](https://github.com/MrPieterDreyer/Arc-Platform/pull/32) [`ac2203f`](https://github.com/MrPieterDreyer/Arc-Platform/commit/ac2203f60c0db5cea55c8a7f38e0be5aff67d8ea) Thanks [@MrPieterDreyer](https://github.com/MrPieterDreyer)! - Publish with npm provenance attestations via `publishConfig.provenance` (ADR-0012 S-1). The 0.1.0 tarballs shipped without attestations because the `NPM_CONFIG_PROVENANCE` environment variable is not honored when changesets publishes through pnpm; `publishConfig` is the package-manager-agnostic mechanism. No runtime changes.
+
+- Updated dependencies [[`ac2203f`](https://github.com/MrPieterDreyer/Arc-Platform/commit/ac2203f60c0db5cea55c8a7f38e0be5aff67d8ea)]:
+  - @arc-platform/next@0.1.1
+  - @weave-platform/react@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes
