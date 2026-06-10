@@ -1,4 +1,4 @@
-import { createRevalidateHandler, WEAVE_WEBHOOK_SECRET_ENV } from '@arc/next/server';
+import { createRevalidateHandler, WEAVE_WEBHOOK_SECRET_ENV } from '@arc-platform/next/server';
 
 const DEV_PLACEHOLDER_SECRET = 'dev-placeholder-secret-min-32-chars!!';
 const configured = process.env[WEAVE_WEBHOOK_SECRET_ENV];

@@ -85,7 +85,7 @@
 
   <h2>1. Problem &amp; Current State</h2>
   <p>The WC Store API customer surface is <strong>session-scoped only</strong>. <code>getCustomer()</code> derives billing/shipping from <code>GET /cart</code> (id is <code>0</code> for guests), and <code>getOrder()</code> can only return an order that belongs to the current Cart-Token session. There is no login, no cross-session lookup, no order list. <span class="fileref"><code>Arc/Core/src/store-api/customer.ts:28-41</code>, <code>Arc/Core/src/store-api/orders.ts:1-44</code>, <code>Arc/Core/src/types/customer.ts:1-7</code></span></p>
-  <p>Phase 1 (<code>@arc/core</code>) deliberately shipped the authenticated half as a <strong>token-shaped hole</strong>: <code>getCustomerOrders(client)</code> takes a <code>GraphQLClient</code> whose <code>authToken</code> callback returns a JWT, and the contract test feeds it from <code>TEST_JWT_TOKEN</code>. Nothing in the repo today <em>issues</em>, <em>stores</em>, or <em>refreshes</em> that token — that is precisely what ADR-0009 must close. <span class="fileref"><code>Arc/Core/src/__tests__/contract/customer.contract.test.ts:22-25, 73-82</code>, <code>Arc/Core/src/hooks/useCustomer.ts:31-65</code></span></p>
+  <p>Phase 1 (<code>@arc-platform/core</code>) deliberately shipped the authenticated half as a <strong>token-shaped hole</strong>: <code>getCustomerOrders(client)</code> takes a <code>GraphQLClient</code> whose <code>authToken</code> callback returns a JWT, and the contract test feeds it from <code>TEST_JWT_TOKEN</code>. Nothing in the repo today <em>issues</em>, <em>stores</em>, or <em>refreshes</em> that token — that is precisely what ADR-0009 must close. <span class="fileref"><code>Arc/Core/src/__tests__/contract/customer.contract.test.ts:22-25, 73-82</code>, <code>Arc/Core/src/hooks/useCustomer.ts:31-65</code></span></p>
 
   <h2>2. Options Comparison</h2>
   <table>
@@ -224,7 +224,7 @@ LOGOUT
 
   <h2>5. Implementation Outline</h2>
 
-  <h4>@arc/core (framework-agnostic, no next/*)</h4>
+  <h4>@arc-platform/core (framework-agnostic, no next/*)</h4>
   <ul>
     <li><code>src/graphql/auth.ts</code> — new module: <code>loginCustomer(client, {username,password})</code>, <code>refreshAuthToken(client, refreshToken)</code>, <code>logoutCustomer(...)</code> wrapping the JWT plugin's <code>login</code> / <code>refreshJwtAuthToken</code> mutations. Returns <code>{ authToken, refreshToken, expiresAt }</code>.</li>
     <li><code>src/graphql/client.ts</code> — already injects <code>Authorization: Bearer</code>; add an <code>onAuthError</code> / expiry hook so callers can trigger refresh-and-retry. <span class="fileref"><code>Arc/Core/src/graphql/client.ts:27-42</code></span></li>
@@ -232,11 +232,11 @@ LOGOUT
     <li>Types: add <code>WCAuthSession</code> to <code>src/types/customer.ts</code>; no breaking change to <code>WCCustomer</code>.</li>
   </ul>
 
-  <h4>@arc/next (cookie bridge + Server Actions)</h4>
+  <h4>@arc-platform/next (cookie bridge + Server Actions)</h4>
   <ul>
     <li><code>src/constants.ts</code> — add <code>ARC_AUTH_TOKEN_COOKIE = 'arc_auth_token'</code> and <code>ARC_REFRESH_TOKEN_COOKIE = 'arc_refresh_token'</code>. <span class="fileref"><code>Arc/Next/src/constants.ts:1-2</code></span></li>
     <li><code>src/auth-cookies.ts</code> — mirror <code>cookies.ts</code>: <code>readAuthToken()</code> (RSC-safe), <code>persistAuthSession()</code>, <code>clearAuthSession()</code>, reusing <code>CART_COOKIE_OPTIONS</code> attribute logic. <span class="fileref"><code>Arc/Next/src/cookies.ts:29-85</code></span></li>
-    <li><code>src/auth-actions.ts</code> — <code>loginAction</code>, <code>logoutAction</code>, <code>refreshAction</code> Server Actions (<code>'use server'</code>), with Origin allow-list check; wired to <code>@arc/core</code> auth module. Mirrors the existing cart actions factory. <span class="fileref"><code>Arc/Next/src/actions.ts</code>, <code>Arc/Next/src/client-factory.ts:27-34</code></span></li>
+    <li><code>src/auth-actions.ts</code> — <code>loginAction</code>, <code>logoutAction</code>, <code>refreshAction</code> Server Actions (<code>'use server'</code>), with Origin allow-list check; wired to <code>@arc-platform/core</code> auth module. Mirrors the existing cart actions factory. <span class="fileref"><code>Arc/Next/src/actions.ts</code>, <code>Arc/Next/src/client-factory.ts:27-34</code></span></li>
     <li><code>src/client-factory.ts</code> — <code>createArcClient</code> wires <code>createWPGraphQLClient({ authToken: () => readAuthToken() })</code> so every server-side GraphQL request is auto-authenticated and refresh-aware. <span class="fileref"><code>Arc/Next/src/client-factory.ts:18-34</code></span></li>
     <li><code>src/server.ts</code> — export the new auth surface from the server barrel. <span class="fileref"><code>Arc/Next/src/server.ts:1-31</code></span></li>
   </ul>
@@ -255,7 +255,7 @@ LOGOUT
 
   <h2>6. ADR-0009 — Proposed Resolution</h2>
   <div class="card winner">
-    <p><strong>Status: Open → Accepted.</strong> Decision: customer authentication uses <strong>WPGraphQL JWT (via <code>wp-graphql-jwt-authentication</code>), with the access + refresh tokens stored in HttpOnly cookies on the Next.js origin per the ADR-0006 cookie-bridge pattern.</strong> Application Passwords (Option 2) and the pure WP-session-cookie bridge (Option 3) are rejected for customer login; Application Passwords may remain an optional server-to-server adapter. The <code>authToken</code> parameter already threaded through <code>@arc/core</code> in Phase 1 is the integration seam — Phase 2 fills it from <code>arc_auth_token</code>.</p>
+    <p><strong>Status: Open → Accepted.</strong> Decision: customer authentication uses <strong>WPGraphQL JWT (via <code>wp-graphql-jwt-authentication</code>), with the access + refresh tokens stored in HttpOnly cookies on the Next.js origin per the ADR-0006 cookie-bridge pattern.</strong> Application Passwords (Option 2) and the pure WP-session-cookie bridge (Option 3) are rejected for customer login; Application Passwords may remain an optional server-to-server adapter. The <code>authToken</code> parameter already threaded through <code>@arc-platform/core</code> in Phase 1 is the integration seam — Phase 2 fills it from <code>arc_auth_token</code>.</p>
   </div>
 
   <p class="small">All file-path claims above reference the working tree at <code>D:\00. Arc Platform</code> (non-worktree copies under <code>Arc/Core/src</code> and <code>Arc/Next/src</code>). Spike was read-only; this HTML report is the only file written.</p>

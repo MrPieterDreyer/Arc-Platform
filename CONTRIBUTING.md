@@ -51,7 +51,7 @@ git branch -d <merged-branch>
 
 ## Changesets
 
-Publishable packages: `@arc/core`, `@arc/next`, `@weave/react`, `@weave/next`.
+Publishable packages: `@arc-platform/core`, `@arc-platform/next`, `@weave-platform/react`, `@weave-platform/next`.
 
 Any change that should ship to npm needs a changeset:
 
@@ -81,7 +81,7 @@ On every PR and push to `master`/`main`, CI runs:
 | Job | Purpose |
 |-----|---------|
 | `lint` | Biome lint + format check |
-| `no-next-in-core` | `@arc/core` must not depend on Next.js |
+| `no-next-in-core` | `@arc-platform/core` must not depend on Next.js |
 | `typecheck` | TypeScript across packages |
 | `test` | Vitest (Node 22 + 24 matrix) |
 | `contract` | Live wp-env backend tests |

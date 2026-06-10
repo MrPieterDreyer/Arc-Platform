@@ -44,5 +44,5 @@ if (failed > 0) {
 }
 console.log(
   `[verify-dist] OK — all ${PACKAGES.length} packages have ${REQUIRED_FILES.join(', ')}` +
-    ` (+ @weave/react client subpath dist/client.*)`,
+    ` (+ @weave-platform/react client subpath dist/client.*)`,
 );

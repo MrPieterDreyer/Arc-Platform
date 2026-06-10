@@ -26,7 +26,7 @@ assignees: ""
 
 ## Environment
 
-- Package(s): <!-- e.g. @arc/core, @arc/next -->
+- Package(s): <!-- e.g. @arc-platform/core, @arc-platform/next -->
 - Version: <!-- e.g. 0.0.1 -->
 - Node.js:
 - OS:

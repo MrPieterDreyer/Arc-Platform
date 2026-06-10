@@ -2,7 +2,7 @@
  * E2E / demo section registry for Wave 4–5 — imported for side effects before render.
  */
 import type { ComponentType } from 'react';
-import { defineSection, type WeaveComponentSchema } from '@weave/react';
+import { defineSection, type WeaveComponentSchema } from '@weave-platform/react';
 
 import './weave-e2e/register-input-matrix-sections';
 

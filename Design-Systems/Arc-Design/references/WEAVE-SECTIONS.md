@@ -1,6 +1,6 @@
 # Weave section contracts
 
-Weave renders **sections** from JSON page config stored in WordPress. Each section maps to a React component in `@weave/react` / `@weave/next`. Visual rules inherit Arc tokens; spacing uses the 4px grid.
+Weave renders **sections** from JSON page config stored in WordPress. Each section maps to a React component in `@weave-platform/react` / `@weave-platform/next`. Visual rules inherit Arc tokens; spacing uses the 4px grid.
 
 ---
 

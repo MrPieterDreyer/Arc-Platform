@@ -1,5 +1,5 @@
 {
-  "name": "@arc/next",
+  "name": "@arc-platform/next",
   "version": "0.1.0",
   "private": false,
   "description": "Arc — Next.js App Router integration",
@@ -43,7 +43,7 @@
     "react": "catalog:"
   },
   "dependencies": {
-    "@arc/core": "workspace:^",
+    "@arc-platform/core": "workspace:^",
     "client-only": "^0.0.1",
     "graphql-request": "catalog:",
     "server-only": "^0.0.1"

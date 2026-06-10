@@ -104,7 +104,7 @@ Use `references/COMPONENTS.md` — card, button (primary text **white** on accen
 
 ## When to trigger
 
-- Building Pilot, Templates, or `@arc/next` reference UI
+- Building Pilot, Templates, or `@arc-platform/next` reference UI
 - Implementing Weave section components
 - Reviewing UI for design consistency
 - User mentions Arc design, storefront theme, or design tokens

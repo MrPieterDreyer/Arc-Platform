@@ -1,4 +1,4 @@
-import { isAuthenticated } from '@arc/next/server';
+import { isAuthenticated } from '@arc-platform/next/server';
 import Link from 'next/link';
 import { Suspense } from 'react';
 

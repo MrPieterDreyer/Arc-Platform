@@ -1,5 +1,5 @@
 /**
- * @arc/core — WooCommerce Store API v1 TypeScript types
+ * @arc-platform/core — WooCommerce Store API v1 TypeScript types
  *
  * Hand-authored from the WC Store API source + docs.
  * No runtime code — types only.
@@ -198,7 +198,7 @@ export interface WooClientOptions {
 
   /**
    * Called when the WC Store API returns a new `Cart-Token` response header.
-   * Use this in framework integrations (e.g. `@arc/next`) to persist the token
+   * Use this in framework integrations (e.g. `@arc-platform/next`) to persist the token
    * as an HttpOnly cookie. Framework-agnostic — not called if token is unchanged.
    */
   onCartToken?: (token: string) => void | Promise<void>;

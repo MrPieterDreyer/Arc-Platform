@@ -8,7 +8,7 @@
  */
 
 import { createElement } from 'react';
-import { type WeaveComponentSchema, type WeaveSection, defineSection } from '@weave/react';
+import { type WeaveComponentSchema, type WeaveSection, defineSection } from '@weave-platform/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { useEditorStore } from '../store/editor-store';
 

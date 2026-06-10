@@ -8,7 +8,7 @@
  */
 
 import apiFetch from '@wordpress/api-fetch';
-import type { WeavePageConfig } from '@weave/react';
+import type { WeavePageConfig } from '@weave-platform/react';
 import { beforeEach, describe, expect, it, type vi } from 'vitest';
 import { loadPage, savePage } from '../api/page-config';
 

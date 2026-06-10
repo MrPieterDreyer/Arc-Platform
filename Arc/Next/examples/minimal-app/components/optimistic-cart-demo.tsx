@@ -1,7 +1,7 @@
 'use client';
 
-import type { WooCart } from '@arc/core';
-import { useOptimisticCart } from '@arc/next/client';
+import type { WooCart } from '@arc-platform/core';
+import { useOptimisticCart } from '@arc-platform/next/client';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { addItemAction, addItemActionFail } from '../app/actions/cart';

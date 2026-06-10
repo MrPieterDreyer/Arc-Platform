@@ -10,7 +10,7 @@
  * silently strips them.
  *
  * Per-type prop validation of `sections[].data` is intentionally NOT done here
- * — that is the `@weave/react` section schema's job (D-07). This validator only
+ * — that is the `@weave-platform/react` section schema's job (D-07). This validator only
  * checks the structural shape (object vs list).
  *
  * @package Weave

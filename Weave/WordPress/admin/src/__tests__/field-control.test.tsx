@@ -8,7 +8,7 @@
  * fails soft to null; and onChange threads the new value up to the caller.
  */
 
-import { type WeaveInput, type WeaveInputType, evaluateCondition } from '@weave/react';
+import { type WeaveInput, type WeaveInputType, evaluateCondition } from '@weave-platform/react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { FieldControl } from '../form/field-control';

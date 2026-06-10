@@ -1,5 +1,5 @@
 /**
- * @arc/core — WooCommerce Store API v1 Order types
+ * @arc-platform/core — WooCommerce Store API v1 Order types
  *
  * Hand-authored from the WC Store API /order/{id} endpoint docs.
  * No runtime code — types only.

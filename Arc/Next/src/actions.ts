@@ -9,7 +9,7 @@ import {
   type UpdateItemPayload,
   type WooCart,
   type WooClient,
-} from '@arc/core';
+} from '@arc-platform/core';
 import { createCartClient, readCartTokenValue, refreshCartTokenCookie } from './cookies.js';
 
 /**
@@ -23,8 +23,8 @@ import { createCartClient, readCartTokenValue, refreshCartTokenCookie } from './
  *
  *   // app/_actions/cart.ts
  *   'use server';
- *   import { addItemAction as add } from '@arc/next/server';
- *   import type { AddItemPayload } from '@arc/core';
+ *   import { addItemAction as add } from '@arc-platform/next/server';
+ *   import type { AddItemPayload } from '@arc-platform/core';
  *   export async function addItemAction(p: AddItemPayload) { return add(p); }
  *
  * The `server-only` import guarantees these never leak into a client bundle.
@@ -58,7 +58,7 @@ async function ensureCartSession(client: WooClient): Promise<void> {
 
 /**
  * Add a line item via WC Store API, then refresh the Cart-Token cookie Max-Age.
- * Throws on failure (propagated from `@arc/core`) so `useOptimisticCart` can roll back.
+ * Throws on failure (propagated from `@arc-platform/core`) so `useOptimisticCart` can roll back.
  */
 export async function addItemAction(payload: AddItemPayload, wcBaseUrl?: string): Promise<WooCart> {
   const client = await createCartClient(resolveWcBaseUrl(wcBaseUrl));

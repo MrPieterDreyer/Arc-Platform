@@ -7,7 +7,7 @@ import {
   refreshAuthToken,
   type WCAuthCustomer,
   type WCCustomerOrdersResult,
-} from '@arc/core';
+} from '@arc-platform/core';
 import {
   clearAuthCookies,
   persistAuthCookies,
@@ -24,7 +24,7 @@ import {
  *
  *   // app/_actions/auth.ts
  *   'use server';
- *   import { loginAction as login } from '@arc/next/server';
+ *   import { loginAction as login } from '@arc-platform/next/server';
  *   export async function loginAction(username: string, password: string) {
  *     return login({ username, password });
  *   }

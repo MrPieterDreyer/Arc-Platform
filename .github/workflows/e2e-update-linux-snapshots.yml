@@ -36,9 +36,9 @@ jobs:
         run: pnpm exec playwright install chromium --with-deps
         working-directory: Arc/Next/examples/minimal-app
       - name: Build minimal-app
-        run: pnpm --filter @arc/next-example build
+        run: pnpm --filter @arc-platform/next-example build
       - name: Update visual baselines (@visual, linux platform)
-        run: pnpm --filter @arc/next-example test:e2e:update-snapshots
+        run: pnpm --filter @arc-platform/next-example test:e2e:update-snapshots
       - name: Upload linux snapshot PNGs
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

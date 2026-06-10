@@ -1,5 +1,5 @@
 /**
- * WPGraphQL product types for @arc/core.
+ * WPGraphQL product types for @arc-platform/core.
  * These are catalog-layer types returned by WPGraphQL queries.
  *
  * NOTE: Two product image shapes co-exist in this file:

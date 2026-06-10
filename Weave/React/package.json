@@ -1,5 +1,5 @@
 {
-  "name": "@weave/react",
+  "name": "@weave-platform/react",
   "version": "0.1.0",
   "private": false,
   "description": "Weave — sections schema SDK for React",

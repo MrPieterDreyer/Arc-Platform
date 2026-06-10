@@ -1,5 +1,5 @@
 {
-  "name": "@arc/core",
+  "name": "@arc-platform/core",
   "version": "0.1.0",
   "private": false,
   "description": "Arc — WooCommerce Store API client, hooks, and TypeScript types",

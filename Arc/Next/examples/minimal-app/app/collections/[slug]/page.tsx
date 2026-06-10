@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { createLoaders } from '@arc/next/server';
+import { createLoaders } from '@arc-platform/next/server';
 import { ProductCardLink } from '../../../components/product-card-link';
 
 const { loadCollection, loadCollectionProducts } = createLoaders({

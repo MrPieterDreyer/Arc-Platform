@@ -8,7 +8,7 @@
  * tests assert the value contract: select → onChange({ id, url }); remove → onChange({ id:null, url:'' }).
  */
 
-import type { WeaveInput } from '@weave/react';
+import type { WeaveInput } from '@weave-platform/react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ImageControl } from '../form/image-control';

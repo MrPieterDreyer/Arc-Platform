@@ -114,7 +114,7 @@ importers:
 
   Arc/Next:
     dependencies:
-      '@arc/core':
+      '@arc-platform/core':
         specifier: workspace:^
         version: link:../Core
       client-only:
@@ -154,16 +154,16 @@ importers:
 
   Arc/Next/examples/minimal-app:
     dependencies:
-      '@arc/core':
+      '@arc-platform/core':
         specifier: workspace:^
         version: link:../../../Core
-      '@arc/next':
+      '@arc-platform/next':
         specifier: workspace:^
         version: link:../..
-      '@weave/next':
+      '@weave-platform/next':
         specifier: workspace:^
         version: link:../../../../Weave/Next
-      '@weave/react':
+      '@weave-platform/react':
         specifier: workspace:^
         version: link:../../../../Weave/React
       next:
@@ -194,10 +194,10 @@ importers:
 
   Weave/Next:
     dependencies:
-      '@arc/next':
+      '@arc-platform/next':
         specifier: workspace:^
         version: link:../../Arc/Next
-      '@weave/react':
+      '@weave-platform/react':
         specifier: workspace:^
         version: link:../React
       server-only:
@@ -265,7 +265,7 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.101.0
         version: 5.101.0(react@19.2.6)
-      '@weave/react':
+      '@weave-platform/react':
         specifier: workspace:^
         version: link:../../React
       '@wordpress/api-fetch':

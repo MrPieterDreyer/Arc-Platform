@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 /**
- * hooks.test.ts — React 19 hooks unit tests for @arc/core
+ * hooks.test.ts — React 19 hooks unit tests for @arc-platform/core
  *
  * ARC-HOOK-01: useCart
  * ARC-HOOK-02: useProduct

@@ -1,5 +1,5 @@
 {
-  "name": "@arc/next-example",
+  "name": "@arc-platform/next-example",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -22,10 +22,10 @@
     "test:e2e:update-snapshots": "playwright test e2e/visual --grep @visual --project=chromium --update-snapshots"
   },
   "dependencies": {
-    "@arc/core": "workspace:^",
-    "@arc/next": "workspace:^",
-    "@weave/next": "workspace:^",
-    "@weave/react": "workspace:^",
+    "@arc-platform/core": "workspace:^",
+    "@arc-platform/next": "workspace:^",
+    "@weave-platform/next": "workspace:^",
+    "@weave-platform/react": "workspace:^",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"

@@ -1,4 +1,4 @@
-import type { WeavePageConfig } from '@weave/react/schemas';
+import type { WeavePageConfig } from '@weave-platform/react/schemas';
 
 const HEADING = 'E2E Weave heading marker';
 const BODY = 'E2E weave body marker';

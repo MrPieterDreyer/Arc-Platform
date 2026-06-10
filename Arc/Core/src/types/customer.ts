@@ -1,5 +1,5 @@
 /**
- * @arc/core — WooCommerce Store API v1 customer types
+ * @arc-platform/core — WooCommerce Store API v1 customer types
  *
  * NOTE: The Store API customer endpoint is SESSION-SCOPED only.
  * It does NOT return a full customer profile or order history.

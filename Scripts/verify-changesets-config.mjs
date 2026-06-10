@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// TOOL-07 regression: .changeset/config.json must declare fixed groups for @arc/* and @weave/*.
+// TOOL-07 regression: .changeset/config.json must declare fixed groups for @arc-platform/* and @weave-platform/*.
 // Source: .planning/phases/00-tooling-foundations/00-RESEARCH.md (Pattern 6) + PITFALLS P13.
 import { existsSync, readFileSync } from 'node:fs';
 
@@ -13,14 +13,14 @@ const cfg = JSON.parse(readFileSync(CONFIG_PATH, 'utf8'));
 let failed = 0;
 
 const fixed = cfg.fixed ?? [];
-const hasArcGroup = fixed.some((g) => Array.isArray(g) && g.includes('@arc/*'));
-const hasWeaveGroup = fixed.some((g) => Array.isArray(g) && g.includes('@weave/*'));
+const hasArcGroup = fixed.some((g) => Array.isArray(g) && g.includes('@arc-platform/*'));
+const hasWeaveGroup = fixed.some((g) => Array.isArray(g) && g.includes('@weave-platform/*'));
 if (!hasArcGroup) {
-  console.error('[verify-changesets-config] fixed groups missing ["@arc/*"]');
+  console.error('[verify-changesets-config] fixed groups missing ["@arc-platform/*"]');
   failed += 1;
 }
 if (!hasWeaveGroup) {
-  console.error('[verify-changesets-config] fixed groups missing ["@weave/*"]');
+  console.error('[verify-changesets-config] fixed groups missing ["@weave-platform/*"]');
   failed += 1;
 }
 

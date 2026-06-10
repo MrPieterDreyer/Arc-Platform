@@ -1,4 +1,4 @@
-import type { WeaveInputType } from '@weave/react';
+import type { WeaveInputType } from '@weave-platform/react';
 
 export interface InputMatrixCase {
   type: WeaveInputType;

@@ -40,7 +40,7 @@ tenant identity carried explicitly through the cache and revalidation layers.
    the requesting sub-site before any post lookup runs.
 
 3. **Tenant-scoped cache tags.** Page-config tags become `weave:tenant:{tenantId}:page:{slug}` (and the
-   list tag likewise namespaced). `@weave/next`'s tag allowlist (`Weave/Next/src/revalidate.ts:16`, pinned
+   list tag likewise namespaced). `@weave-platform/next`'s tag allowlist (`Weave/Next/src/revalidate.ts:16`, pinned
    to `weave:`) is extended so a revalidation webhook can only purge tags within its own tenant namespace.
 
 4. **Tenant routing in `loadPageConfig`.** `Weave/Next/src/load-page-config.ts` today fetches from a single
@@ -72,7 +72,7 @@ tenant identity carried explicitly through the cache and revalidation layers.
 - **Section IDs** are already UUIDv4 (`class-weave-cpt.php` `generate_section_id()`), so they remain
   globally unique under multi-tenancy — no change needed, but Phase 2 must not regress to a sequential id.
 - **Cache-tag schema change** (`weave:tenant:{id}:page:{slug}`) is a breaking change to the revalidation
-  contract; it must land before any tenant beyond the first, and `@arc/next`/`@weave/next` allowlists
+  contract; it must land before any tenant beyond the first, and `@arc-platform/next`/`@weave-platform/next` allowlists
   update together.
 - **Studio bridge** gains a non-negotiable origin-validation requirement now, even though the bridge itself
   is Phase 5 — designing the authz boundary late is how preview sandboxes leak.

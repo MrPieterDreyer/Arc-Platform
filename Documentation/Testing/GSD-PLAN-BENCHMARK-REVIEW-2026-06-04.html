@@ -112,7 +112,7 @@
     <div class="score ok"><div class="n">7 / 9</div><div class="l">ADRs compliant</div></div>
   </div>
   <ul>
-    <li><b>No P0 ship blockers.</b> The core engineering is genuinely strong: <code>@arc/core</code> is provably framework-agnostic (no <code>next/*</code> leakage), caching uses Next 16 <code>'use cache'</code>/<code>cacheTag</code> throughout (zero <code>unstable_cache</code>), and HMAC webhook verification is textbook (timing-safe, dual-timestamp replay window, byte-parity with the PHP signer).</li>
+    <li><b>No P0 ship blockers.</b> The core engineering is genuinely strong: <code>@arc-platform/core</code> is provably framework-agnostic (no <code>next/*</code> leakage), caching uses Next 16 <code>'use cache'</code>/<code>cacheTag</code> throughout (zero <code>unstable_cache</code>), and HMAC webhook verification is textbook (timing-safe, dual-timestamp replay window, byte-parity with the PHP signer).</li>
     <li><b>The biggest real risk is CI honesty, not code.</b> The visual-regression gate is marked green but has <em>no Linux baselines</em> — it runs on <code>ubuntu-latest</code> and cannot actually pass; and Store API <code>getOrder</code>'s positive path is a permanent <code>test.skip</code> with no seeded order. Two "false greens" that overstate coverage.</li>
     <li><b>Two process contracts have drifted from their ADRs:</b> the license allowlist (<code>check-licenses.mjs</code>) permits three SPDX IDs not in ADR-0003's locked table, and the v1-publish guard runs only on PRs, not in <code>release.yml</code> — contradicting ADR-0001's own text.</li>
     <li><b>Weave SDK + WP plugin are solid and honest.</b> WEAVE-SDK-04/05/09 and WEAVE-NEXT-01 verify in code with matching tests (the 15-input matrix is exact; per-section error isolation degrades to <code>null</code> in prod). Known v0.1 deferrals (WEAVE-NEXT-04, WEAVE-WP-07) are correctly <em>not</em> claimed as shipped.</li>
@@ -255,7 +255,7 @@
       <tr><td>0005 — page-config JSON shape</td><td class="ok">✅</td><td>Zod schema matches contract <code>.strict()</code>; server-minted UUIDs</td></tr>
       <tr><td>0006 — cart-token cookie</td><td class="partial">🟡 partial</td><td><b>P2</b> SameSite=None/Secure relaxed for local E2E without ADR sanction</td></tr>
       <tr><td>0007 — webhook auth</td><td class="ok">✅</td><td>Next verifier ↔ PHP signer byte-parity; timing-safe; replay window</td></tr>
-      <tr><td>0008 — npm scope</td><td class="ok">✅</td><td>all names <code>@arc/*</code> / <code>@weave/*</code></td></tr>
+      <tr><td>0008 — npm scope</td><td class="ok">✅</td><td>all names <code>@arc-platform/*</code> / <code>@weave-platform/*</code></td></tr>
       <tr><td>0009 — customer auth</td><td class="na">— open</td><td>Status "Open (spike before Phase 2)"; nothing to enforce yet</td></tr>
     </tbody>
   </table>

@@ -63,7 +63,7 @@ export function warnOnDrift(
   for (const prop of renderedPropKeys) {
     if (!schemaNames.includes(prop)) {
       console.warn(
-        `[@weave/react] Section "${type}": prop "${prop}" is rendered but has no matching schema input.`,
+        `[@weave-platform/react] Section "${type}": prop "${prop}" is rendered but has no matching schema input.`,
       );
       warned = true;
     }
@@ -72,7 +72,7 @@ export function warnOnDrift(
   for (const name of schemaNames) {
     if (!renderedPropKeys.includes(name)) {
       console.warn(
-        `[@weave/react] Section "${type}": schema input "${name}" has no matching component prop.`,
+        `[@weave-platform/react] Section "${type}": schema input "${name}" has no matching component prop.`,
       );
       warned = true;
     }

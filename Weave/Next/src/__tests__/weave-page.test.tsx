@@ -1,8 +1,8 @@
 import type { ComponentType } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { defineSection } from '@weave/react';
-import type { WeaveComponentSchema, WeavePageConfig } from '@weave/react';
+import { defineSection } from '@weave-platform/react';
+import type { WeaveComponentSchema, WeavePageConfig } from '@weave-platform/react';
 
 // --- Fixture config: 2 sections in a known order (A before B) ---------------------------------
 // Mocking the loader keeps this test free of next/cache + fetch concerns (Plan 02 covers those).

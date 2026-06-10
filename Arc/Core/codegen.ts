@@ -1,8 +1,8 @@
 /**
- * graphql-codegen configuration for @arc/core
+ * graphql-codegen configuration for @arc-platform/core
  *
  * USAGE:
- *   pnpm --filter @arc/core codegen
+ *   pnpm --filter @arc-platform/core codegen
  *
  * PREREQUISITES:
  *   - A running WPGraphQL endpoint (use wp-env: pnpm wp-env start in Pilot)

@@ -1,4 +1,4 @@
-import { loadPageConfig } from '@weave/next/server';
+import { loadPageConfig } from '@weave-platform/next/server';
 import Link from 'next/link';
 import { connection } from 'next/server';
 import { Suspense } from 'react';

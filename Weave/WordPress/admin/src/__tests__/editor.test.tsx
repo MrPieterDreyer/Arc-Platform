@@ -12,7 +12,7 @@
  * the `SectionList` describe block below (Task 2).
  */
 
-import { defineSection } from '@weave/react';
+import { defineSection } from '@weave-platform/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEditorStore } from '../store/editor-store';
 import apiFetch from '@wordpress/api-fetch';

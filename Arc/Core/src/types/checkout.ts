@@ -1,5 +1,5 @@
 /**
- * @arc/core — WooCommerce Store API v1 checkout types
+ * @arc-platform/core — WooCommerce Store API v1 checkout types
  *
  * Hand-authored from the WC Store API source + docs.
  * No runtime code — types only.

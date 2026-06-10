@@ -1,5 +1,5 @@
 /**
- * @arc/core — WC Store API v1 checkout functions
+ * @arc-platform/core — WC Store API v1 checkout functions
  *
  * All functions accept a `WooClient` as their first argument and delegate
  * entirely to `client.request()` — no direct fetch calls, no header logic.

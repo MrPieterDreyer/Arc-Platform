@@ -1,17 +1,17 @@
 /**
  * ARC-NEXT-02 — Cart-Token round-trip contract (live WC backend)
  *
- * The @arc/next cookie bridge (cookies.ts) is unit-tested in isolation. This
+ * The @arc-platform/next cookie bridge (cookies.ts) is unit-tested in isolation. This
  * contract test validates the EXTERNAL dependency that bridge relies on: that a
  * real WC Store API issues a Cart-Token on first write and resumes the same
- * cart when that token is replayed. It uses bare @arc/core clients (no Next
+ * cart when that token is replayed. It uses bare @arc-platform/core clients (no Next
  * runtime) so it can run against a seeded wp-env.
  *
  * Run with a live backend:
  *   CI_WP_ENV=true ARC_WC_URL=http://localhost:8888 TEST_PRODUCT_ID=15 \
- *     pnpm --filter @arc/next exec vitest run
+ *     pnpm --filter @arc-platform/next exec vitest run
  */
-import { addItem, getCart, WooClient } from '@arc/core';
+import { addItem, getCart, WooClient } from '@arc-platform/core';
 import { describe, expect, test } from 'vitest';
 
 const WC_URL = process.env.ARC_WC_URL ?? 'http://localhost:8888';

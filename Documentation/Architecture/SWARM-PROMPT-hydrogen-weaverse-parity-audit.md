@@ -11,10 +11,10 @@ produce an actionable parity + security report. Goal: ensure Arc/Weave reaches t
 enterprise-grade architecture and security posture *before* we continue the build.
 
 ### What Arc/Weave is (the thing being benchmarked)
-- **Arc** = open-source headless WooCommerce framework. Packages: `@arc/core`, `@arc/next`.
+- **Arc** = open-source headless WooCommerce framework. Packages: `@arc-platform/core`, `@arc-platform/next`.
   Hydrogen-equivalent, but WooCommerce instead of Shopify.
-- **Weave** = visual sections editor SDK on top of Arc. Packages: `@weave/react`,
-  `@weave/next`, plus a WordPress PHP plugin. Weaverse-equivalent.
+- **Weave** = visual sections editor SDK on top of Arc. Packages: `@weave-platform/react`,
+  `@weave-platform/next`, plus a WordPress PHP plugin. Weaverse-equivalent.
 - Stack: TypeScript strict, pnpm workspaces, Turborepo, tsup, Biome, Vitest,
   **Next.js 16 App Router + React 19**, WC **Store API v1** (cart/checkout),
   **WPGraphQL** (catalog), **Cart-Token** auth (not nonces) for headless.
@@ -76,7 +76,7 @@ Spawn these specialists. Each writes structured findings to shared memory before
 1. **Architecture Auditor** — Hydrogen core primitives vs Arc.
    Compare: route/loader model, RSC vs Remix loaders, data fetching, streaming/Suspense,
    error boundaries, `<Money>`/`<Image>`/`<Video>` primitives, env/config handling,
-   deploy-target agnosticism. Map each to `@arc/core` / `@arc/next` — have / partial / missing.
+   deploy-target agnosticism. Map each to `@arc-platform/core` / `@arc-platform/next` — have / partial / missing.
 
 2. **Cart & Checkout Auditor** — Hydrogen cart vs Arc cart.
    Cart state sync, optimistic UI, cart persistence (cookie/session), checkout handoff,
@@ -111,8 +111,8 @@ Spawn these specialists. Each writes structured findings to shared memory before
    validation of section configs (`WeaveComponentSchema` vs `@weaverse/schema`), preview/studio
    bridge security, and **multi-tenant isolation** requirements for Phase 2 SaaS (tenant data
    separation, authz boundaries, editor preview sandboxing — Weave has NO multi-tenant code yet,
-   so treat as greenfield, informed by Weaverse's `projectId` model). Map to `@weave/react`,
-   `@weave/next`, the WP plugin (`Weave/WordPress/src/*.php`).
+   so treat as greenfield, informed by Weaverse's `projectId` model). Map to `@weave-platform/react`,
+   `@weave-platform/next`, the WP plugin (`Weave/WordPress/src/*.php`).
 
 6. **Supply-Chain Auditor.**
    Dependency pinning/catalogs, build & publish integrity (Changesets, npm provenance),

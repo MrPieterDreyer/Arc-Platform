@@ -2,7 +2,7 @@
  * Wave 5 — one E2E section per Weave input type (15), used by /e2e-fixtures/weave-inputs.
  */
 import type { ComponentType } from 'react';
-import { defineSection, type WeaveComponentSchema, type WeaveInput } from '@weave/react';
+import { defineSection, type WeaveComponentSchema, type WeaveInput } from '@weave-platform/react';
 
 import { formatDefaultMarker } from './format-default-marker';
 import { INPUT_MATRIX_CASES, inputMatrixSectionType } from './input-matrix-cases';

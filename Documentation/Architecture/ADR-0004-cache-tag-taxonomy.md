@@ -11,7 +11,7 @@
 Next.js 16's `'use cache'` directive + `cacheTag()` + `revalidateTag()` API requires every cached data fetch to be tagged with a string identifier. When content changes (e.g. a WC product is updated), the corresponding revalidation webhook calls `revalidateTag(tag)` to purge the cached entry. This creates a **read/write contract**: the tag string used when populating the cache must be identical to the tag string used when invalidating it.
 
 Without a locked taxonomy:
-- `@arc/next` cache helpers might tag a product with `product:${slug}`
+- `@arc-platform/next` cache helpers might tag a product with `product:${slug}`
 - The Weave WP plugin webhook might invalidate with `arc-product-${slug}`
 - The mismatch causes silent cache staleness — the invalidation fires but nothing is purged
 
@@ -22,13 +22,13 @@ String-typo silent failures are the most dangerous class of caching bug: they pr
 - Predictability: every developer knows the correct tag string without looking it up
 - Consistency: read paths and invalidation paths use the same constants
 - Type safety: misspellings fail at compile time, not at runtime
-- Namespace isolation: `@arc/*` and `@weave/*` tags cannot accidentally collide
+- Namespace isolation: `@arc-platform/*` and `@weave-platform/*` tags cannot accidentally collide
 - Extensibility: new resource types can be added without renaming existing tags
 
 ## Considered Options
 
 1. **Free-form per-package** — each package defines its own tag strings; no shared contract; silent mismatch bugs likely across package boundaries
-2. **Hierarchical namespace (chosen)** — `{owner}:{resource}:{key}` pattern; owned by this ADR; typed helper in `@arc/next` + `@weave/next` enforces at compile time
+2. **Hierarchical namespace (chosen)** — `{owner}:{resource}:{key}` pattern; owned by this ADR; typed helper in `@arc-platform/next` + `@weave-platform/next` enforces at compile time
 3. **Hash-based tags** — content-addressed (e.g. `sha256(slug)`); eliminates collision but makes tags unreadable in traces and impossible to invalidate from the WP side without the hash function
 
 ## Decision
@@ -37,24 +37,24 @@ The cache tag namespace pattern is `{owner}:{resource}:{key}`. The following tag
 
 | Tag | Owner package | Meaning |
 |-----|---------------|---------|
-| `arc:product:{slug}` | `@arc/next` | Single product detail page keyed by slug |
-| `arc:product:list` | `@arc/next` | Product listing (paginated catalog) |
-| `arc:collection:{slug}` | `@arc/next` | Product collection / category page keyed by slug |
-| `arc:collection:list` | `@arc/next` | All collections listing |
-| `arc:cart` | `@arc/next` | Cart endpoint (typically `no-store`; tag reserved for future server-rendered cart state) |
-| `weave:page:{slug}` | `@weave/next` | Weave page config for a given page slug |
-| `weave:page:list` | `@weave/next` | Metadata list of all Weave pages |
+| `arc:product:{slug}` | `@arc-platform/next` | Single product detail page keyed by slug |
+| `arc:product:list` | `@arc-platform/next` | Product listing (paginated catalog) |
+| `arc:collection:{slug}` | `@arc-platform/next` | Product collection / category page keyed by slug |
+| `arc:collection:list` | `@arc-platform/next` | All collections listing |
+| `arc:cart` | `@arc-platform/next` | Cart endpoint (typically `no-store`; tag reserved for future server-rendered cart state) |
+| `weave:page:{slug}` | `@weave-platform/next` | Weave page config for a given page slug |
+| `weave:page:list` | `@weave-platform/next` | Metadata list of all Weave pages |
 
 **Tag construction rules:**
 - All lowercase, colon-delimited; no spaces, no hyphens in the structural separators
 - Slug values use the same slug as the WP/WC permalink slug (URL-encoded if needed, but typically ASCII-safe)
-- The `arc:` prefix is reserved for `@arc/*` packages; the `weave:` prefix is reserved for `@weave/*` packages
-- No other tag prefix is permitted in `@arc/*` or `@weave/*` package code
+- The `arc:` prefix is reserved for `@arc-platform/*` packages; the `weave:` prefix is reserved for `@weave-platform/*` packages
+- No other tag prefix is permitted in `@arc-platform/*` or `@weave-platform/*` package code
 
-**Typed helper pattern** (implemented in Phase 2 `@arc/next` and Phase 4b `@weave/next`):
+**Typed helper pattern** (implemented in Phase 2 `@arc-platform/next` and Phase 4b `@weave-platform/next`):
 
 ```typescript
-// @arc/next — arc/cache-tags.ts
+// @arc-platform/next — arc/cache-tags.ts
 export const arcTag = {
   product: (slug: string) => `arc:product:${slug}` as const,
   productList: () => 'arc:product:list' as const,
@@ -63,7 +63,7 @@ export const arcTag = {
   cart: () => 'arc:cart' as const,
 } as const;
 
-// @weave/next — weave/cache-tags.ts
+// @weave-platform/next — weave/cache-tags.ts
 export const weaveTag = {
   page: (slug: string) => `weave:page:${slug}` as const,
   pageList: () => 'weave:page:list' as const,
@@ -87,14 +87,14 @@ The WP plugin webhook body uses the tag string directly (e.g. `"tag": "weave:pag
 
 ### Neutral
 
-- `arc:` and `weave:` namespaces are reserved globally — no other tag prefix is permitted in `@arc/*` / `@weave/*` packages
+- `arc:` and `weave:` namespaces are reserved globally — no other tag prefix is permitted in `@arc-platform/*` / `@weave-platform/*` packages
 - `arc:cart` is defined but the cart response is typically fetched with `cache: 'no-store'` — the tag exists for the edge case where server-rendered cart state needs invalidation
 
 ## Implementation Notes
 
-- Phase 2 (`@arc/next`): implement `arcTag` helper in `src/cache-tags.ts`; export from package index; use `cacheTag(arcTag.product(slug))` in every cached server component / fetch
+- Phase 2 (`@arc-platform/next`): implement `arcTag` helper in `src/cache-tags.ts`; export from package index; use `cacheTag(arcTag.product(slug))` in every cached server component / fetch
 - Phase 4a (Weave WP plugin): `class-weave-revalidate.php` sends `{ "tag": "weave:page:{$slug}", "event": "page.updated", "timestamp": ... }` in webhook body
-- Phase 4b (`@weave/next`): implement `weaveTag` helper in `src/cache-tags.ts`; revalidate handler validates `tag.startsWith('weave:') || tag.startsWith('arc:')` before calling `revalidateTag(tag)`
+- Phase 4b (`@weave-platform/next`): implement `weaveTag` helper in `src/cache-tags.ts`; revalidate handler validates `tag.startsWith('weave:') || tag.startsWith('arc:')` before calling `revalidateTag(tag)`
 - TypeScript: both helpers return `as const` string literals — callers get exact literal types, not `string`
 - To add a new tag: (1) amend this ADR table, (2) update the typed helper, (3) update the verify-adrs check if needed, (4) document in Phase 2/4b implementation notes
 

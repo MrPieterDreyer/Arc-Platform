@@ -10,7 +10,7 @@
  *
  * Run against a deployed route:
  *   CI_WP_ENV=true ARC_REVALIDATE_URL=https://app.example.com/api/revalidate \
- *     WEAVE_WEBHOOK_SECRET=... pnpm --filter @arc/next exec vitest run
+ *     WEAVE_WEBHOOK_SECRET=... pnpm --filter @arc-platform/next exec vitest run
  */
 import { createHmac } from 'node:crypto';
 import { describe, expect, test } from 'vitest';

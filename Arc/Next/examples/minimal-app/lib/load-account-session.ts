@@ -1,7 +1,7 @@
 import 'server-only';
 
-import { getCustomer, type WCCustomer } from '@arc/core';
-import { createReadOnlyCartClient } from '@arc/next/server';
+import { getCustomer, type WCCustomer } from '@arc-platform/core';
+import { createReadOnlyCartClient } from '@arc-platform/next/server';
 import { connection } from 'next/server';
 
 export type AccountSessionModel =

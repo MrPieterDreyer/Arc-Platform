@@ -46,7 +46,7 @@ export function safeValidateCart(value: WooCart): WooCart {
     if (!seenWarnings.has(signature)) {
       seenWarnings.add(signature);
       console.warn(
-        '[@arc/core] Cart response failed structural validation — the WC Store API ' +
+        '[@arc-platform/core] Cart response failed structural validation — the WC Store API ' +
           'shape may have drifted from the hand-authored types. Issues:',
         result.error.issues,
       );

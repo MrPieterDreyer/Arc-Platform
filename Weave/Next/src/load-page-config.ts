@@ -1,8 +1,8 @@
 import 'server-only';
 
 // next@16.2.x — stable cache APIs only (FORBIDDEN: unstable_cache, per D-04 / Pitfall 2).
-import { ARC_CACHE_PROFILE } from '@arc/next';
-import { type WeavePageConfig, WeavePageConfigSchema } from '@weave/react/schemas';
+import { ARC_CACHE_PROFILE } from '@arc-platform/next';
+import { type WeavePageConfig, WeavePageConfigSchema } from '@weave-platform/react/schemas';
 import { cacheLife, cacheTag } from 'next/cache';
 import { draftMode } from 'next/headers';
 import { weaveTag } from './cache-tags.js';

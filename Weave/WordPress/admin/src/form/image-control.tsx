@@ -2,7 +2,7 @@
  * `<ImageControl>` — the WP Media Library image picker (WEAVE-WP-08, UI-SPEC §Image Control Spec).
  *
  * Wraps `MediaUploadCheck` + `MediaUpload` (`@wordpress/media-utils`) and persists the richer
- * `{ id, url }` attachment shape (D-11 / OQ2 — the value shape made first-class in `@weave/react`'s
+ * `{ id, url }` attachment shape (D-11 / OQ2 — the value shape made first-class in `@weave-platform/react`'s
  * input-registry in Plan 05) via `onChange`:
  *   - select  → `onChange({ id: media.id, url: media.url })`
  *   - remove  → `onChange({ id: null, url: '' })`
@@ -17,7 +17,7 @@
  */
 
 import type { ReactNode } from 'react';
-import type { WeaveInput } from '@weave/react';
+import type { WeaveInput } from '@weave-platform/react';
 import { BaseControl, Button } from '@wordpress/components';
 // `MediaUpload` + `MediaUploadCheck` are provided by WP at runtime and aliased to the jsdom stub
 // under test. The published `@wordpress/media-utils@5.x` `.d.ts` is incomplete — `MediaUpload` is a

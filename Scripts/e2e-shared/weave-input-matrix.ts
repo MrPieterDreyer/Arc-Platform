@@ -1,5 +1,5 @@
 /**
- * Wave 5 — Weave input-type matrix (15 SDK input types, defaults from @weave/react registry).
+ * Wave 5 — Weave input-type matrix (15 SDK input types, defaults from @weave-platform/react registry).
  * Shared by minimal-app fixture route and Playwright specs.
  */
 

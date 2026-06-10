@@ -1,6 +1,6 @@
 'use client';
 
-import type { WooCart } from '@arc/core';
+import type { WooCart } from '@arc-platform/core';
 import { useOptimistic, useTransition } from 'react';
 import { removeItemAction, updateItemAction } from '../../app/actions/cart';
 import { emitCartCount } from '../../lib/cart-sync';

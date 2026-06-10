@@ -121,8 +121,8 @@ wp_remote_post($next_revalidate_url, [
 ## Implementation Notes
 
 - Phase 4a (Weave WP plugin): `class-weave-revalidate.php` fires on `save_post_weave_page` and WC product/category hooks; signs and POSTs to the `WEAVE_REVALIDATE_URL` constant from `wp-config.php`
-- Phase 2 (`@arc/next`): `createRevalidateHandler({ secret: string, allowedTagPrefixes?: string[] })` factory returns a Next.js route handler (`app/api/revalidate/route.ts`). Default `allowedTagPrefixes: ['weave:', 'arc:']`. Rejects requests with unknown prefixes before calling `revalidateTag`.
-- The `WEAVE_WEBHOOK_SECRET` environment variable name is exported as a constant from `@arc/next` (`export const WEAVE_WEBHOOK_SECRET_ENV = 'WEAVE_WEBHOOK_SECRET'`) so it is referenced by name, not by string literal, in both the handler factory and the Pilot starter.
+- Phase 2 (`@arc-platform/next`): `createRevalidateHandler({ secret: string, allowedTagPrefixes?: string[] })` factory returns a Next.js route handler (`app/api/revalidate/route.ts`). Default `allowedTagPrefixes: ['weave:', 'arc:']`. Rejects requests with unknown prefixes before calling `revalidateTag`.
+- The `WEAVE_WEBHOOK_SECRET` environment variable name is exported as a constant from `@arc-platform/next` (`export const WEAVE_WEBHOOK_SECRET_ENV = 'WEAVE_WEBHOOK_SECRET'`) so it is referenced by name, not by string literal, in both the handler factory and the Pilot starter.
 - Pilot starter (Phase 5): `app/api/revalidate/route.ts` uses `createRevalidateHandler` with the env var; `README.md` documents secret generation with `openssl rand -hex 32` and deployment configuration.
 
 ## References

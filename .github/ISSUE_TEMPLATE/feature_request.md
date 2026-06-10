@@ -28,10 +28,10 @@ assignees: ""
 
 ## Scope
 
-- [ ] `@arc/core`
-- [ ] `@arc/next`
-- [ ] `@weave/react`
-- [ ] `@weave/next`
+- [ ] `@arc-platform/core`
+- [ ] `@arc-platform/next`
+- [ ] `@weave-platform/react`
+- [ ] `@weave-platform/next`
 - [ ] Weave WordPress plugin
 - [ ] Tooling / CI / docs only
 

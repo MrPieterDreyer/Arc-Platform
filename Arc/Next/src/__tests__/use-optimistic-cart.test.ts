@@ -3,7 +3,7 @@
  */
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { WooCart } from '@arc/core';
+import type { WooCart } from '@arc-platform/core';
 import { useOptimisticCart } from '../use-optimistic-cart.js';
 
 const baseCart: WooCart = {

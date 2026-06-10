@@ -20,7 +20,7 @@ const files = readdirSync(dir).filter((f) => f.endsWith('.md') && f !== 'README.
 let failed = false;
 for (const f of files) {
   const body = readFileSync(join(dir, f), 'utf8');
-  // Frontmatter looks like: ---\n"@arc/core": major\n---
+  // Frontmatter looks like: ---\n"@arc-platform/core": major\n---
   const matches = body.match(/^"[^"]+":\s*(major|minor|patch)/gm) ?? [];
   for (const m of matches) {
     if (m.includes('major')) {

@@ -14,8 +14,8 @@ const getCollectionProducts = vi
   .fn()
   .mockResolvedValue({ nodes: [], pageInfo: { hasNextPage: false } });
 
-vi.mock('@arc/core', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@arc/core')>();
+vi.mock('@arc-platform/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@arc-platform/core')>();
   return {
     ...actual,
     getProduct,

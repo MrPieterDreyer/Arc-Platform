@@ -126,7 +126,7 @@ Use a **hybrid** model (best ROI):
 2. **Input-type matrix** — Route `/e2e-fixtures/weave-inputs` in minimal-app renders **one section per input type** with registry defaults (`e2e/weave/input-matrix.spec.ts`). Optional REST seed: `buildWeaveInputMatrixPageConfig()` → slug `e2e-weave-inputs`.
 3. **Per-section tests** (Phase 5+) — When Pilot registers Hero, CTA, etc., add one happy-path + one error-boundary test per section type.
 
-Do **not** duplicate Zod validation in E2E; trust `@weave/react` unit tests for schema edge cases.
+Do **not** duplicate Zod validation in E2E; trust `@weave-platform/react` unit tests for schema edge cases.
 
 ---
 
@@ -187,10 +187,10 @@ Do not collapse per-app suites into one mega-project — keep **per-app** config
 | 10 A11y | `@a11y` | No | `@axe-core/playwright` via `Scripts/e2e-shared/a11y.ts` |
 | 11 Perf | `@perf` | No | Navigation timing proxy budgets in `Scripts/e2e-shared/perf.ts` |
 
-**Visual baseline update:** after `pnpm wp:setup` and `pnpm --filter @arc/next-example build`, run `pnpm --filter @arc/next-example test:e2e:update-snapshots` and commit PNGs under `e2e/snapshots/{platform}/`. On Windows that is `win32/`; CI on `ubuntu-latest` needs `linux/` baselines.
+**Visual baseline update:** after `pnpm wp:setup` and `pnpm --filter @arc-platform/next-example build`, run `pnpm --filter @arc-platform/next-example test:e2e:update-snapshots` and commit PNGs under `e2e/snapshots/{platform}/`. On Windows that is `win32/`; CI on `ubuntu-latest` needs `linux/` baselines.
 
 **Linux baselines for CI:** trigger [`.github/workflows/e2e-update-linux-snapshots.yml`](../../.github/workflows/e2e-update-linux-snapshots.yml) (`workflow_dispatch`), download the `linux-visual-snapshots` artifact, and commit PNGs to `Arc/Next/examples/minimal-app/e2e/snapshots/linux/`. Root convenience: `pnpm test:e2e:update-snapshots`.
 
-**Weave page rendering:** import `loadPageConfig` from `@weave/next/server` for loader-only routes, or `WeavePage` from `@weave/next/server-page` for the bundled server component.
+**Weave page rendering:** import `loadPageConfig` from `@weave-platform/next/server` for loader-only routes, or `WeavePage` from `@weave-platform/next/server-page` for the bundled server component.
 
 **Perf budgets (Chromium, wp-env, v0.1):** `domContentLoadedEventEnd` ≤ 8000 ms, `loadEventEnd` ≤ 12000 ms on home / PLP / PDP. Tune in `DEFAULT_PERF_BUDGETS` when CI hardware is stable. Full Lighthouse (PILOT-06) is deferred.

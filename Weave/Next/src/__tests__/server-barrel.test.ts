@@ -1,13 +1,13 @@
 /**
- * `@weave/next` barrel export-surface contract (WEAVE-NEXT-01..04, Pitfall 5).
+ * `@weave-platform/next` barrel export-surface contract (WEAVE-NEXT-01..04, Pitfall 5).
  *
  * The package exposes exactly two entry points — `.` (RSC-safe) and `./server` (server-only).
  * This suite locks both surfaces:
  *   - `./server` exports the four server APIs that do NOT pull a client-only module: `weaveTag`,
  *     `loadPageConfig`, `createPreviewHandler`, `createWeaveRevalidateHandler`.
- *   - `./server` must NOT re-export `WeavePage`: it imports the `@weave/react` barrel (`import
+ *   - `./server` must NOT re-export `WeavePage`: it imports the `@weave-platform/react` barrel (`import
  *     'client-only'`), so re-exporting it here would drag `client-only` into the RSC graph of any
- *     consumer importing `@weave/next/server` from a Server Component and break their build. This
+ *     consumer importing `@weave-platform/next/server` from a Server Component and break their build. This
  *     assertion guards that exact regression (see the comment in server.ts + examples/minimal-app).
  *   - `./index` MUST stay RSC-safe: pure `weaveTag` only, NONE of the server-only APIs.
  *
@@ -30,7 +30,7 @@ vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
 }));
 
-describe('@weave/next/server — export surface', () => {
+describe('@weave-platform/next/server — export surface', () => {
   it('exports the four server APIs that are safe for the RSC server graph', async () => {
     const mod = await import('../server.js');
 
@@ -43,8 +43,8 @@ describe('@weave/next/server — export surface', () => {
     expect(typeof mod.createWeaveRevalidateHandler).toBe('function');
   });
 
-  it('does NOT re-export WeavePage (it pulls @weave/react client-only into the server graph)', async () => {
-    // Re-exporting WeavePage here breaks any consumer that imports `@weave/next/server` from a
+  it('does NOT re-export WeavePage (it pulls @weave-platform/react client-only into the server graph)', async () => {
+    // Re-exporting WeavePage here breaks any consumer that imports `@weave-platform/next/server` from a
     // Server Component ("'client-only' cannot be imported from a Server Component module").
     // Consumers use loadPageConfig + a Client Component <SectionRenderer> wrapper instead.
     const mod = (await import('../server.js')) as Record<string, unknown>;
@@ -52,7 +52,7 @@ describe('@weave/next/server — export surface', () => {
   });
 });
 
-describe('@weave/next/server-page — WeavePage entry', () => {
+describe('@weave-platform/next/server-page — WeavePage entry', () => {
   it('exports WeavePage for all-in-one storefront routes', async () => {
     const mod = await import('../server-page.js');
     expect('WeavePage' in mod).toBe(true);
@@ -61,7 +61,7 @@ describe('@weave/next/server-page — WeavePage entry', () => {
   });
 });
 
-describe('@weave/next (./index) — RSC-safe surface', () => {
+describe('@weave-platform/next (./index) — RSC-safe surface', () => {
   it('re-exports the pure weaveTag helper', async () => {
     const index = await import('../index.js');
     expect(typeof index.weaveTag).toBe('object');

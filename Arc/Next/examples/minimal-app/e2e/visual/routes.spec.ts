@@ -9,7 +9,7 @@ test.describe('Wave 9 — visual regression (Chromium) @visual', () => {
 
   test('home @visual', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: /@arc\/next minimal app/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /@arc-platform\/next minimal app/i })).toBeVisible();
     await expect(page).toHaveScreenshot('home.png', { fullPage: true });
   });
 

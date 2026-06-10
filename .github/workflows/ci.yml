@@ -93,7 +93,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Build first so @arc/next contract tests resolve @arc/core from dist.
+      # Build first so @arc-platform/next contract tests resolve @arc-platform/core from dist.
       - run: pnpm build
       - name: Boot wp-env (WP + WC + WPGraphQL + WooGraphQL)
         run: pnpm wp:start
@@ -123,7 +123,7 @@ jobs:
         run: pnpm exec playwright install chromium --with-deps
         working-directory: Arc/Next/examples/minimal-app
       - name: Build minimal-app
-        run: pnpm --filter @arc/next-example build
+        run: pnpm --filter @arc-platform/next-example build
       - name: E2E smoke (@smoke)
         run: pnpm test:e2e:smoke
       - name: E2E integration (@integration)

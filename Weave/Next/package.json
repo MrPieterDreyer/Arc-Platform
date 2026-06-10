@@ -1,5 +1,5 @@
 {
-  "name": "@weave/next",
+  "name": "@weave-platform/next",
   "version": "0.1.0",
   "private": false,
   "description": "Weave — Next.js App Router integration for sections",
@@ -43,8 +43,8 @@
     "react": "catalog:"
   },
   "dependencies": {
-    "@arc/next": "workspace:^",
-    "@weave/react": "workspace:^",
+    "@arc-platform/next": "workspace:^",
+    "@weave-platform/react": "workspace:^",
     "server-only": "^0.0.1"
   },
   "devDependencies": {

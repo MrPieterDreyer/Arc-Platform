@@ -5,16 +5,16 @@
 import 'client-only';
 
 /**
- * @arc/core/hooks — React 19 Client Component hooks.
+ * @arc-platform/core/hooks — React 19 Client Component hooks.
  *
- * Deliberately a SEPARATE entry from the main `@arc/core` barrel so the root
+ * Deliberately a SEPARATE entry from the main `@arc-platform/core` barrel so the root
  * stays React-Server-Component-safe. The main barrel is imported server-side
- * (loaders, Server Actions, route handlers via `@arc/next`); if it re-exported
+ * (loaders, Server Actions, route handlers via `@arc-platform/next`); if it re-exported
  * these hooks, `useEffect`/`useOptimistic`/`useSyncExternalStore` would be
  * pulled into a Server Component and the Next.js build would fail with
  * "This API is only available in Client Components".
  *
- * Import these ONLY from Client Components:  import { useCart } from '@arc/core/hooks'
+ * Import these ONLY from Client Components:  import { useCart } from '@arc-platform/core/hooks'
  */
 export type { CartActions, CartSnapshot, CartState } from './useCart.js';
 export { getOrCreateCartStore, useCart } from './useCart.js';
