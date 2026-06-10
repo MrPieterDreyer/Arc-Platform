@@ -35,6 +35,9 @@ blob-report/
 .planning/
 Artifacts/
 
+# --- Audit reference clones (read-only benchmarks, never ship) ---
+references/
+
 # --- Framework-generated (Next.js) ---
 next-env.d.ts
 

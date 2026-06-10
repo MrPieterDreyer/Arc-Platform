@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arc Platform — GSD Plan vs Implementation + Hydrogen/Weaverse Benchmark</title>
+<style>
+  :root{
+    --background:#ffffff; --surface:#f4f8fc; --surface-raised:#eaf1f8;
+    --text-primary:#1a2332; --text-muted:#5a6b82; --border:#d8e3ef;
+    --accent:#0369a1; --accent-hover:#0284c4; --accent-dim:rgba(3,105,161,0.1);
+    --pink:#c61e6c; --pink-dim:rgba(198,30,108,0.1);
+    --success:#1f9d57; --warning:#b8860b; --danger:#d63a2a; --info:#6366f1;
+    --mono:Consolas,"SF Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--background);color:var(--text-primary);
+    font-family:var(--sans);line-height:1.6;font-size:15px;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  header.masthead{border-bottom:1px solid var(--border);padding:56px 0 40px}
+  .eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.22em;
+    color:var(--text-muted);margin:0 0 14px}
+  h1{font-weight:400;font-size:2.6rem;line-height:1.08;letter-spacing:-.02em;margin:0 0 18px}
+  h1 .accent{color:var(--accent)}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:22px}
+  .chip{font-size:12px;border:1px solid var(--border);background:var(--surface);
+    padding:5px 11px;color:var(--text-muted)}
+  .chip b{color:var(--text-primary);font-weight:600}
+  h2{font-weight:400;font-size:1.85rem;letter-spacing:-.015em;margin:0 0 6px;
+    padding-top:8px}
+  section.block{border-top:1px solid var(--border);padding:44px 0}
+  .lead{color:var(--text-muted);max-width:680px;margin:0 0 26px}
+  h3{font-weight:600;font-size:1.05rem;margin:30px 0 12px;letter-spacing:-.01em}
+  p{margin:0 0 14px}
+  ul{margin:0 0 16px;padding-left:20px}
+  li{margin:0 0 8px}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface-raised);
+    padding:1.5px 5px;color:var(--text-primary);border-radius:2px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  table{width:100%;border-collapse:collapse;margin:0 0 22px;font-size:13.5px}
+  th,td{text-align:left;padding:9px 11px;border:1px solid var(--border);vertical-align:top}
+  th{background:var(--surface);font-weight:600;font-size:12px;text-transform:uppercase;
+    letter-spacing:.04em;color:var(--text-muted)}
+  tbody tr:nth-child(even){background:var(--surface)}
+  td code{background:var(--surface-raised);white-space:nowrap}
+  .sev{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:2px;
+    letter-spacing:.03em;white-space:nowrap}
+  .p0{background:var(--danger);color:#fff}
+  .p1{background:rgba(214,58,42,.12);color:var(--danger);border:1px solid var(--danger)}
+  .p2{background:rgba(184,134,11,.12);color:var(--warning);border:1px solid var(--warning)}
+  .p3{background:var(--surface-raised);color:var(--text-muted);border:1px solid var(--border)}
+  .ok{color:var(--success);font-weight:700}
+  .partial{color:var(--warning);font-weight:700}
+  .gap{color:var(--danger);font-weight:700}
+  .na{color:var(--text-muted)}
+  .callout{border:1px solid var(--border);border-left:3px solid var(--accent);
+    background:var(--surface);padding:16px 20px;margin:0 0 22px}
+  .callout.warn{border-left-color:var(--warning)}
+  .callout.good{border-left-color:var(--success)}
+  .callout.danger{border-left-color:var(--danger)}
+  .callout h4{margin:0 0 8px;font-size:.95rem;font-weight:600}
+  .finding{border:1px solid var(--border);padding:14px 18px;margin:0 0 12px;background:#fff}
+  .finding .head{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+  .finding .title{font-weight:600}
+  .finding .ev{font-size:12.5px;color:var(--text-muted);font-family:var(--mono)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}h1{font-size:2rem}
+    table{font-size:12px}th,td{padding:7px 8px}}
+  .toc{columns:2;column-gap:32px;font-size:14px}
+  .toc a{display:block;padding:3px 0;color:var(--text-muted)}
+  .toc a:hover{color:var(--accent)}
+  @media(max-width:760px){.toc{columns:1}}
+  .scorebar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 8px}
+  .score{flex:1;min-width:120px;border:1px solid var(--border);padding:14px 16px;background:#fff}
+  .score .n{font-weight:400;font-size:2rem;line-height:1;color:var(--accent)}
+  .score .l{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-top:6px}
+  .score.danger .n{color:var(--danger)}
+  .score.warn .n{color:var(--warning)}
+  .score.ok .n{color:var(--success)}
+  footer{border-top:1px solid var(--border);padding:30px 0 60px;color:var(--text-muted);font-size:12.5px}
+  .divider{height:3px;width:120px;background:linear-gradient(90deg,var(--accent),var(--pink));margin:0 0 26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Read-only audit · GSD plan vs implementation</p>
+  <h1>Arc Platform — implementation vs plan,<br>benchmarked against the <span class="accent">Hydrogen + Weaverse</span> Pilot</h1>
+  <div class="divider"></div>
+  <p class="lead">Reconstructs what the plan says should exist, compares it to what Arc actually ships (code, tests, CI), and benchmarks both against the LOFT Hydrogen + Weaverse Pilot — the headless storefront Arc is meant to replace. Five parallel domain reviewers; every claim cites a path.</p>
+  <div class="meta">
+    <span class="chip">Date <b>2026-06-04</b></span>
+    <span class="chip">Branch <b>master</b></span>
+    <span class="chip">Planning source <b>.documentation/.planning/ empty → E2E-PRIORITIES + ADRs</b></span>
+    <span class="chip">Benchmark <b>D:\09. LOFT Pro Shop\loft-platform</b></span>
+    <span class="chip">Mode <b>Read-only · no edits</b></span>
+  </div>
+</header>
+
+<section class="block">
+  <h2>Executive summary</h2>
+  <div class="scorebar" style="margin-top:18px">
+    <div class="score ok"><div class="n">0</div><div class="l">P0 ship blockers</div></div>
+    <div class="score warn"><div class="n">4</div><div class="l">P1 fix before sign-off</div></div>
+    <div class="score"><div class="n">5</div><div class="l">P2 soon</div></div>
+    <div class="score"><div class="n">7</div><div class="l">P3 nice-to-have</div></div>
+    <div class="score ok"><div class="n">7 / 9</div><div class="l">ADRs compliant</div></div>
+  </div>
+  <ul>
+    <li><b>No P0 ship blockers.</b> The core engineering is genuinely strong: <code>@arc/core</code> is provably framework-agnostic (no <code>next/*</code> leakage), caching uses Next 16 <code>'use cache'</code>/<code>cacheTag</code> throughout (zero <code>unstable_cache</code>), and HMAC webhook verification is textbook (timing-safe, dual-timestamp replay window, byte-parity with the PHP signer).</li>
+    <li><b>The biggest real risk is CI honesty, not code.</b> The visual-regression gate is marked green but has <em>no Linux baselines</em> — it runs on <code>ubuntu-latest</code> and cannot actually pass; and Store API <code>getOrder</code>'s positive path is a permanent <code>test.skip</code> with no seeded order. Two "false greens" that overstate coverage.</li>
+    <li><b>Two process contracts have drifted from their ADRs:</b> the license allowlist (<code>check-licenses.mjs</code>) permits three SPDX IDs not in ADR-0003's locked table, and the v1-publish guard runs only on PRs, not in <code>release.yml</code> — contradicting ADR-0001's own text.</li>
+    <li><b>Weave SDK + WP plugin are solid and honest.</b> WEAVE-SDK-04/05/09 and WEAVE-NEXT-01 verify in code with matching tests (the 15-input matrix is exact; per-section error isolation degrades to <code>null</code> in prod). Known v0.1 deferrals (WEAVE-NEXT-04, WEAVE-WP-07) are correctly <em>not</em> claimed as shipped.</li>
+    <li><b>Benchmark verdict:</b> Arc reaches strong parity on the developer/infrastructure layer (cart persistence, caching, preview, section SDK, E2E). The migration-blocking gaps are <em>customer identity</em> (login / orders / addresses — ADR-0009 is still Open) and <em>breadth</em> (Weave ships an SDK, not LOFT's ~30 sections + global theme settings).</li>
+    <li><b>Housekeeping:</b> a large uncommitted working tree sits on <code>master</code> and GSD planning artifacts are absent (<code>.documentation/.planning/</code> is empty), so requirement traceability currently rests entirely on <code>E2E-PRIORITIES.md</code>.</li>
+  </ul>
+</section>
+
+<section class="block">
+  <h2>Contents</h2>
+  <nav class="toc">
+    <a href="#findings">Findings — P0 / P1 / P2 / P3</a>
+    <a href="#coverage">Requirement coverage matrix</a>
+    <a href="#adr">ADR compliance summary</a>
+    <a href="#benchmark">Benchmark parity (LOFT → Arc)</a>
+    <a href="#blockers">Top migration blockers</a>
+    <a href="#exceeds">Where Arc matches or exceeds</a>
+    <a href="#deferrals">Intentional deferrals</a>
+    <a href="#drift">Plan drift &amp; plan gaps</a>
+    <a href="#actions">Recommended next actions</a>
+  </nav>
+</section>
+
+<section class="block" id="findings">
+  <h2>Findings</h2>
+
+  <h3>P0 — ship blockers</h3>
+  <div class="callout good"><h4>None.</h4>No issue in this review rises to "must fix before any ship." Security, caching, and webhook contracts are clean.</div>
+
+  <h3>P1 — fix before phase sign-off</h3>
+
+  <div class="finding">
+    <div class="head"><span class="sev p1">P1</span><span class="title">Visual-regression gate has no Linux baselines — "green" is unenforceable</span></div>
+    <p>Wave 9 visual is marked ✅ and <code>e2e-visual.yml</code> is declared a <b>blocking</b> merge gate running Chromium on <code>ubuntu-latest</code> (resolves <code>snapshots/linux/</code>). Only <code>snapshots/win32/*.png</code> exist; <code>e2e-update-linux-snapshots.yml</code> is <code>workflow_dispatch</code>-only and was apparently never run. With <code>CI=true</code> + <code>forbidOnly</code>, a missing baseline is a failure — so the gate either fails every real PR or was never wired as required.</p>
+    <div class="ev">Documentation/Testing/E2E-PRIORITIES.md:108 · .github/workflows/e2e-visual.yml · e2e/snapshots/ (no linux/)</div>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="sev p1">P1</span><span class="title">Store API <code>getOrder</code> positive path is permanently skipped — order retrieval unproven</span></div>
+    <p><code>orders.contract.ts:20</code> is <code>test.skip('getOrder — valid session order …')</code>; the cross-session isolation test requires <code>TEST_ORDER_ID</code>, which no seed script provides. The only positive retrieval coverage never runs. Order-fetch is effectively untested.</p>
+    <div class="ev">Arc/Core/src/__tests__/contract/orders.contract.ts:20,28 · Scripts/seed-wp-env.mjs (no TEST_ORDER_ID)</div>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="sev p1">P1</span><span class="title">License allowlist drifted from ADR-0003's locked table</span></div>
+    <p><code>check-licenses.mjs</code> permits <code>CC-BY-4.0</code>, <code>Apache-2.0 AND LGPL-3.0-or-later</code>, and <code>MIT-0</code> — none in ADR-0003's table. The ADR mandates editing both the table and the script in the same PR (to keep the MIT promise auditable); the script ran ahead. Additions are defensibly permissive, but the contract is breached.</p>
+    <div class="ev">Scripts/check-licenses.mjs:7-21 · Documentation/Architecture/ADR-0003:34-46,66,77</div>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="sev p1">P1</span><span class="title">v1-publish guard is absent from the publish path</span></div>
+    <p><code>verify-changesets-no-major.mjs</code> runs only in <code>ci.yml</code> (PR gate), not in <code>release.yml</code>, which triggers on every <code>push: master</code> and publishes directly. ADR-0001:65 claims release.yml sets <code>ARC_ALLOW_V1_PUBLISH</code> — it does not. PR-gate enforcement is sufficient in practice, but there's no second guard at publish time and the doc disagrees with the workflow.</p>
+    <div class="ev">.github/workflows/release.yml:17-37 · Scripts/verify-changesets-no-major.mjs:8 · ADR-0001:65</div>
+  </div>
+
+  <h3>P2 — should fix soon</h3>
+  <div class="grid2">
+    <div class="finding">
+      <div class="head"><span class="sev p2">P2</span><span class="title">Cart-cookie <code>SameSite=Lax</code> override diverges from ADR-0006</span></div>
+      <p><code>ARC_CART_COOKIE_SECURE=false</code> downgrades to <code>sameSite:'lax', secure:false</code> for local-HTTP E2E. Defaults are safe, but the override is an undocumented divergence from the ADR's mandated <code>SameSite=None; Secure</code>. Sanction it in the ADR or gate it tighter.</p>
+      <div class="ev">Arc/Next/src/cookies.ts:8-23</div>
+    </div>
+    <div class="finding">
+      <div class="head"><span class="sev p2">P2</span><span class="title">Example revalidate route falls back to a hardcoded placeholder secret</span></div>
+      <p>When <code>WEAVE_WEBHOOK_SECRET</code> is unset, the route substitutes <code>'dev-placeholder-secret-min-32-chars!!'</code>. Fine for the example app — dangerous if copied into the Pilot starter, where it would silently accept webhooks signed with a known secret. Fail closed / warn in non-dev.</p>
+      <div class="ev">Arc/Next/examples/minimal-app/app/api/revalidate/route.ts:3-5</div>
+    </div>
+    <div class="finding">
+      <div class="head"><span class="sev p2">P2</span><span class="title">Three UX-RULES are documented but never asserted</span></div>
+      <p><code>A11Y-REDUCED-MOTION</code> (<code>prefers-reduced-motion</code>), <code>FORBID-UNSAFE-LINK</code> (<code>rel=noopener</code>), and <code>FORBID-HYDRATION</code> (console "Hydration failed") have no encoding in any spec or shared helper.</p>
+      <div class="ev">Documentation/Testing/UX-RULES.md vs Scripts/e2e-shared/*.ts</div>
+    </div>
+    <div class="finding">
+      <div class="head"><span class="sev p2">P2</span><span class="title">Self-verification scripts are orphaned</span></div>
+      <p><code>verify-ci-workflow</code>, <code>verify-changesets-config</code>, <code>verify-turbo-cache</code> are defined in root <code>package.json</code> but no workflow runs them — so CI-shape drift (e.g. a removed job) goes undetected by the very script meant to catch it.</p>
+      <div class="ev">package.json:48-51</div>
+    </div>
+    <div class="finding">
+      <div class="head"><span class="sev p2">P2</span><span class="title">Two "false reds" in the requirement matrix</span></div>
+      <p>WEAVE-NEXT-03 (draft preview) and WEAVE-NEXT-04 (webhook→tag) are marked Unit <code>—</code>, but both have real, passing unit suites. The matrix under-credits them.</p>
+      <div class="ev">Weave/Next/src/__tests__/preview.test.ts:27 · Weave/Next/src/__tests__/revalidate.test.ts:18 · E2E-PRIORITIES.md:152-153</div>
+    </div>
+    <div class="finding">
+      <div class="head"><span class="sev p2">P2</span><span class="title">GSD planning artifacts absent</span></div>
+      <p><code>.documentation/.planning/</code> is empty (no STATE/ROADMAP/phases), so "GSD plan drift" cannot be measured against a plan of record. Traceability rests entirely on <code>E2E-PRIORITIES.md</code>.</p>
+      <div class="ev">.documentation/.planning/ (empty)</div>
+    </div>
+  </div>
+
+  <h3>P3 — nice to have</h3>
+  <ul>
+    <li><span class="sev p3">P3</span> &nbsp;Published packages sit at <code>0.0.1</code> vs ADR-0001's <code>0.1.0</code> initial-publish note (pre-publish, cosmetic). <span class="ev">Arc/Core/package.json:3 et al.</span></li>
+    <li><span class="sev p3">P3</span> &nbsp;Nightly CI omits <code>TEST_JWT_TOKEN</code>/<code>TEST_ORDER_ID</code>/<code>TEST_COUPON_CODE</code>/<code>TEST_VARIABLE_PRODUCT_SLUG</code>, so JWT-orders, order-isolation, coupon, and variation tests are runnable-but-dormant everywhere. <span class="ev">.github/workflows/e2e-nightly.yml</span></li>
+    <li><span class="sev p3">P3</span> &nbsp;<code>no-next-in-core</code> guard excludes all <code>__fixtures__</code> dirs — a genuine leak placed there would be missed (Biome rule is the primary net). <span class="ev">Scripts/check-no-next-in-core.sh:17,28</span></li>
+    <li><span class="sev p3">P3</span> &nbsp;Cart-cookie <code>secure</code> flag is read once at module load rather than per-request. <span class="ev">Arc/Next/src/cookies.ts:15</span></li>
+    <li><span class="sev p3">P3</span> &nbsp;<code>inputRegistry.image.zod</code> isn't <code>.strict()</code>; harmless given the open <code>data</code> record, noted for parity. <span class="ev">Weave/React/src/inputs/input-registry.ts</span></li>
+    <li><span class="sev p3">P3</span> &nbsp;No documented HTML-sanitization guidance for section authors rendering <code>richtext</code>/<code>code</code>/<code>markdown</code> string inputs as raw HTML. <span class="ev">Weave/React render path</span></li>
+    <li><span class="sev p3">P3</span> &nbsp;<code>weave-admin</code> Vitest config is outside the root workspace glob (still runs via turbo, invisible to a direct root <code>vitest</code>). <span class="ev">Weave/WordPress/admin/vitest.config.ts</span></li>
+  </ul>
+</section>
+
+<section class="block" id="coverage">
+  <h2>Requirement coverage matrix</h2>
+  <p class="lead">Condensed from the full per-ID audit. Status reflects what tests <em>actually exercise</em>, not what names imply. ⚠️ = covered but conditional/skip-gated.</p>
+  <table>
+    <thead><tr><th>Req ID</th><th>Unit</th><th>Contract</th><th>E2E</th><th>Real status</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td><code>ARC-NEXT-02</code></td><td>✅</td><td>✅</td><td>✅</td><td class="ok">✅</td><td>Cookie flags asserted in E2E</td></tr>
+      <tr><td><code>ARC-NEXT-03</code></td><td>✅</td><td>✅</td><td>✅</td><td class="ok">✅</td><td>Server-Action cart add/update/remove</td></tr>
+      <tr><td><code>ARC-NEXT-05</code></td><td>✅</td><td>✅</td><td>✅</td><td class="ok">✅</td><td>Best-covered req (HMAC revalidate)</td></tr>
+      <tr><td><code>ARC-NEXT-07</code></td><td>✅</td><td>—</td><td>✅</td><td class="ok">✅</td><td>Optimistic rollback + error copy</td></tr>
+      <tr><td><code>ARC-GQL-03…06</code></td><td>partial</td><td>✅</td><td>✅</td><td class="ok">✅</td><td>PDP/PLP/collection/search</td></tr>
+      <tr><td><code>ARC-API-04 / 05</code></td><td>✅</td><td>✅</td><td>✅</td><td class="ok">✅</td><td><code>submitCheckout</code> skip→Phase 5 (documented)</td></tr>
+      <tr><td><code>ARC-API-07</code> (orders)</td><td>—</td><td>⚠️</td><td>—</td><td class="partial">⚠️</td><td><b>P1</b> positive path <code>test.skip</code>, no seed</td></tr>
+      <tr><td>ADR-0009 (account/orders)</td><td>✅</td><td>⚠️ skip w/o JWT</td><td>⚠️ skip w/o JWT</td><td class="partial">⚠️</td><td>Correctly partial; matches claim</td></tr>
+      <tr><td><code>WEAVE-SDK-04 / 09</code></td><td>✅</td><td>—</td><td>✅</td><td class="ok">✅</td><td>Render order + per-section isolation</td></tr>
+      <tr><td><code>WEAVE-SDK-05</code></td><td>✅ (15 types)</td><td>—</td><td>✅</td><td class="ok">✅</td><td>Input matrix exact 1:1</td></tr>
+      <tr><td><code>WEAVE-NEXT-01</code></td><td>✅</td><td>—</td><td>✅</td><td class="ok">✅</td><td>cacheTag + draft bypass</td></tr>
+      <tr><td><code>WEAVE-NEXT-03</code></td><td>✅ (false red)</td><td>—</td><td>⬜</td><td class="partial">🟡</td><td>Matrix under-credits unit</td></tr>
+      <tr><td><code>WEAVE-NEXT-04</code></td><td>✅ (false red)</td><td>✅</td><td>⬜</td><td class="partial">🟡</td><td>Deferral; plumbing tested</td></tr>
+      <tr><td><code>WEAVE-WP-02/05/06</code></td><td>—</td><td>✅ PHPUnit</td><td>partial</td><td class="ok">✅</td><td>CRUD/auth/webhook strong</td></tr>
+      <tr><td><code>WEAVE-WP-07</code></td><td>—</td><td>—</td><td>🟡 quarantine</td><td class="partial">🟡</td><td>Deferred (admin UI), correct</td></tr>
+      <tr><td>Visual (Wave 9)</td><td>—</td><td>—</td><td>⚠️ win32 only</td><td class="partial">⚠️</td><td><b>P1</b> no linux baselines</td></tr>
+      <tr><td>A11y / Perf (Wave 10/11)</td><td>—</td><td>—</td><td>✅</td><td class="ok">✅</td><td>axe + keyboard + budgets</td></tr>
+      <tr><td><code>PILOT-03</code> (Stripe)</td><td>—</td><td>—</td><td>⬜ gated skip</td><td class="na">⬜</td><td>Correctly off PR gate</td></tr>
+    </tbody>
+  </table>
+  <div class="callout good"><h4>CI gating is correct where it matters.</h4>JWT account-orders and <code>@payment</code>/Stripe are properly kept off the PR gate (skip-on-missing-env), and the dedicated <code>contract</code> job sets <code>CI_WP_ENV=true</code> so the <code>skipIf</code> contract tests genuinely execute rather than passing green-by-skip.</div>
+</section>
+
+<section class="block" id="adr">
+  <h2>ADR compliance summary</h2>
+  <table>
+    <thead><tr><th>ADR</th><th>Status</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>0001 — versioning policy</td><td class="partial">🟡 partial</td><td>0.x convention honored, but packages at <code>0.0.1</code> vs <code>0.1.0</code> note; v1 guard not in release path</td></tr>
+      <tr><td>0002 — Next 16 + Gutenberg independence</td><td class="ok">✅</td><td>peer-only next/react; all routes <code>await params</code>; no <code>middleware.ts</code>; CPT omits editor</td></tr>
+      <tr><td>0003 — permitted licenses</td><td class="gap">❌ violation</td><td><b>P1</b> script permits 3 SPDX IDs not in the locked table</td></tr>
+      <tr><td>0004 — cache-tag taxonomy</td><td class="ok">✅</td><td>helpers verbatim; read + WP write paths use same strings</td></tr>
+      <tr><td>0005 — page-config JSON shape</td><td class="ok">✅</td><td>Zod schema matches contract <code>.strict()</code>; server-minted UUIDs</td></tr>
+      <tr><td>0006 — cart-token cookie</td><td class="partial">🟡 partial</td><td><b>P2</b> SameSite=None/Secure relaxed for local E2E without ADR sanction</td></tr>
+      <tr><td>0007 — webhook auth</td><td class="ok">✅</td><td>Next verifier ↔ PHP signer byte-parity; timing-safe; replay window</td></tr>
+      <tr><td>0008 — npm scope</td><td class="ok">✅</td><td>all names <code>@arc/*</code> / <code>@weave/*</code></td></tr>
+      <tr><td>0009 — customer auth</td><td class="na">— open</td><td>Status "Open (spike before Phase 2)"; nothing to enforce yet</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="block" id="benchmark">
+  <h2>Benchmark parity — Hydrogen/Weaverse → Arc/Weave</h2>
+  <p class="lead">Question isn't "is Arc identical to Shopify" — it's "does Arc deliver equivalent merchant/developer outcomes." LOFT is a WooCommerce→Shopify replatform; Arc targets WooCommerce headless, so platform differences are distinguished from true gaps. ✅ full · 🟡 partial · ⬜ gap · — by design.</p>
+  <table>
+    <thead><tr><th>Capability</th><th>Parity</th><th>Notes (paths on both sides in source report)</th></tr></thead>
+    <tbody>
+      <tr><td>Route map</td><td class="partial">🟡</td><td>All 8 route types on both; Arc routes thinner, no dedicated cart page</td></tr>
+      <tr><td>Cart add/update/remove + drawer</td><td class="partial">🟡</td><td>Core has all ops; storefront wires only <b>add</b>, no drawer/qty/remove UI</td></tr>
+      <tr><td>Cart persistence across sessions</td><td class="ok">✅</td><td>Cart-Token cookie = WC analogue to Shopify cart id (ADR-0006)</td></tr>
+      <tr><td>Catalog GraphQL + typed queries</td><td class="ok">✅</td><td>Both use graphql-codegen; Arc adds hand-typed Store API + live contract tests</td></tr>
+      <tr><td>Money / image primitives</td><td class="partial">🟡</td><td>By design: Arc documents <code>Intl.NumberFormat</code>+<code>next/image</code>, no shipped component</td></tr>
+      <tr><td>Checkout</td><td class="na">— by design</td><td>LOFT redirects to Shopify Checkout; Arc hands off to native WC checkout URL</td></tr>
+      <tr><td>Customer login + orders</td><td class="gap">⬜</td><td><b>Real gap.</b> No login flow; ADR-0009 Open; orders need manual JWT</td></tr>
+      <tr><td>Addresses / profile</td><td class="gap">⬜</td><td>LOFT has full CRUD; Arc reads session billing only</td></tr>
+      <tr><td>Visual page builder</td><td class="ok">✅ by design</td><td>Weave model mirrors Weaverse; config in merchant WP vs SaaS. Far fewer ready sections</td></tr>
+      <tr><td>Theme / global settings</td><td class="partial">🟡</td><td>LOFT has 11 setting groups; Weave has no comparable global-settings surface yet</td></tr>
+      <tr><td>Preview / draft</td><td class="ok">✅</td><td>Token-gated <code>draftMode()</code> bypassing <code>'use cache'</code> — clean</td></tr>
+      <tr><td>Cache invalidation on save</td><td class="ok">✅</td><td>Explicit tag taxonomy + signed webhook → <code>revalidateTag</code>; more transparent than SaaS</td></tr>
+      <tr><td>Section input types</td><td class="ok">✅</td><td>15-entry Zod registry maps closely to Weaverse inputs</td></tr>
+      <tr><td>Error isolation per section</td><td class="ok">✅ exceeds</td><td>Explicit tested boundary, 3 failure modes, prod silent-skip</td></tr>
+      <tr><td>E2E smoke / regression</td><td class="ok">✅ exceeds</td><td>Broad Playwright suite + nightly/staging/visual workflows</td></tr>
+      <tr><td>a11y / perf budgets</td><td class="ok">✅</td><td>Both treat as gates; Arc encodes as automated assertions</td></tr>
+      <tr><td>Multi-tab cart sync</td><td class="partial">🟡</td><td>Same-tab CustomEvent; cross-tab via shared cookie — lighter than a dedicated channel</td></tr>
+      <tr><td>Payments sandbox</td><td class="partial">🟡</td><td>Env scaffold + contract test; actual card flow skipped (PILOT-03)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="block" id="blockers">
+  <h2>Top 5 migration blockers (LOFT Pilot → Arc + Weave)</h2>
+  <ol>
+    <li><b>Customer login</b> — LOFT's whole account area depends on the Customer Account API. Arc has no login flow and ADR-0009 is Open. Hard blocker.</li>
+    <li><b>Order history</b> — gated behind the unbuilt auth; only works with a manual test JWT today.</li>
+    <li><b>Address book + profile editing</b> — same root cause; Arc reads only session billing.</li>
+    <li><b>Section library + global theme settings</b> — LOFT runs ~30 Weaverse sections and 11 setting groups; Weave ships the SDK but not the sections/global-settings UI, so content migration is a rebuild.</li>
+    <li><b>Full cart UI</b> — core supports update/remove but the storefront wires only "add," no drawer; LOFT's slide-out + qty steppers + remove would need rebuilding.</li>
+  </ol>
+</section>
+
+<section class="block" id="exceeds">
+  <h2>Top 5 where Arc matches or exceeds the Pilot baseline</h2>
+  <ol>
+    <li><b>Per-section error isolation</b> — more clearly specified and tested than Weaverse's opaque handling.</li>
+    <li><b>E2E coverage + CI matrix</b> — meets or beats LOFT's documented testing.</li>
+    <li><b>Cache-invalidation transparency</b> — explicit tag taxonomy + signed webhook gives merchants control the SaaS hides.</li>
+    <li><b>Cart-persistence design</b> — the Cart-Token ADR is rigorous (security, ITP, cross-origin, lifecycle).</li>
+    <li><b>Draft preview</b> — clean native-Next <code>draftMode()</code> implementation on par with Weaverse.</li>
+  </ol>
+</section>
+
+<section class="block" id="deferrals">
+  <h2>Intentional deferrals (documented, not bugs)</h2>
+  <ul>
+    <li><b>Customer auth / orders / addresses</b> — WC Store API <code>/customer</code> is session-scoped; cross-session auth needs the JWT/app-password bridge ADR-0009 leaves Open. Platform difference + unfinished decision.</li>
+    <li><b>Section library + 11 global theme-setting groups</b> — Arc ships the <em>SDK</em> for v0.1; Pilot/Templates fill in sections later.</li>
+    <li><b>First-class Money/Image components</b> — deliberately documented as patterns, not shipped (Stack §5).</li>
+    <li><b>Hosted payment sandbox</b> — deferred to WC-native gateway handoff in the Pilot starter (PILOT-03).</li>
+    <li><b>WEAVE-NEXT-04 (cache invalidation on save) &amp; WEAVE-WP-07 (admin UI)</b> — tracked as Phase 4b "when built"; transport plumbing exists and is contract-tested but not claimed as finished. Correctly <em>not</em> scored as regressions.</li>
+  </ul>
+  <h3>What Arc builds that Hydrogen doesn't need</h3>
+  <p>Cart-Token cookie layer (Shopify hands you a cart id; WC has no anonymous session); hand-typed Store API + live contract tests (no GraphQL schema); a full PHP WordPress plugin (CPT + REST + validator + webhook + admin app — Weaverse is hosted SaaS); wp-env backend harness + signed revalidate webhook; native-checkout handoff plumbing. <b>Read correctly, these are sound platform adaptations, not deficiencies.</b></p>
+</section>
+
+<section class="block" id="drift">
+  <h2>Plan drift &amp; plan gaps</h2>
+  <div class="grid2">
+    <div>
+      <h3>Plan drift (built, not in a plan of record)</h3>
+      <p>Cannot be measured against GSD because <code>.documentation/.planning/</code> is empty. Against <code>E2E-PRIORITIES.md</code> as the de-facto plan, no significant un-tracked feature surfaced; the matrix mostly matches reality (the discrepancies are under-crediting, see false reds).</p>
+    </div>
+    <div>
+      <h3>Plan gaps (planned, not built)</h3>
+      <ul style="margin-top:0">
+        <li>Visual-regression Linux baselines (claimed, never generated) — <span class="sev p1">P1</span></li>
+        <li>Store API order-retrieval positive coverage — <span class="sev p1">P1</span></li>
+        <li>Three UX-RULES never encoded — <span class="sev p2">P2</span></li>
+        <li>Customer auth (ADR-0009) — open by design</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="actions">
+  <h2>Recommended next actions</h2>
+  <p class="lead">Ordered by leverage — unblock CI honesty first, then close ADR contracts, then the migration blockers.</p>
+  <table>
+    <thead><tr><th>#</th><th>Action</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Generate + commit <code>linux/</code> visual baselines (run <code>e2e-update-linux-snapshots.yml</code>), or make the visual gate non-blocking until they exist</td><td>Unblocks the PR gate; removes a false green</td></tr>
+      <tr><td>2</td><td>Reconcile ADR-0003 license table with <code>check-licenses.mjs</code> (add or remove the 3 SPDX IDs, same PR)</td><td>Restores the auditable MIT contract</td></tr>
+      <tr><td>3</td><td>Add <code>verify-changesets-no-major.mjs</code> as a step in <code>release.yml</code>; fix ADR-0001:65 text</td><td>Second guard at publish; doc/workflow agree</td></tr>
+      <tr><td>4</td><td>Seed <code>TEST_ORDER_ID</code>, un-skip <code>getOrder</code> positive path; add JWT/order/coupon/variation env to <code>e2e-nightly.yml</code></td><td>Converts dormant tests into real coverage</td></tr>
+      <tr><td>5</td><td>Harden example revalidate route — fail-closed/warn when <code>WEAVE_WEBHOOK_SECRET</code> unset</td><td>Prevents placeholder secret leaking into the Pilot starter</td></tr>
+      <tr><td>6</td><td>Sanction the ADR-0006 <code>SameSite=Lax</code> local-E2E override in the ADR, or gate it tighter</td><td>Closes the cookie/ADR divergence</td></tr>
+      <tr><td>7</td><td>Encode the 3 missing UX-RULES (reduced-motion, noopener, hydration) as shared E2E assertions</td><td>Makes documented rules enforceable</td></tr>
+      <tr><td>8</td><td>Wire the orphaned <code>verify-*</code> scripts into CI (or delete them)</td><td>Catches CI-shape drift the scripts exist to catch</td></tr>
+      <tr><td>9</td><td>Correct the <code>E2E-PRIORITIES.md</code> false reds (WEAVE-NEXT-03/04 unit coverage)</td><td>Matrix tells the truth</td></tr>
+      <tr><td>10</td><td>Resolve ADR-0009 customer auth (login → orders → addresses) — the #1 LOFT migration blocker. First branch + split the uncommitted working tree off <code>master</code>.</td><td>Unblocks Customer Zero migration; protects in-flight work</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <p>Read-only audit · no files modified in Arc or LOFT · five parallel domain reviewers (Arc core/Next + ADRs · requirement coverage · testing/CI + release · Weave SDK/WP + security · Hydrogen/Weaverse benchmark), findings deduplicated and merged. All severities are reviewer judgment; verify P1 items against current <code>master</code> before acting.</p>
+  <p>Trigger Consulting design system · light-primary theme.</p>
+</footer>
+
+</div>
+</body>
+</html>

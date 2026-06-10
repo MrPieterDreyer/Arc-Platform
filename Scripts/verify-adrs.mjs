@@ -11,7 +11,10 @@ if (!existsSync(ADR_DIR)) {
   process.exit(1);
 }
 
-const files = readdirSync(ADR_DIR).filter((f) => /^ADR-\d{4}-/.test(f));
+// MADR section/status checks apply to Markdown ADRs only — supporting
+// artifacts (e.g. ADR-0009-SPIKE-*.html) share the ADR- prefix but are
+// not decision records.
+const files = readdirSync(ADR_DIR).filter((f) => /^ADR-\d{4}-/.test(f) && f.endsWith('.md'));
 const numbers = new Set(files.map((f) => f.slice(0, 8))); // "ADR-0001"
 
 let failed = 0;

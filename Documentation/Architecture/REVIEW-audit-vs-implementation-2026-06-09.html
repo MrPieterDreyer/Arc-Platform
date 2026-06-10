@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arc + Weave — Audit vs Implementation Reconciliation Review</title>
+<style>
+  :root{
+    --bg:#1A2332; --surface:#22304a; --surface-raised:#2b3d55;
+    --text:#f0f6fc; --muted:#9fb1c7; --border:#2b3d55;
+    --accent:#38bdf8; --accent-dim:rgba(56,189,248,.14);
+    --rose:#ff5ca8; --rose-dim:rgba(255,92,168,.14);
+    --crit:#ff5c5c; --high:#ff9f43; --med:#ffd166; --low:#6ee7a8;
+    --have:#6ee7a8; --partial:#ffd166; --missing:#ff7a7a; --green:#6ee7a8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  h1,h2,h3,h4{font-weight:400;letter-spacing:-.01em;line-height:1.15;margin:0 0 .4em}
+  h1{font-size:2.6rem}
+  h2{font-size:1.9rem;margin-top:0}
+  h3{font-size:1.3rem;color:var(--text)}
+  h4{font-size:1.05rem;color:var(--accent)}
+  p{margin:0 0 1em}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:Consolas,"SF Mono",Menlo,monospace;font-size:.86em;background:var(--surface-raised);
+       padding:.12em .4em;border-radius:3px;color:#cfe6ff;white-space:nowrap}
+  header.hero{border-bottom:1px solid var(--border);padding:64px 0 48px;
+       background:linear-gradient(160deg,rgba(56,189,248,.10),transparent 60%)}
+  .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.24em;color:var(--muted);margin-bottom:14px}
+  .hero .lede{font-size:1.18rem;color:var(--muted);max-width:760px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:24px;font-size:.84rem;color:var(--muted)}
+  .meta b{color:var(--text);font-weight:500}
+  section{padding:48px 0;border-bottom:1px solid var(--border)}
+  .pink-rule{height:3px;width:120px;background:linear-gradient(90deg,var(--accent),var(--rose));margin:0 0 28px}
+  .scoregrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:8px 0 4px}
+  .score{border:1px solid var(--border);background:var(--surface);padding:18px 20px}
+  .score .n{font-size:2.3rem;line-height:1;color:var(--accent)}
+  .score .n.rose{color:var(--rose)}
+  .score .n.crit{color:var(--crit)}
+  .score .n.high{color:var(--high)}
+  .score .n.green{color:var(--green)}
+  .score .l{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-top:8px}
+  .callout{border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--surface);
+       padding:16px 20px;margin:18px 0}
+  .callout.rose{border-left-color:var(--rose)}
+  .callout.crit{border-left-color:var(--crit)}
+  .callout.green{border-left-color:var(--green)}
+  .callout h4{margin:0 0 .35em;color:var(--text)}
+  .callout p:last-child{margin-bottom:0}
+  .tablewrap{overflow-x:auto;border:1px solid var(--border);margin:18px 0}
+  table{border-collapse:collapse;width:100%;font-size:.82rem;min-width:760px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--surface-raised);font-weight:500;color:var(--text);position:sticky;top:0;
+     font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+  tr:last-child td{border-bottom:none}
+  td.dom{color:var(--muted);white-space:nowrap}
+  .pill{display:inline-block;font-size:.68rem;font-weight:600;padding:.16em .6em;border-radius:999px;
+        text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+  .s-have{background:rgba(110,231,168,.16);color:var(--have)}
+  .s-partial{background:rgba(255,209,102,.16);color:var(--partial)}
+  .s-missing{background:rgba(255,122,122,.18);color:var(--missing)}
+  .s-green{background:rgba(110,231,168,.16);color:var(--green)}
+  .sev{display:inline-block;font-size:.68rem;font-weight:700;padding:.16em .55em;border-radius:3px;letter-spacing:.04em}
+  .sev-crit{background:rgba(255,92,92,.2);color:var(--crit)}
+  .sev-high{background:rgba(255,159,67,.2);color:var(--high)}
+  .sev-med{background:rgba(255,209,102,.18);color:var(--med)}
+  .sev-low{background:rgba(110,231,168,.16);color:var(--low)}
+  .wave{border:1px solid var(--border);background:var(--surface);margin:16px 0;padding:0}
+  .wave>.whead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+       padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface-raised)}
+  .wave .whead h3{margin:0;font-size:1.15rem}
+  .wave .whead .tag{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+  .wave ul{margin:0;padding:14px 20px 16px 20px;list-style:none}
+  .wave li{padding:8px 0;border-bottom:1px dashed var(--border)}
+  .wave li:last-child{border-bottom:none}
+  .wave li .t{color:var(--text)}
+  .wave li .d{color:var(--muted);font-size:.86rem}
+  .effort{display:inline-block;font-size:.66rem;font-weight:700;border:1px solid var(--border);
+          border-radius:3px;padding:.05em .4em;margin-left:6px;color:var(--muted)}
+  .pkg{color:#cfe6ff;font-family:Consolas,monospace;font-size:.78rem}
+  nav.toc{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:26px}
+  nav.toc a{font-size:.82rem;color:var(--muted);border:1px solid var(--border);padding:6px 12px;background:var(--surface)}
+  nav.toc a:hover{color:var(--accent);border-color:var(--accent);text-decoration:none}
+  .muted{color:var(--muted)}
+  .foot{padding:36px 0 64px;color:var(--muted);font-size:.82rem}
+  ul.clean{padding-left:1.1em}
+  ul.clean li{margin:.3em 0}
+  .ref{color:var(--accent);font-family:Consolas,monospace;font-size:.78rem}
+  @media(max-width:640px){h1{font-size:2rem}h2{font-size:1.5rem}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Arc Platform · Reconciliation Review</div>
+    <h1>Audit vs Implementation — Reconciliation Review</h1>
+    <p class="lede">A cross-check of the 2026-06-08 Hydrogen/Weaverse parity audit against the
+      implemented GSD roadmap (Phases 0–4b) and the live source tree. Every load-bearing audit
+      finding was re-verified against <code>master</code> on 2026-06-09, and the audit's remediation
+      waves are mapped into the GSD phase structure.</p>
+    <div class="meta">
+      <span><b>Date:</b> 2026-06-09</span>
+      <span><b>Baseline:</b> <code>origin/master @ 095da24</code></span>
+      <span><b>Inputs:</b> AUDIT-2026-06-08 · ADR-0009..0012 · .planning/STATE.md · HANDOFF.md</span>
+      <span><b>Scope:</b> review + roadmap integration — no remediation code in this pass</span>
+    </div>
+    <nav class="toc">
+      <a href="#verdict">Verdict</a>
+      <a href="#validation">Findings Validation</a>
+      <a href="#strengths">Strengths Confirmed</a>
+      <a href="#gap">Plan-vs-Audit Gap</a>
+      <a href="#integration">Roadmap Integration</a>
+      <a href="#decisions">Open Decisions</a>
+    </nav>
+  </div>
+</header>
+
+<section id="verdict">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>1 · Verdict</h2>
+    <div class="scoregrid">
+      <div class="score"><div class="n green">5/8</div><div class="l">Phases complete</div></div>
+      <div class="score"><div class="n green">39/46</div><div class="l">Plans delivered</div></div>
+      <div class="score"><div class="n">9</div><div class="l">ADRs locked</div></div>
+      <div class="score"><div class="n crit">2</div><div class="l">Critical blockers open</div></div>
+      <div class="score"><div class="n high">5</div><div class="l">High findings confirmed</div></div>
+      <div class="score"><div class="n rose">0</div><div class="l">Plan-vs-build drift found</div></div>
+    </div>
+
+    <div class="callout green">
+      <h4>The build is faithful to the plan.</h4>
+      <p>Phases 0–4b shipped what their plans promised: <span class="pkg">@arc/core</span> (Cart-Token
+      lifecycle, typed Store API + WPGraphQL clients, discriminated-union errors),
+      <span class="pkg">@arc/next</span> (RSC loaders on <code>'use cache'</code>, HttpOnly cookie bridge,
+      HMAC revalidation), <span class="pkg">@weave/react</span> / <span class="pkg">@weave/next</span>
+      (15 input types, RSC-safe SectionRenderer, draft preview), and the WP plugin + Admin editor.
+      250+ tests, all CI gates green, <code>pnpm build</code> exits 0. The audit found <b>no case where
+      the implementation diverged from an accepted ADR or phase plan</b>.</p>
+    </div>
+
+    <div class="callout crit">
+      <h4>What the audit found instead: scope the original roadmap never covered.</h4>
+      <p>Customer-auth <em>implementation</em> (ADR-0009 was accepted as a spike, then parked for
+      "Phase 5"), security headers/CSP, and supply-chain release integrity were never phase
+      deliverables. They are now the gating items between Phase 4b and a publishable v0.1 —
+      hence the recommended <b>Phase 4c: Security &amp; Release Hardening</b> below.</p>
+    </div>
+  </div>
+</section>
+
+<section id="validation">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>2 · Findings Validation — re-verified against <code>master</code>, 2026-06-09</h2>
+    <p class="muted">Each load-bearing audit finding was spot-checked against the live tree one day
+    after the audit. <b>All confirmed findings remain unremediated.</b></p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>ID</th><th>Finding</th><th>Severity</th><th>Status 2026-06-09</th><th>Evidence re-check</th></tr></thead>
+        <tbody>
+          <tr><td class="dom">H-2</td><td>Customer auth designed (ADR-0009 accepted) but unbuilt; order history reads raw test JWT</td>
+            <td><span class="sev sev-crit">CRIT</span></td><td><span class="pill s-missing">Confirmed open</span></td>
+            <td><code>TEST_JWT_TOKEN</code> still the only auth path (<span class="ref">playwright.config.cjs:110</span>); no <code>auth.ts</code> / <code>auth-cookies.ts</code> modules exist</td></tr>
+          <tr><td class="dom">H-1</td><td>No CSP / security headers anywhere; no <code>proxy.ts</code></td>
+            <td><span class="sev sev-high">HIGH</span></td><td><span class="pill s-missing">Confirmed open</span></td>
+            <td>No <code>proxy.ts</code> in source (only vendored Weaverse archive); <code>security-headers</code> exists only inside ADR-0010 text</td></tr>
+          <tr><td class="dom">S-1</td><td>npm publish without <code>--provenance</code>; static <code>NPM_TOKEN</code></td>
+            <td><span class="sev sev-high">HIGH</span></td><td><span class="pill s-missing">Confirmed open</span></td>
+            <td><span class="ref">release.yml:15</span> declares <code>id-token: write</code> but <span class="ref">release.yml:41</span> still passes <code>secrets.NPM_TOKEN</code>; no provenance flag</td></tr>
+          <tr><td class="dom">S-2</td><td>GitHub Actions pinned to mutable tags</td>
+            <td><span class="sev sev-high">HIGH</span></td><td><span class="pill s-missing">Confirmed open</span></td>
+            <td>52 <code>@vN</code> mutable pins across 6 workflow files (ci, release, e2e-staging, e2e-nightly, e2e-visual, e2e-update-linux-snapshots)</td></tr>
+          <tr><td class="dom">S-3</td><td>No WPGraphQL version floor in plugin header</td>
+            <td><span class="sev sev-high">HIGH</span></td><td><span class="pill s-missing">Confirmed open</span></td>
+            <td><code>Requires Plugins</code> appears only in ADR-0012, not in <code>weave.php</code></td></tr>
+          <tr><td class="dom">H-3</td><td><code>SameSite=None</code> cart cookie widens CSRF surface (no Origin/Sec-Fetch-Site allowlist)</td>
+            <td><span class="sev sev-high">HIGH</span></td><td><span class="pill s-missing">Open (by design pending Wave 3)</span></td>
+            <td><span class="ref">Arc/Next/src/cookies.ts:19</span> unchanged</td></tr>
+          <tr><td class="dom">E-1</td><td>No object-level authz in WP REST (<code>edit_posts</code> grants all <code>weave_page</code>s)</td>
+            <td><span class="sev sev-med">MED</span></td><td><span class="pill s-missing">Open</span></td>
+            <td><span class="ref">class-weave-rest-controller.php:162-204</span> unchanged; low-cost Phase-1 win per ADR-0011</td></tr>
+          <tr><td class="dom">M-2</td><td>Zod response validation covers cart only (orders/checkout/customer unguarded)</td>
+            <td><span class="sev sev-med">MED</span></td><td><span class="pill s-missing">Open</span></td>
+            <td><span class="ref">store-api/validate.ts:42</span>; no <code>safeValidateOrder</code>/<code>safeValidateCheckout</code></td></tr>
+          <tr><td class="dom">M-1</td><td>No GraphQL depth/cost limiting documented or enforced</td>
+            <td><span class="sev sev-med">MED</span></td><td><span class="pill s-missing">Open</span></td><td>No config or ADR note beyond audit</td></tr>
+          <tr><td class="dom">CACHE-P1</td><td>No <code>shouldCacheResult</code> guard — null/error responses cached full TTL</td>
+            <td><span class="sev sev-high">HIGH</span></td><td><span class="pill s-missing">Open</span></td><td>Catalog loaders unguarded</td></tr>
+          <tr><td class="dom">ARCH-P2..P6</td><td>Route error boundaries, <code>&lt;Money&gt;</code>, <code>&lt;Image&gt;</code>, <code>generateMetadata</code> helper, cursor-pagination hook</td>
+            <td><span class="sev sev-med">MED</span></td><td><span class="pill s-partial">Open — Wave 2</span></td><td>Commerce-parity surface; natural Phase 5 inputs</td></tr>
+          <tr><td class="dom">CART-P1/P2</td><td>Optimistic add lacks pending line; payment-method discovery non-functional</td>
+            <td><span class="sev sev-med">MED</span></td><td><span class="pill s-partial">Open — Wave 2</span></td><td>Checkout surface; natural Phase 5 inputs</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <h4>Pre-audit P0s still open (not in the audit's scope)</h4>
+      <p>Phase 4a verification left two P0 CI gaps that predate the audit and belong in the same
+      hardening phase: <b>GAP-401</b> (<code>install-wp-tests.sh</code> fails on every PHP 8.1–8.4 × WP × WC
+      matrix cell — the wp-plugin matrix never reaches <code>composer test</code>) and <b>GAP-402</b>
+      (PHPCS failures on plugin test files).</p>
+    </div>
+  </div>
+</section>
+
+<section id="strengths">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>3 · Strengths Confirmed</h2>
+    <p class="muted">Where Arc/Weave already meets or beats the Hydrogen/Weaverse baseline — verified
+    in both the audit and Phase 0–4b verification reports.</p>
+    <ul class="clean">
+      <li><b>Typed discriminated-union error model</b> (<code>api</code>/<code>network</code>/<code>parse</code>) vs Hydrogen's flat GraphQL error array.</li>
+      <li><b>Runtime Zod validation of cart responses</b> with warn-not-throw drift detection.</li>
+      <li><b>HMAC-SHA256 webhook revalidation</b> — ±5-min replay window, tag-prefix allowlist, byte-parity Node↔PHP (raw received bytes, never re-serialized).</li>
+      <li><b>Single <code>require_cap()</code> REST choke-point</b> with an explicit 401/403 auth-matrix test; zero <code>__return_true</code> permission callbacks.</li>
+      <li><b>Write-safety in the WP plugin</b> — server-minted section IDs, 1 MB body gate, strict unknown-key rejection.</li>
+      <li><b>Zero <code>unstable_cache</code> usage</b> — clean Next.js 16 <code>'use cache'</code> + <code>cacheTag</code> discipline; loaders construct clients inside the cached fn.</li>
+      <li><b>RSC-safe SDK</b> — <span class="pkg">@weave/react</span> barrel omits client-only exports; SectionRenderer never throws.</li>
+      <li><b>Deploy-target agnostic</b> — pure Next.js, no Oxygen-style runtime coupling.</li>
+      <li><b>Dual-gate boundary enforcement</b> — <code>next/*</code> imports blocked by Biome <em>and</em> a bash grep failsafe in CI.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="gap">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>4 · Plan-vs-Audit Gap Analysis</h2>
+    <p>The GSD roadmap (Phases 0–6) sequenced <b>feature completeness</b>: build the packages, then the
+    Pilot starter (Phase 5), then templates/docs (Phase 6). The audit sequences <b>release safety</b>:
+    six Wave-1 items must land before Arc is publishable or the Pilot meaningfully testable.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Tension</th><th>GSD roadmap said</th><th>Audit says</th><th>Resolution</th></tr></thead>
+        <tbody>
+          <tr><td class="dom">Customer auth</td><td>ADR-0009 spike accepted; implementation folded into "Phase 5 / customer track"</td>
+            <td><span class="sev sev-crit">CRIT</span> H-2 — account routes are unbuildable without it; test-JWT shim is load-bearing</td>
+            <td>Pull forward into Phase 4c, before Pilot work begins</td></tr>
+          <tr><td class="dom">Security headers</td><td>Never a phase deliverable</td>
+            <td><span class="sev sev-high">HIGH</span> H-1 — single largest Hydrogen parity gap; ADR-0010 written</td>
+            <td>Phase 4c — <span class="pkg">@arc/next/security-headers.ts</span> + Pilot <code>proxy.ts</code></td></tr>
+          <tr><td class="dom">Release integrity</td><td>Release workflow existed since Phase 0; provenance/pinning never specified</td>
+            <td><span class="sev sev-high">HIGH</span> S-1/S-2/S-3 — three P1 blockers before first public npm publish; ADR-0012 written</td>
+            <td>Phase 4c — all three are &lt;½-day items</td></tr>
+          <tr><td class="dom">Error caching</td><td>Cache taxonomy (ADR-0004) covered tags, not result-gating</td>
+            <td><span class="sev sev-high">HIGH</span> CACHE-P1 — errors cached for full TTL</td>
+            <td>Phase 4c — small guard in catalog loaders</td></tr>
+          <tr><td class="dom">Commerce primitives</td><td>"Document the pattern, don't ship the component" (v0.1 stance)</td>
+            <td>MED ARCH-P3..P6 — Hydrogen ships <code>&lt;Money&gt;</code>/<code>&lt;Image&gt;</code>/SEO out of the box</td>
+            <td>Wave 2 → Phase 5 planning inputs (Pilot needs them anyway)</td></tr>
+          <tr><td class="dom">Multi-tenancy</td><td>Phase 2 SaaS, out of v1 scope</td>
+            <td>Greenfield — design now (ADR-0011), build later; land object-level authz early</td>
+            <td>ADR-0011 satisfies "design now"; E-1 fix goes to Wave 3 backlog</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout rose">
+      <h4>Net assessment</h4>
+      <p>This is a healthy audit outcome: no rework, no architectural reversals, no drift. The cost of
+      the audit's findings is roughly <b>one inserted phase (~1 week)</b> — dominated by the customer-auth
+      build (L) — plus small-ticket hardening items, in exchange for closing every release-blocking gap
+      against the Hydrogen baseline.</p>
+    </div>
+  </div>
+</section>
+
+<section id="integration">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>5 · Roadmap Integration</h2>
+
+    <div class="wave">
+      <div class="whead"><h3>Phase 4c — Security &amp; Release Hardening <span class="muted">(new, inserted before Phase 5)</span></h3><span class="tag">Audit Wave 1 + Phase 4a P0s</span></div>
+      <ul>
+        <li><span class="t">Customer auth per ADR-0009</span> <span class="effort">L</span><div class="d"><span class="pkg">@arc/core/src/graphql/auth.ts</span> (login/refresh/logout) + <span class="pkg">@arc/next</span> auth-cookies/auth-actions; remove <code>TEST_JWT_TOKEN</code> read (H-2)</div></li>
+        <li><span class="t">CSP + security headers per ADR-0010</span> <span class="effort">M</span><div class="d"><span class="pkg">security-headers.ts</span> (nonce CSP builder), Pilot <code>proxy.ts</code>, example-app <code>headers()</code>; report-only first (H-1)</div></li>
+        <li><span class="t"><code>shouldCacheResult</code> guard in catalog loaders</span> <span class="effort">S</span><div class="d">Null/partial-error responses never cached full TTL (CACHE-P1)</div></li>
+        <li><span class="t">npm provenance + OIDC Trusted Publishing</span> <span class="effort">S</span><div class="d"><code>--provenance</code>, register scopes, <code>NPM_TOKEN: ''</code> (S-1, ADR-0012)</div></li>
+        <li><span class="t">SHA-pin all third-party GitHub Actions</span> <span class="effort">S</span><div class="d">52 mutable tags → SHA + <code># vX.Y.Z</code>; Dependabot manages bumps (S-2)</div></li>
+        <li><span class="t">WPGraphQL version floor</span> <span class="effort">S</span><div class="d"><code>Requires Plugins: wp-graphql, wp-graphql-woocommerce</code> in <code>weave.php</code> + readme minimum past CVE-2026-33290 (S-3)</div></li>
+        <li><span class="t">Fix wp-plugin CI matrix + PHPCS</span> <span class="effort">M</span><div class="d">GAP-401 <code>install-wp-tests.sh</code> failure on all cells; GAP-402 PHPCS on test files (pre-audit P0s)</div></li>
+      </ul>
+    </div>
+
+    <div class="wave">
+      <div class="whead"><h3>Phase 5 inputs <span class="muted">(fold into Pilot planning)</span></h3><span class="tag">Audit Wave 2 — commerce parity</span></div>
+      <ul>
+        <li><span class="t"><code>&lt;Money&gt;</code> + <code>&lt;Image&gt;</code> primitives</span> <span class="effort">M</span></li>
+        <li><span class="t">Route-level <code>error.tsx</code> + <code>not-found.tsx</code> convention</span> <span class="effort">S</span></li>
+        <li><span class="t">SEO <code>buildProductMetadata()</code> + OG + JSON-LD</span> <span class="effort">M</span></li>
+        <li><span class="t">Cursor-pagination hook (<code>WCPageInfo</code> → <code>?after=</code>)</span> <span class="effort">M</span></li>
+        <li><span class="t">Optimistic add splices pending line into cart.items</span> <span class="effort">M</span></li>
+        <li><span class="t"><code>getPaymentMethodsFromCheckout()</code> + buyer identity on WooClient</span> <span class="effort">M</span></li>
+        <li><span class="t">GraphQL codegen enforced in CI + <code>validateArcEnv()</code></span> <span class="effort">M</span></li>
+      </ul>
+    </div>
+
+    <div class="wave">
+      <div class="whead"><h3>Backlog <span class="muted">(pre-1.0 hardening)</span></h3><span class="tag">Audit Waves 3–4</span></div>
+      <ul>
+        <li><span class="t">Origin / <code>Sec-Fetch-Site</code> allowlist on Server Actions (H-3)</span> <span class="effort">S</span></li>
+        <li><span class="t">Extend Zod validation to orders/checkout/customer (M-2)</span> <span class="effort">M</span></li>
+        <li><span class="t">Document + enforce WPGraphQL depth/cost limits (M-1)</span> <span class="effort">S</span></li>
+        <li><span class="t">Object-level authz in WP REST (E-1)</span> <span class="effort">S</span></li>
+        <li><span class="t">Schema <code>type</code> regex + product/collection-list input types</span> <span class="effort">M</span></li>
+        <li><span class="t">Draft-mode bypass on catalog loaders; TTL table docs</span> <span class="effort">S</span></li>
+        <li><span class="t">Supply-chain P2s: pin wordpress-stubs, Composer Dependabot, pin @wordpress/env/dotenv-cli, catalog jsdom</span> <span class="effort">S</span></li>
+        <li><span class="t">Phase-2 design notes: multi-tenancy build (ADR-0011), Studio preview origin-validated bridge, schema migration registry</span> <span class="effort">—</span><div class="d">Design captured in ADR-0011; build is Phase-2 SaaS scope</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="decisions">
+  <div class="wrap">
+    <div class="pink-rule"></div>
+    <h2>6 · Open Decisions (Pieter)</h2>
+    <ul class="clean">
+      <li><b>Accept ADR-0010 / ADR-0011 / ADR-0012</b> — all three are currently <em>Proposed</em>. Phase 4c planning assumes acceptance of 0010 and 0012; 0011 only gates Phase-2 work.</li>
+      <li><b>1-F cookie override</b> (from HANDOFF.md) — local-E2E <code>ARC_CART_COOKIE_SECURE</code> / <code>SameSite=Lax</code> override: merge behind env flag + ADR-0006 note, or keep branch-local? <span class="muted">Needed before the customer-auth track touches cookies — i.e. before Phase 4c execution.</span></li>
+      <li><b>4.4 sections-plan questions</b> (from HANDOFF.md) — 12-sections-in-core vs P0-only; global theme settings now vs Phase-2 Studio. Gates Phase 5 section breadth, not Phase 4c.</li>
+      <li><b>Convention capture</b> — request-time-vs-import-time fail-closed rule → AGENTS.md Conventions + ADR-0007 cross-ref.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="foot">
+  <div class="wrap">
+    Generated 2026-06-09 · Arc Platform reconciliation review · Companion to
+    <code>AUDIT-hydrogen-weaverse-parity-2026-06-08.html</code> and ADR-0009..0012 ·
+    Spot-check evidence gathered against <code>master @ 095da24</code>.
+  </div>
+</div>
+
+</body>
+</html>

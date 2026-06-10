@@ -61,6 +61,7 @@ Bypass GSD workflow only when the user **explicitly** asks to skip it.
 - **ADRs** for architectural choices: `Documentation/Architecture/ADR-*.md`
 - Read before edit; match existing patterns
 - No secrets in repo — `.env.example` only
+- **Fail closed at request time, not import time** — security gates (webhook secrets, auth tokens, signature checks) are evaluated per-request and **reject** when their config is missing in production. Never read a secret into a module-scope constant with a fallback, and never let a missing secret silently disable verification (see [ADR-0007](./Documentation/Architecture/ADR-0007-webhook-hmac-auth.md); established by the revalidate-route fix, PR #16). Dev-only relaxations (e.g. `ARC_CART_COOKIE_SECURE=false`) must be ignored when `NODE_ENV === 'production'`.
 
 ## Boundaries
 
