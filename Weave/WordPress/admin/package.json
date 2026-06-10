@@ -1,6 +1,6 @@
 {
   "name": "weave-admin",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "Weave WP Admin sidebar editor — React app (wp-scripts build, Vitest+jsdom harness)",
   "license": "MIT",
