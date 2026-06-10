@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ARC_CART_TOKEN_COOKIE } from '../constants.js';
 import { CART_COOKIE_OPTIONS } from '../cookies.js';
 import { createMockCookieJar } from './__mocks__/next-headers.js';
@@ -80,5 +80,32 @@ describe('ARC-NEXT-02 — cart token cookie bridge', () => {
       path: '/',
       maxAge: 2_592_000,
     });
+  });
+});
+
+describe('ARC_CART_COOKIE_SECURE override (decision 1-F, ADR-0006)', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it('honors =false outside production (SameSite=Lax for local HTTP E2E)', async () => {
+    vi.resetModules();
+    vi.stubEnv('ARC_CART_COOKIE_SECURE', 'false');
+    vi.stubEnv('NODE_ENV', 'test');
+
+    const { CART_COOKIE_OPTIONS: opts } = await import('../cookies.js');
+    expect(opts.secure).toBe(false);
+    expect(opts.sameSite).toBe('lax');
+  });
+
+  it('ignores =false in production — fail closed to SameSite=None; Secure', async () => {
+    vi.resetModules();
+    vi.stubEnv('ARC_CART_COOKIE_SECURE', 'false');
+    vi.stubEnv('NODE_ENV', 'production');
+
+    const { CART_COOKIE_OPTIONS: opts } = await import('../cookies.js');
+    expect(opts.secure).toBe(true);
+    expect(opts.sameSite).toBe('none');
   });
 });
