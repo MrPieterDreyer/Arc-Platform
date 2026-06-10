@@ -5,6 +5,7 @@
  * Version:           0.1.0
  * Requires PHP:      8.1
  * Requires at least: 6.4
+ * Requires Plugins:  wp-graphql, wp-graphql-woocommerce
  * WC requires at least: 9.0
  * License:           MIT
  * Text Domain:       weave
