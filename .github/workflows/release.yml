@@ -32,10 +32,12 @@ jobs:
         run: node Scripts/verify-changesets-no-major.mjs
         env:
           ARC_ALLOW_V1_PUBLISH: ${{ secrets.ARC_ALLOW_V1_PUBLISH }}
-      # NPM_CONFIG_PROVENANCE makes the underlying npm publish emit a Sigstore
-      # attestation linking the tarball to this workflow run (requires the
-      # id-token: write permission above). `changeset publish` has no
-      # --provenance flag — provenance must come in via npm config. ADR-0012 P1.
+      # Provenance (ADR-0012 P1) is configured in the repo-root .npmrc
+      # (`provenance=true`) — the rc option is what `pnpm publish` (which
+      # changesets shells out to) actually reads; publishConfig.provenance and
+      # NPM_CONFIG_PROVENANCE are npm-CLI mechanisms pnpm ignores. The
+      # id-token: write permission above is what lets Sigstore mint the
+      # attestation.
       # TODO(ADR-0012): once @arc-platform/* and @weave-platform/* are registered for npm OIDC Trusted
       # Publishing on npmjs.com, set `NPM_TOKEN: ''` and drop the repository secret —
       # the OIDC exchange replaces the static token entirely.
@@ -52,4 +54,3 @@ jobs:
           # line npm publishes with setup-node's literal placeholder token and
           # the registry masks the bad auth as E404 on every scoped PUT.
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: 'true'
