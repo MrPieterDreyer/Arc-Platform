@@ -49,3 +49,5 @@ next-env.d.ts
 .trigger/
 .mcp.json
 HANDOFF.html
+HANDOFF.md
+ruvector.db
