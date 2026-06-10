@@ -1,4 +1,4 @@
-# Nightly E2E — regression catalog + full Playwright suite (non-quarantine).
+# Nightly E2E â€” regression catalog + full Playwright suite (non-quarantine).
 # Does not block PR merge; alerts on failure via GitHub Actions notifications.
 name: E2E Nightly
 
@@ -19,9 +19,9 @@ jobs:
   e2e-nightly:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: pnpm
@@ -38,7 +38,7 @@ jobs:
         run: pnpm test:e2e:nightly
       - name: Upload agent report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: e2e-nightly-agent-report
           path: Artifacts/e2e-reports/latest.json
