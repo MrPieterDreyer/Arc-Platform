@@ -1,0 +1,43 @@
+# Lighthouse CI — asserts Perf >=0.9 and A11y >=0.95 on home, PLP, PDP against
+# the seeded Arc/Pilot store (PILOT-05). Runs on PR + nightly schedule.
+# Mirrors the wp-env boot+seed pattern from e2e-nightly.yml.
+name: Lighthouse CI
+
+on:
+  pull_request:
+  schedule:
+    - cron: '0 7 * * *' # 07:00 UTC daily (offset from e2e-nightly at 06:00)
+  workflow_dispatch:
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+  CI: true
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Boot wp-env and seed fixtures
+        run: pnpm wp:setup
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium --with-deps
+        working-directory: Arc/Pilot
+      - name: Build Pilot
+        run: pnpm --filter @arc-platform/pilot build
+      - name: Run Lighthouse CI against seeded Pilot
+        run: pnpm lhci
+      - name: Tear down wp-env
+        if: always()
+        run: pnpm wp:stop
