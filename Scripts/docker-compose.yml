@@ -1,0 +1,72 @@
+# PILOT-04 artifact — Arc Platform canonical backend entrypoint
+#
+# This file is a thin documented wrapper over the canonical wp-env stack.
+# It does NOT re-derive a raw Docker Compose WP + MySQL stack — that would
+# duplicate the pinned plugin seeder and break version parity. Instead, it
+# delegates to `pnpm wp:setup` (= `wp-env start && node Scripts/seed-wp-env.mjs`),
+# which boots the same pinned, seeded instance wp-env already manages.
+#
+# Stack booted by `pnpm wp:setup` (authoritative pin in .wp-env.json):
+#   - WordPress 7.0
+#   - WooCommerce (latest-stable)
+#   - WPGraphQL (latest-stable)
+#   - WPGraphQL for WooCommerce v1.0.2
+#   - WPGraphQL JWT Authentication v0.7.2
+#   - WooCommerce Gateway Stripe 9.8.0  ← pinned for payment_data contract (ADR-0013)
+#   - Weave plugin (mapped from ./Weave/WordPress)
+#   Seeded with: products, variable products, coupon, customer, COD gateway, Stripe
+#   gateway (test-mode when E2E_STRIPE_PUBLISHABLE_KEY / E2E_STRIPE_SECRET_KEY are set).
+#
+# Equivalent one-liner (no compose needed):
+#   pnpm wp:setup
+#
+# Usage:
+#   docker compose -f Scripts/docker-compose.yml up
+#   (Ctrl-C to stop; `docker compose -f Scripts/docker-compose.yml down` to clean up)
+#
+# Prerequisites:
+#   - Docker Desktop running
+#   - Node.js >= 20 + pnpm 11 installed on the host
+#   - (Optional) E2E_STRIPE_PUBLISHABLE_KEY + E2E_STRIPE_SECRET_KEY set to enable
+#     the Stripe gateway in the seeded store (Stripe sandbox test keys only)
+#
+# After startup, the seeded WooCommerce store is available at:
+#   http://localhost:8888           WordPress / WC Store API
+#   http://localhost:8888/graphql   WPGraphQL endpoint
+
+version: "3.8"
+
+services:
+  backend:
+    # Use the official Node.js LTS image — matches the project's engines.node floor.
+    image: node:20-slim
+    working_dir: /workspace
+
+    # Mount the entire monorepo so pnpm workspaces + wp-env config are available.
+    volumes:
+      - ..:/workspace
+      # Mount the Docker socket so wp-env (which is itself Docker-backed) can
+      # manage the WordPress containers from inside this service container.
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    # Install dependencies and run the canonical setup sequence:
+    #   wp-env start  → boots WP + WC + WPGraphQL + Weave + Stripe (pinned, .wp-env.json)
+    #   seed-wp-env   → pretty permalinks + fixture seed + .env.wp-test
+    command: >
+      sh -c "
+        npm install -g pnpm@11 &&
+        pnpm install --frozen-lockfile &&
+        pnpm wp:setup
+      "
+
+    # Expose wp-env's WordPress port so the host can reach the Store API + WPGraphQL.
+    ports:
+      - "8888:8888"
+
+    # Pass Stripe sandbox keys through so the seeder enables the gateway when present.
+    # Set these in your shell or a local .env before running `docker compose up`.
+    environment:
+      - E2E_STRIPE_PUBLISHABLE_KEY=${E2E_STRIPE_PUBLISHABLE_KEY:-}
+      - E2E_STRIPE_SECRET_KEY=${E2E_STRIPE_SECRET_KEY:-}
+      # wp-env needs DOCKER_HOST on some platforms — inherit from the host if set.
+      - DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
