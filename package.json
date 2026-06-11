@@ -52,7 +52,7 @@
     "pilot:build": "turbo run build --filter @arc-platform/pilot",
     "pilot:test:e2e": "dotenv -e .env.wp-test -- turbo run test:e2e --filter @arc-platform/pilot",
     "pilot:test:e2e:smoke": "dotenv -e .env.wp-test -- turbo run test:e2e:smoke --filter @arc-platform/pilot",
-    "lhci": "lhci autorun"
+    "lhci": "dotenv -e .env.wp-test -- lhci autorun"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.16",
