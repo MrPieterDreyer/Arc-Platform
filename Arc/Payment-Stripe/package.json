@@ -1,0 +1,73 @@
+{
+  "name": "@arc-platform/payment-stripe",
+  "version": "0.0.1",
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "description": "Arc — Stripe payment gateway adapter for WooCommerce headless checkout",
+  "license": "MIT",
+  "author": "Pieter Dreyer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrPieterDreyer/arc-platform.git",
+    "directory": "Arc/Payment-Stripe"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "biome lint ./src",
+    "format:check": "biome format ./src",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@arc-platform/core": "workspace:^",
+    "server-only": "^0.0.1",
+    "stripe": "^22.2.0"
+  },
+  "peerDependencies": {
+    "@arc-platform/next": "workspace:^",
+    "@stripe/react-stripe-js": "^6.6.0",
+    "@stripe/stripe-js": "^9.8.0",
+    "next": "catalog:",
+    "react": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "@arc-platform/next": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@stripe/react-stripe-js": "^6.6.0",
+    "@stripe/stripe-js": "^9.8.0",
+    "@types/node": "catalog:",
+    "@types/react": "^19.2.15",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "^4.1.0"
+  }
+}
