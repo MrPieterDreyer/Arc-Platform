@@ -28,14 +28,13 @@
  *   gateway does not 400 on a missing billing address (the most common failure mode).
  */
 
-import { expect, test as base } from '@playwright/test';
-
 import {
   buildStripePaymentData,
   STRIPE_CONFIRMATION_TOKEN_KEY,
   STRIPE_DEFERRED_INTENT_KEY,
   STRIPE_INCLUDE_DEFERRED_INTENT,
 } from '@arc-platform/payment-stripe';
+import { test as base, expect } from '@playwright/test';
 import { getE2eEnv, seededProductId } from '../../../../Scripts/e2e-shared/e2e-env';
 import {
   fetchStoreApiCheckoutDraft,
@@ -63,13 +62,6 @@ const TEST_BILLING = {
   country: 'US',
 };
 
-interface StripeTokenResult {
-  /** Which path produced the token: 'confirmation-token' (primary) or 'payment-method' (fallback) */
-  path: 'confirmation-token' | 'payment-method';
-  /** The token id — ctoken_… or pm_… */
-  tokenId: string;
-}
-
 /**
  * PRIMARY: Use Playwright page + @stripe/stripe-js to create a ConfirmationToken.
  * Returns null if Stripe.js cannot be loaded (CI network restriction) so the
@@ -95,7 +87,7 @@ async function createConfirmationTokenViaStripeJs(
           document.head.appendChild(script);
         });
 
-        // @ts-ignore — Stripe global injected by the script above.
+        // @ts-expect-error — Stripe global injected by the script above.
         const stripe = Stripe(pk);
         const elements = stripe.elements({
           mode: 'payment',
@@ -116,7 +108,7 @@ async function createConfirmationTokenViaStripeJs(
         // Fill the card number using the Element's test card number injection.
         // For headless contract testing we use the test card via a helper that
         // the Element exposes (stripe-js test helpers).
-        // biome-ignore lint/suspicious/noExplicitAny
+        // biome-ignore lint/suspicious/noExplicitAny: Stripe.js Elements is untyped inside the page context
         const testHelpers = (elements as any).getElement('payment');
         if (testHelpers && typeof testHelpers._simulateEvent === 'function') {
           // Test helper available — simulate card fill.
@@ -153,8 +145,8 @@ async function createConfirmationTokenViaStripeJs(
 async function createPaymentMethodViaStripeSDK(secretKey: string): Promise<string> {
   // Dynamic import so the `stripe` npm package is only required at runtime
   // and only when this fallback path is taken.
-  // biome-ignore lint/suspicious/noExplicitAny
-  const StripeLib = (await import('stripe' as any).catch(() => null)) as any;
+  // biome-ignore lint/suspicious/noExplicitAny: optional dependency with no type declarations when absent
+  const StripeLib = (await import('stripe').catch(() => null)) as any;
   if (!StripeLib) {
     throw new Error(
       'stripe npm package not available for hermetic fallback — install with pnpm add -D stripe',
@@ -227,7 +219,7 @@ async function postStripeCheckout(
  * Runs in every environment (no backend required).
  */
 base.describe('Stripe payment_data contract — env gate @payment @contract', () => {
-  base.beforeEach(({}, testInfo) => {
+  base.beforeEach((_fixtures, testInfo) => {
     if (!hasStripeSandboxEnv()) {
       testInfo.skip(true, stripeSandboxSkipMessage());
     }
