@@ -51,12 +51,14 @@
     "verify-ci-workflow": "node Scripts/verify-ci-workflow.mjs",
     "pilot:build": "turbo run build --filter @arc-platform/pilot",
     "pilot:test:e2e": "dotenv -e .env.wp-test -- turbo run test:e2e --filter @arc-platform/pilot",
-    "pilot:test:e2e:smoke": "dotenv -e .env.wp-test -- turbo run test:e2e:smoke --filter @arc-platform/pilot"
+    "pilot:test:e2e:smoke": "dotenv -e .env.wp-test -- turbo run test:e2e:smoke --filter @arc-platform/pilot",
+    "lhci": "dotenv -e .env.wp-test -- lhci autorun"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.16",
     "@changesets/changelog-github": "0.5.0",
     "@changesets/cli": "2.31.0",
+    "@lhci/cli": "^0.15.1",
     "@vitest/coverage-v8": "4.1.7",
     "@wordpress/env": "^10.17.0",
     "dotenv-cli": "^8.0.0",

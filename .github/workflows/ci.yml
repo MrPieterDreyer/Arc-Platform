@@ -101,6 +101,13 @@ jobs:
         run: pnpm wp:seed
       - name: Run contract + perf suites against the live backend
         run: pnpm test:contract
+      # Wave-2 codegen gate: introspects the live WPGraphQL schema and validates
+      # every .graphql document against it - fails on schema/query drift. Output
+      # is gitignored; success of the generation IS the gate.
+      - name: GraphQL codegen against live schema (drift gate)
+        run: pnpm --filter @arc-platform/core codegen
+        env:
+          WP_GRAPHQL_ENDPOINT: http://localhost:8888/graphql
       - name: Tear down wp-env
         if: always()
         run: pnpm wp:stop
