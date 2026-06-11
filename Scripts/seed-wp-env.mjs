@@ -131,6 +131,7 @@ const lines = [
   'CI_WP_ENV=true',
   `WP_URL=${WP_URL}`,
   `ARC_WC_URL=${WP_URL}`,
+  `ARC_GRAPHQL_ENDPOINT=${WP_GRAPHQL_ENDPOINT}`,
   `WP_GRAPHQL_ENDPOINT=${WP_GRAPHQL_ENDPOINT}`,
   `TEST_PRODUCT_ID=${seed.product_id}`,
   `TEST_PRODUCT_SLUG=${seed.product_slug}`,
