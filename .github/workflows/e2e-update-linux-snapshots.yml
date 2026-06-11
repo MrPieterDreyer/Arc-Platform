@@ -4,7 +4,7 @@
 # when bootstrapping `e2e/snapshots/linux/` for CI (ubuntu-latest).
 #
 # After the job completes: download the `linux-visual-snapshots` artifact and
-# commit PNGs under Arc/Next/examples/minimal-app/e2e/snapshots/linux/
+# commit PNGs under Arc/Pilot/e2e/snapshots/linux/
 name: E2E Update Linux Snapshots
 
 on:
@@ -34,23 +34,23 @@ jobs:
         run: pnpm wp:setup
       - name: Install Playwright Chromium
         run: pnpm exec playwright install chromium --with-deps
-        working-directory: Arc/Next/examples/minimal-app
+        working-directory: Arc/Pilot
       - name: Build minimal-app
-        run: pnpm --filter @arc-platform/next-example build
+        run: pnpm --filter @arc-platform/pilot build
       - name: Update visual baselines (@visual, linux platform)
-        run: pnpm --filter @arc-platform/next-example test:e2e:update-snapshots
+        run: pnpm --filter @arc-platform/pilot test:e2e:update-snapshots
       - name: Upload linux snapshot PNGs
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: linux-visual-snapshots
-          path: Arc/Next/examples/minimal-app/e2e/snapshots/linux/
+          path: Arc/Pilot/e2e/snapshots/linux/
           if-no-files-found: error
       - name: Job summary
         run: |
           echo "## Linux visual baselines generated" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "Download the **linux-visual-snapshots** artifact and commit PNGs to:" >> "$GITHUB_STEP_SUMMARY"
-          echo "\`Arc/Next/examples/minimal-app/e2e/snapshots/linux/\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`Arc/Pilot/e2e/snapshots/linux/\`" >> "$GITHUB_STEP_SUMMARY"
       - name: Tear down wp-env
         if: always()
         run: pnpm wp:stop

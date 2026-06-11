@@ -6,20 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test:e2e:smoke": "playwright test --grep @smoke --project=chromium",
-    "test:e2e:integration": "playwright test --grep @integration --project=chromium",
-    "test:e2e:catalog": "playwright test e2e/catalog --grep @regression --project=chromium",
-    "test:e2e:cart": "playwright test e2e/cart --grep @regression --project=chromium",
-    "test:e2e:weave": "playwright test e2e/weave --grep @regression --project=chromium",
-    "test:e2e:checkout": "playwright test e2e/checkout --grep @regression --project=chromium",
-    "test:e2e:account": "playwright test e2e/account --grep @regression --project=chromium",
-    "test:e2e:payment": "playwright test e2e/checkout --grep @payment --project=chromium",
-    "test:e2e:visual": "playwright test e2e/visual --grep @visual --project=chromium",
-    "test:e2e:a11y": "playwright test e2e/a11y --grep @a11y --project=chromium",
-    "test:e2e:perf": "playwright test e2e/perf --grep @perf --project=chromium",
-    "test:e2e": "playwright test --grep \"@smoke|@integration|@regression\" --project=chromium",
-    "test:e2e:nightly": "playwright test --grep-invert @quarantine --project=chromium",
-    "test:e2e:update-snapshots": "playwright test e2e/visual --grep @visual --project=chromium --update-snapshots"
+    "test:e2e:smoke": "playwright test --grep @smoke --project=chromium"
   },
   "dependencies": {
     "@arc-platform/core": "workspace:^",

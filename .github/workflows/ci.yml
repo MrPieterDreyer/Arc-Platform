@@ -121,9 +121,9 @@ jobs:
         run: pnpm wp:setup
       - name: Install Playwright Chromium
         run: pnpm exec playwright install chromium --with-deps
-        working-directory: Arc/Next/examples/minimal-app
+        working-directory: Arc/Pilot
       - name: Build minimal-app
-        run: pnpm --filter @arc-platform/next-example build
+        run: pnpm --filter @arc-platform/pilot build
       - name: E2E smoke (@smoke)
         run: pnpm test:e2e:smoke
       - name: E2E integration (@integration)
