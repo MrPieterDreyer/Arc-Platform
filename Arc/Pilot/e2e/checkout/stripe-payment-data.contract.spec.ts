@@ -219,7 +219,8 @@ async function postStripeCheckout(
  * Runs in every environment (no backend required).
  */
 base.describe('Stripe payment_data contract — env gate @payment @contract', () => {
-  base.beforeEach((_fixtures, testInfo) => {
+  // biome-ignore lint/correctness/noEmptyPattern: Playwright requires an object destructuring pattern as the first fixture argument
+  base.beforeEach(({}, testInfo) => {
     if (!hasStripeSandboxEnv()) {
       testInfo.skip(true, stripeSandboxSkipMessage());
     }
