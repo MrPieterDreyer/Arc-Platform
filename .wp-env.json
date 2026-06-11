@@ -5,7 +5,8 @@
     "https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip",
     "https://downloads.wordpress.org/plugin/wp-graphql.zip",
     "https://github.com/wp-graphql/wp-graphql-woocommerce/releases/download/v1.0.2/wp-graphql-woocommerce.zip",
-    "https://github.com/wp-graphql/wp-graphql-jwt-authentication/releases/download/v0.7.2/wp-graphql-jwt-authentication.zip"
+    "https://github.com/wp-graphql/wp-graphql-jwt-authentication/releases/download/v0.7.2/wp-graphql-jwt-authentication.zip",
+    "https://github.com/woocommerce/woocommerce-gateway-stripe/releases/download/9.8.0/woocommerce-gateway-stripe.zip"
   ],
   "port": 8888,
   "testsPort": 8889,

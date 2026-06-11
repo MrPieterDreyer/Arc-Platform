@@ -161,6 +161,22 @@ $cod            = get_option( 'woocommerce_cod_settings', array() );
 $cod['enabled'] = 'yes';
 update_option( 'woocommerce_cod_settings', $cod );
 
+// Enable Stripe gateway in test-mode when sandbox keys are provided via env.
+// Keys are passed by Scripts/seed-wp-env.mjs as SEED_STRIPE_TEST_PK / SEED_STRIPE_TEST_SK.
+// Idempotent: merges into the existing option so UPE-managed sub-keys are preserved.
+$stripe_pk      = getenv( 'SEED_STRIPE_TEST_PK' ) ?: '';
+$stripe_sk      = getenv( 'SEED_STRIPE_TEST_SK' ) ?: '';
+$stripe_enabled = false;
+if ( $stripe_pk && $stripe_sk ) {
+	$stripe                         = get_option( 'woocommerce_stripe_settings', array() );
+	$stripe['enabled']              = 'yes';
+	$stripe['testmode']             = 'yes';
+	$stripe['test_publishable_key'] = $stripe_pk;
+	$stripe['test_secret_key']      = $stripe_sk;
+	update_option( 'woocommerce_stripe_settings', $stripe );
+	$stripe_enabled = true;
+}
+
 // --- Seed fixtures ----------------------------------------------------------
 
 $category_slug = 'test-collection';
@@ -184,5 +200,6 @@ echo 'ARC_SEED_RESULT=' . wp_json_encode(
 		'order_id'               => $order_id,
 		'customer_id'            => $customer_id,
 		'customer_email'         => 'arc-customer@example.com',
+		'stripe_enabled'         => $stripe_enabled,
 	)
 ) . "\n";

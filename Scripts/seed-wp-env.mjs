@@ -70,6 +70,18 @@ wp(['rewrite', 'structure', '/%postname%/', '--hard']);
 console.log('→ Activating Weave plugin (Wave 4 E2E / weave/v1)…');
 wp(['plugin', 'activate', 'weave']);
 
+// Pass Stripe sandbox keys into the seeder when present.
+// Reads from the same env vars that hasStripeSandboxEnv() checks.
+const stripePk = process.env.E2E_STRIPE_PUBLISHABLE_KEY ?? process.env.STRIPE_PUBLISHABLE_KEY ?? '';
+const stripeSk = process.env.E2E_STRIPE_SECRET_KEY ?? process.env.STRIPE_SECRET_KEY ?? '';
+if (stripePk.startsWith('pk_test_') && stripeSk.startsWith('sk_test_')) {
+  process.env.SEED_STRIPE_TEST_PK = stripePk;
+  process.env.SEED_STRIPE_TEST_SK = stripeSk;
+  console.log('→ Stripe sandbox keys detected — will enable gateway in seed…');
+} else {
+  console.log('→ No Stripe sandbox keys — Stripe gateway will remain disabled in seed.');
+}
+
 console.log('→ Seeding WooCommerce fixtures…');
 const out = wp(['eval-file', 'wp-content/arc-seed/seed.php']);
 process.stdout.write(out);
