@@ -41,9 +41,15 @@ export {
 } from './store-api/cart.js';
 // Phase 1 — defensive Store API response validation (zod)
 export { safeValidateCart } from './store-api/validate.js';
-export type { WCPaymentGateway } from './store-api/checkout';
+export type { WCCheckoutDraft, WCPaymentGateway } from './store-api/checkout';
 // Phase 1 — Checkout (ARC-API-05)
-export { getCheckoutSchema, getPaymentGateways, submitCheckout } from './store-api/checkout';
+// Phase 5 — CART-P2: getPaymentMethodsFromCheckout (gateway detection without /payment-gateways route)
+export {
+  getCheckoutSchema,
+  getPaymentGateways,
+  getPaymentMethodsFromCheckout,
+  submitCheckout,
+} from './store-api/checkout';
 export type { WCCustomerPatch } from './store-api/customer';
 // Phase 1 — Store API customer
 export { getCustomer, updateCustomer } from './store-api/customer';
