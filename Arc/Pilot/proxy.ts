@@ -1,6 +1,7 @@
 // Next 16 proxy (replaces middleware.ts) — mints the per-request CSP nonce and sets
 // the Arc CSP header per ADR-0010. Starts REPORT-ONLY: flip to ARC_CSP_HEADER once
 // the storefront's third-party origins are validated.
+import { validateArcEnv } from '@arc-platform/core';
 import { ARC_CSP_REPORT_ONLY_HEADER, ARC_NONCE_HEADER, createArcCsp } from '@arc-platform/next';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -27,7 +28,16 @@ function backendOrigins(): string[] {
   return [...origins];
 }
 
+// Wave-2 startup check - fail closed at request time, not import time (AGENTS.md):
+// running here keeps next build env-free while every real request fails fast and
+// loudly when ARC_GRAPHQL_ENDPOINT / ARC_WC_URL are missing or malformed.
+let arcEnvValidated = false;
+
 export function proxy(request: NextRequest): NextResponse {
+  if (!arcEnvValidated) {
+    validateArcEnv();
+    arcEnvValidated = true;
+  }
   const nonce = mintNonce();
 
   // Thread the nonce to the render tree (read via useArcNonce()).

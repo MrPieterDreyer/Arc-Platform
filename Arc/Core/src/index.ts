@@ -3,6 +3,8 @@ export const __ARC_CORE_VERSION = '0.0.1';
 
 // Phase 1 — WooClient HTTP foundation
 export { WooClient, WooClientError } from './client/WooClient';
+// Wave-2 — startup env validator (validateArcEnv)
+export { validateArcEnv } from './env';
 export type { WCAuthCustomer, WCLoginResult } from './graphql/auth';
 // Phase 4c — customer auth mutations (ADR-0009, wp-graphql-jwt-authentication)
 export { loginCustomer, refreshAuthToken } from './graphql/auth';
@@ -39,8 +41,6 @@ export {
   removeItem,
   updateItem,
 } from './store-api/cart.js';
-// Phase 1 — defensive Store API response validation (zod)
-export { safeValidateCart } from './store-api/validate.js';
 export type { WCCheckoutDraft, WCPaymentGateway } from './store-api/checkout';
 // Phase 1 — Checkout (ARC-API-05)
 // Phase 5 — CART-P2: getPaymentMethodsFromCheckout (gateway detection without /payment-gateways route)
@@ -55,6 +55,8 @@ export type { WCCustomerPatch } from './store-api/customer';
 export { getCustomer, updateCustomer } from './store-api/customer';
 // Phase 1 — Orders (Store API)
 export { getOrder } from './store-api/orders';
+// Phase 1 — defensive Store API response validation (zod)
+export { safeValidateCart } from './store-api/validate.js';
 // Phase 1 — Cart types (WC* prefix, complete shapes)
 export type {
   WCCart,
